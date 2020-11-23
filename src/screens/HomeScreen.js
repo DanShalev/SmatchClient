@@ -1,7 +1,9 @@
 import * as React from 'react';
-import { Text, View, StyleSheet} from 'react-native';
+import { Text, View, StyleSheet, Alert, ScrollView } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { ListItem, Avatar } from 'react-native-elements'
+import HomeScreenMocks from "../../mocks/HomeScreenMocks.js";
 
 const Tab = createBottomTabNavigator();
 
@@ -34,22 +36,41 @@ export default function HomeScreen() {
 
 export function GroupsTab() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text style={styles.text}>Smatch App First Project</Text>
-    </View>
+      <ScrollView>
+          {
+              HomeScreenMocks.map((l, i) => (
+                  <ListItem
+                      key={i}
+                      bottomDivider
+                      onPress={() => Alert.alert(`Group "${l.name}"`,'',[{text: 'OK'}],{cancelable: false})}
+                  >
+                      <Avatar
+                          title={l.avatar_title}
+                          overlayContainerStyle={{backgroundColor: 'gray'}}
+                          rounded
+                      />
+                      <ListItem.Content>
+                          <ListItem.Title>{l.name}</ListItem.Title>
+                          <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+                      </ListItem.Content>
+                  </ListItem>
+              ))
+          }
+      </ScrollView>
   );
 }
 
 export function BrowseTab() {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+    <View style={styles.browseTabViewStyle}>
       <Text>Browse!</Text>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  text: {
-    fontSize: 30
-  }
+  browseTabViewStyle: {
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center' },
 });
