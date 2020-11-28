@@ -3,6 +3,13 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen  from './src/screens/HomeScreen'
 
+const ReactNative = require('react-native');
+try {
+  ReactNative.I18nManager.allowRTL(false);
+} catch (e) {
+  console.log(e);
+}
+
 const Stack = createStackNavigator();
 
 function App() {
