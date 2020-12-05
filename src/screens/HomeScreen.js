@@ -1,9 +1,12 @@
-import * as React from "react";
-import { Text, View, StyleSheet, Alert, ScrollView } from "react-native";
+import React from "react";
+import { Alert, ScrollView } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { ListItem, Avatar } from "react-native-elements";
+
 import HomeScreenMocks from "../../mocks/HomeScreenMocks.js";
+import colors from "../config/colors.js";
+import { CreateGroupScreen } from "./CreateGroup";
 
 const Tab = createBottomTabNavigator();
 
@@ -14,7 +17,7 @@ export default function HomeScreen() {
         tabBarIcon: ({ color, size }) => {
           let iconName;
 
-          if (route.name === "Home") {
+          if (route.name === "Groups") {
             iconName = "ios-people";
           } else if (route.name === "Browse") {
             iconName = "ios-search";
@@ -24,11 +27,11 @@ export default function HomeScreen() {
         },
       })}
       tabBarOptions={{
-        activeTintColor: "tomato",
-        inactiveTintColor: "gray",
+        activeTintColor: colors.secondary,
+        inactiveTintColor: colors.primary,
       }}
     >
-      <Tab.Screen name="Home" component={GroupsTab} />
+      <Tab.Screen name="Groups" component={GroupsTab} />
       <Tab.Screen name="Browse" component={BrowseTab} />
     </Tab.Navigator>
   );
@@ -49,7 +52,7 @@ export function GroupsTab() {
         >
           <Avatar
             title={l.avatar_title}
-            overlayContainerStyle={{ backgroundColor: "gray" }}
+            overlayContainerStyle={{ backgroundColor: colors.primary }}
             rounded
           />
           <ListItem.Content>
@@ -63,17 +66,5 @@ export function GroupsTab() {
 }
 
 export function BrowseTab() {
-  return (
-    <View style={styles.browseTabViewStyle}>
-      <Text>Browse!</Text>
-    </View>
-  );
+  return <CreateGroupScreen />;
 }
-
-const styles = StyleSheet.create({
-  browseTabViewStyle: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-});

@@ -1,6 +1,7 @@
 import * as React from "react";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { SafeAreaView, StyleSheet, Text, Image } from "react-native";
+import colors from "../config/colors";
 
 export default function NavbarProperties() {
   return {
@@ -8,7 +9,7 @@ export default function NavbarProperties() {
     headerStatusBarHeight: 25,
     headerRightContainerStyle: { margin: 15 },
     headerStyle: {
-      backgroundColor: "gray",
+      backgroundColor: colors.primary,
     },
     headerRight: () => (
       <SafeAreaView style={styles.rightHeader}>
@@ -31,11 +32,11 @@ const styles = StyleSheet.create({
   logoText: {
     marginLeft: 15,
     fontSize: 28,
-    color: "white",
+    color: colors.tertiary,
     fontWeight: "bold",
   },
   logoImage: {
-    tintColor: "tomato",
+    tintColor: colors.secondary,
   },
   leftHeader: {
     alignItems: "center",
@@ -46,6 +47,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   sideMenuIcon: {
-    color: "white",
+    color: colors.tertiary,
   },
 });
