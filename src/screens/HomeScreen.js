@@ -1,8 +1,8 @@
 import React from "react";
 import { Alert, ScrollView } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { ListItem, Avatar } from "react-native-elements";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import HomeScreenMocks from "../../mocks/HomeScreenMocks.js";
 import colors from "../config/colors.js";
