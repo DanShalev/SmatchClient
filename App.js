@@ -1,10 +1,11 @@
 import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import HomeScreen from "./src/screens/HomeScreen";
-import NavbarProperties from "./src/screenUtils/NavbarProperties";
 
-const ReactNative = require('react-native');
+import SideMenu from "./src/screenUtils/SideMenu";
+import NavBarProperties from "./src/screenUtils/NavBar";
+
+const ReactNative = require("react-native");
 try {
   ReactNative.I18nManager.allowRTL(false);
 } catch (e) {
@@ -16,8 +17,10 @@ const Stack = createStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={NavbarProperties()}>
-        <Stack.Screen name="Home" component={HomeScreen} />
+      <Stack.Navigator
+        screenOptions={(navigation) => NavBarProperties(navigation)}
+      >
+        <Stack.Screen name='Home' component={SideMenu} />
       </Stack.Navigator>
     </NavigationContainer>
   );
