@@ -1,9 +1,8 @@
 {
   "expo": {
-    "name": "rn-starter",
-    "slug": "rn-starter",
+    "name": "Smatch",
+    "slug": "Smatch",
     "privacy": "public",
-    "sdkVersion": "36.0.0",
     "platforms": [
       "ios",
       "android",
