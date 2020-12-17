@@ -14,13 +14,13 @@ const Tab = createBottomTabNavigator();
 export default function HomeScreen({ navigation }) {
   setNavBarHeaders(navigation);
   return (
-    <Tab.Navigator
-      screenOptions={tabNavigationOptions()}
-      tabBarOptions={tabNavigationColors()}
-    >
-      <Tab.Screen name="Groups" component={GroupsTab} />
-      <Tab.Screen name="Browse" component={BrowseTab} />
-    </Tab.Navigator>
+      <Tab.Navigator
+          screenOptions={tabNavigationOptions()}
+          tabBarOptions={tabNavigationColors()}
+      >
+        <Tab.Screen name="Groups" component={GroupsTab} />
+        <Tab.Screen name="Browse" component={BrowseTab} />
+      </Tab.Navigator>
   );
 }
 
@@ -56,36 +56,36 @@ function tabNavigationOptions() {
 
 export function GroupsTab() {
   return (
-    <ScrollView>
-      {HomeScreenMocks.map((l, i) => (
-        <ListItem
-          key={i}
-          bottomDivider
-          onPress={() =>
-            Alert.alert(`Group "${l.name}"`, "", [{ text: "OK" }], {
-              cancelable: false,
-            })
-          }
-        >
-          <Avatar
-            title={l.avatar_title}
-            overlayContainerStyle={{ backgroundColor: colors.primary }}
-            rounded
-          />
-          <ListItem.Content>
-            <ListItem.Title>{l.name}</ListItem.Title>
-            <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
-          </ListItem.Content>
-        </ListItem>
-      ))}
-    </ScrollView>
+      <ScrollView>
+        {HomeScreenMocks.map((l, i) => (
+            <ListItem
+                key={i}
+                bottomDivider
+                onPress={() =>
+                    Alert.alert(`Group "${l.name}"`, "", [{ text: "OK" }], {
+                      cancelable: false,
+                    })
+                }
+            >
+              <Avatar
+                  title={l.avatar_title}
+                  overlayContainerStyle={{ backgroundColor: colors.primary }}
+                  rounded
+              />
+              <ListItem.Content>
+                <ListItem.Title>{l.name}</ListItem.Title>
+                <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+              </ListItem.Content>
+            </ListItem>
+        ))}
+      </ScrollView>
   );
 }
 
 export function BrowseTab() {
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>Browse!</Text>
-    </View>
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>Browse!</Text>
+      </View>
   );
 }
