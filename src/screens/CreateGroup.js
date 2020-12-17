@@ -4,8 +4,11 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/AntDesign";
 
 import colors from "../config/colors";
+import BackArrowHeader from "../screenUtils/Headers/BackArrowHeader";
+import SmatchLogoHeader from "../screenUtils/Headers/SmatchLogoHeader";
 
-export function CreateGroupScreen() {
+export function CreateGroupScreen({ navigation }) {
+  setNavBarHeaders(navigation);
   let [listOfFields, setListOfFields] = useState([]);
 
   return (
@@ -26,6 +29,15 @@ export function CreateGroupScreen() {
   );
 }
 
+function setNavBarHeaders(navigation) {
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerLeft: () => <SmatchLogoHeader />,
+      headerRight: () => <BackArrowHeader navigation={navigation} />,
+    });
+  }, [navigation]);
+}
+
 function InputField({ setListOfFields }) {
   let [currentField, setCurrentField] = useState("");
 
@@ -41,7 +53,7 @@ function InputField({ setListOfFields }) {
         value={currentField}
       />
       <Icon
-        name='pluscircleo'
+        name="pluscircleo"
         size={30}
         color={colors.black}
         style={styles.inputFieldIcon}
@@ -68,7 +80,7 @@ function ListOfInputFields({ listOfFields, setListOfFields }) {
             editable={false}
           />
           <Icon
-            name='minuscircleo'
+            name="minuscircleo"
             size={30}
             color={colors.black}
             style={styles.inputFieldIcon}
