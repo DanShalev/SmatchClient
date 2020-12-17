@@ -4,17 +4,17 @@ import DrawerNavigator from "./src/navigation/DrawerNavigator";
 
 const ReactNative = require("react-native");
 try {
-  ReactNative.I18nManager.allowRTL(false);
+    ReactNative.I18nManager.allowRTL(false);
 } catch (e) {
-  console.log(e);
+    console.log(e);
 }
 
 function App() {
-  return (
-    <NavigationContainer>
-      <DrawerNavigator />
-    </NavigationContainer>
-  );
+    return (
+        <NavigationContainer>
+            <DrawerNavigator />
+        </NavigationContainer>
+    );
 }
 
 export default App;
