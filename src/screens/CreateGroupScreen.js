@@ -2,13 +2,9 @@ import React, { useState } from "react";
 import { ScrollView, StyleSheet, Text, TextInput, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/AntDesign";
-
 import colors from "../config/colors";
-import BackArrowHeader from "../screenUtils/Headers/BackArrowHeader";
-import SmatchLogoHeader from "../screenUtils/Headers/SmatchLogoHeader";
 
-export function CreateGroupScreen({ navigation }) {
-  setNavBarHeaders(navigation);
+export function CreateGroupScreen() {
   let [listOfFields, setListOfFields] = useState([]);
 
   return (
@@ -27,15 +23,6 @@ export function CreateGroupScreen({ navigation }) {
       <CreateGroupButton />
     </ScrollView>
   );
-}
-
-function setNavBarHeaders(navigation) {
-  React.useLayoutEffect(() => {
-    navigation.setOptions({
-      headerLeft: () => <SmatchLogoHeader />,
-      headerRight: () => <BackArrowHeader navigation={navigation} />,
-    });
-  }, [navigation]);
 }
 
 function InputField({ setListOfFields }) {

@@ -7,13 +7,16 @@ import {
 } from "react-native";
 import colors from "../../config/colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from '@react-navigation/native';
 
-export default function SideMenuHeader({ navigation }) {
+export default function BackArrowHeader() {
+  const navigation = useNavigation();
+
   return (
-    <SafeAreaView style={styles.sideMenu}>
-      <TouchableOpacity onPress={() => navigation.toggleDrawer()}>
+    <SafeAreaView style={styles.backArrow}>
+      <TouchableOpacity onPress={() => navigation.navigate("Home")}>
         <Ionicons
-          name={"ios-menu"}
+          name={"ios-arrow-back"}
           color={colors.tertiary}
           size={Platform === "android" ? 35 : 30}
         />
@@ -23,9 +26,9 @@ export default function SideMenuHeader({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  sideMenu: {
+  backArrow: {
     alignItems: "center",
     paddingTop: Platform === "android" ? 0 : -5,
-    paddingRight: 7,
+    paddingLeft: 7,
   },
 });
