@@ -4,4 +4,5 @@ export default {
   tertiary: "white",
   icon: "black",
   inputBox: "#C4C4C4",
+  textBubbleBackgroundColor: "white"
 };
