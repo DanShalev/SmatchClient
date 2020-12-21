@@ -10,7 +10,7 @@ export function DrawerNavigator() {
     return (
         <Drawer.Navigator {...setDrawerNavBarProperties()} >
             <Drawer.Screen name="Home" component={HomeScreen} />
-            <Drawer.Screen name="Create Group" component={CreateGroupScreen} {...setBackArrowProperties()}/>
+            <Drawer.Screen name="Create Group" component={CreateGroupScreen} {...setBackArrowProperties("Home")}/>
             <Drawer.Screen name="Settings" component={HomeScreen} />
             <Drawer.Screen name="About" component={HomeScreen} />
             <Drawer.Screen name="Log out" component={HomeScreen} />

@@ -43,11 +43,11 @@ export function setStackNavBarProperties() {
     };
 }
 
-export function setBackArrowProperties() {
+export function setBackArrowProperties(navigateLocation) {
     return {
         options: {
             headerLeft: () => <SmatchLogoHeader />,
-            headerRight: () => <BackArrowHeader />,
+            headerRight: () => <BackArrowHeader navigateLocation={navigateLocation} />,
         }
     };
 }

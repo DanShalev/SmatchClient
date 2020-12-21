@@ -9,12 +9,12 @@ import colors from "../../config/colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from '@react-navigation/native';
 
-export default function BackArrowHeader() {
+export default function BackArrowHeader({ navigateLocation }) {
   const navigation = useNavigation();
 
   return (
     <SafeAreaView style={styles.backArrow}>
-      <TouchableOpacity onPress={() => navigation.navigate("Home")}>
+      <TouchableOpacity onPress={() => navigation.navigate(navigateLocation)}>
         <Ionicons
           name={"ios-arrow-back"}
           color={colors.tertiary}
