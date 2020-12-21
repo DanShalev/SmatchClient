@@ -1,8 +1,9 @@
-import {Alert, Button, ScrollView, StyleSheet, Text} from "react-native";
+import {ScrollView} from "react-native";
 import HomeScreenMocks from "../../mocks/HomeScreenMocks";
 import {Avatar, ListItem} from "react-native-elements";
-import colors from "../config/colors";
 import React from "react";
+
+import { SmatchesBadge, MessagesBadge } from "../components/Badges"
 
 export default function GroupsScreen({ navigation }) {
     return (
@@ -13,28 +14,18 @@ export default function GroupsScreen({ navigation }) {
                     bottomDivider
                     onPress={() => navigation.navigate("SwipeScreen")}
                 >
-                    <Avatar
-                        title={l.avatar_title}
-                        overlayContainerStyle={{ backgroundColor: colors.primary }}
-                        rounded
-                    />
+                  <Avatar source={{ uri: l.avatar_url }} size="large" rounded />
                     <ListItem.Content>
                         <ListItem.Title>{l.name}</ListItem.Title>
                         <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
                     </ListItem.Content>
+                  {l.newSmatches !== 0 ? <SmatchesBadge item={l} /> : null}
+                  {l.newMessages !== 0 ? <MessagesBadge item={l} /> : null}
                 </ListItem>
             ))}
         </ScrollView>
     );
 }
 
-const styles = StyleSheet.create({
-    addGroupButton: {
-        marginTop: 30,
-        alignItems: "center",
-        backgroundColor: colors.secondary,
-        padding: 10,
-        borderRadius: 17,
-        margin: 15,
-    },
-});
+
+
