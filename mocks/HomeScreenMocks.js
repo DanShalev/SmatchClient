@@ -1,16 +1,14 @@
 const groups = [
   {
     name: "CS Study Buddies",
-    avatar_url:
-      "https://materials.technion.ac.il/wp-content/uploads/2020/09/%D7%99%D7%A8%D7%93%D7%9F-%D7%95%D7%A0%D7%95%D7%99.jpg",
+    avatar_url: "https://materials.technion.ac.il/wp-content/uploads/2020/09/%D7%99%D7%A8%D7%93%D7%9F-%D7%95%D7%A0%D7%95%D7%99.jpg",
     subtitle: "53 Members",
     newSmatches: 1,
     newMessages: 0,
   },
   {
     name: "Tel Aviv Flatmates",
-    avatar_url:
-      "https://cf.bstatic.com/images/hotel/max1024x768/125/125231042.jpg",
+    avatar_url: "https://cf.bstatic.com/images/hotel/max1024x768/125/125231042.jpg",
     subtitle: "8,745 Members",
     newSmatches: 0,
     newMessages: 1,

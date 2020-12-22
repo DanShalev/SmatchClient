@@ -5,10 +5,7 @@ import colors from "../../config/colors";
 export default function SmatchLogoHeader() {
   return (
     <SafeAreaView style={styles.logoContainer}>
-      <Image
-        source={require("../../../assets/smatchLogoLarge.png")}
-        style={styles.logoImage}
-      />
+      <Image source={require("../../../assets/smatchLogoLarge.png")} style={styles.logoImage} />
       <Text style={styles.logoText}>Smatch</Text>
     </SafeAreaView>
   );

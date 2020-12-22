@@ -1,5 +1,5 @@
 import * as React from "react";
-import RootNavigator from "./src/navigation/RootNavigator";
+import DrawerNavigator from "./src/navigation/DrawerNavigator";
 
 const ReactNative = require("react-native");
 try {
@@ -9,9 +9,7 @@ try {
 }
 
 function App() {
-    return (
-        <RootNavigator/>
-    );
+  return <DrawerNavigator />;
 }
 
 export default App;
