@@ -1,28 +1,28 @@
-import React, {useRef, useState} from "react";
+import React, { useRef, useState } from "react";
 import { SafeAreaView, StyleSheet, View, Alert } from "react-native";
 import { Feather as Icon } from "@expo/vector-icons";
-import {PanGestureHandler} from "react-native-gesture-handler";
+import { PanGestureHandler } from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import Card from "./Card";
-import {initAnimationProps, initAnimation, generateAnimationParams} from "../utils/swipingAnimationUtils"
+import { initAnimationProps, initAnimation, generateAnimationParams } from "../utils/swipingAnimationUtils";
 
 export default function Profiles({ profilesProp }) {
   function functionConstructor() {
     if (!props.current) {
       props.current = initAnimationProps();
       props.current.onGestureEvent = Animated.event(
-          [
-            {
-              nativeEvent: {
-                translationX: props.current.translationX,
-                translationY: props.current.translationY,
-                velocityX: props.current.velocityX,
-                state: props.current.gestureState,
-              },
+        [
+          {
+            nativeEvent: {
+              translationX: props.current.translationX,
+              translationY: props.current.translationY,
+              velocityX: props.current.velocityX,
+              state: props.current.gestureState,
             },
-          ],
-          {useNativeDriver: true},
-      )
+          },
+        ],
+        { useNativeDriver: true }
+      );
     }
   }
 
@@ -33,99 +33,95 @@ export default function Profiles({ profilesProp }) {
     let liked = translationX > 0;
     Alert.alert(`You ${liked ? "liked" : "noped"} ${lastProfile.name}!`);
     setProfiles(restOfProfiles);
-  }
+  };
 
   function renderTopButtons() {
     return (
-        <View style={styles.header}>
-          <Icon
-              name="user"
-              size={nonCssStyles.icons.iconSize}
-              color={nonCssStyles.icons.topIconColor}
-              onPress={() => {
-                Alert.alert("Profile Button Pressed")
-              }}
-          />
-          <Icon
-              name="message-circle"
-              size={nonCssStyles.icons.iconSize}
-              color={nonCssStyles.icons.topIconColor}
-              onPress={() => {
-                Alert.alert("Message Box")
-              }}
-          />
-        </View>
-
+      <View style={styles.header}>
+        <Icon
+          name="user"
+          size={nonCssStyles.icons.iconSize}
+          color={nonCssStyles.icons.topIconColor}
+          onPress={() => {
+            Alert.alert("Profile Button Pressed");
+          }}
+        />
+        <Icon
+          name="message-circle"
+          size={nonCssStyles.icons.iconSize}
+          color={nonCssStyles.icons.topIconColor}
+          onPress={() => {
+            Alert.alert("Message Box");
+          }}
+        />
+      </View>
     );
   }
 
   function renderProfiles() {
     // Render Component
-    const {likeOpacity, nopeOpacity, style} = generateAnimationParams(props.current);
-    const {onGestureEvent} = props.current;
+    const { likeOpacity, nopeOpacity, style } = generateAnimationParams(props.current);
+    const { onGestureEvent } = props.current;
     const [lastProfile, ...restOfProfiles] = profiles;
-    return lastProfile && (
+    return (
+      lastProfile && (
         <View style={styles.cards}>
-          {
-            restOfProfiles.reverse().map(profile => (
-                    <Card key={profile.id} {...{profile}} />
-                )
-            )
-          }
-          <PanGestureHandler
-              onHandlerStateChange={onGestureEvent}
-              {...{onGestureEvent}}
-          >
-            <Animated.View {...{style}}>
-              <Card profile={lastProfile} {...{likeOpacity, nopeOpacity}} />
+          {restOfProfiles.reverse().map((profile) => (
+            <Card key={profile.id} {...{ profile }} />
+          ))}
+          <PanGestureHandler onHandlerStateChange={onGestureEvent} {...{ onGestureEvent }}>
+            <Animated.View {...{ style }}>
+              <Card profile={lastProfile} {...{ likeOpacity, nopeOpacity }} />
             </Animated.View>
           </PanGestureHandler>
         </View>
+      )
     );
   }
 
   function renderBottomButtons() {
     const [lastProfile, ...restOfProfiles] = profiles;
-    return lastProfile && (
+    return (
+      lastProfile && (
         <View style={styles.footer}>
           <View style={styles.circle}>
             <Icon
-                name="x"
-                size={nonCssStyles.icons.iconSize}
-                color={nonCssStyles.icons.nopeIconColor}
-                onPress={() => {
-                  Alert.alert("Nope Pressed")
-                }}
+              name="x"
+              size={nonCssStyles.icons.iconSize}
+              color={nonCssStyles.icons.nopeIconColor}
+              onPress={() => {
+                Alert.alert("Nope Pressed");
+              }}
             />
           </View>
           <View style={styles.circle}>
             <Icon
-                name="heart"
-                size={nonCssStyles.icons.iconSize}
-                color={nonCssStyles.icons.likeIconColor}
-                onPress={() => {
-                  Alert.alert("Like Pressed")
-                }}
+              name="heart"
+              size={nonCssStyles.icons.iconSize}
+              color={nonCssStyles.icons.likeIconColor}
+              onPress={() => {
+                Alert.alert("Like Pressed");
+              }}
             />
           </View>
         </View>
+      )
     );
   }
 
-
   const [profiles, setProfiles] = useState(profilesProp);
-  const props = useRef();  // Saves props once for all the times we re-render Profiles class (while using useState)
+  const props = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
 
   functionConstructor();
   props.current = initAnimation(props.current, swipingEventTrigger);
   const profileCards = renderProfiles();
 
   return (
-      <SafeAreaView style={styles.container}>
-        {renderTopButtons()}
-        {profileCards}
-        {renderBottomButtons()}
-      </SafeAreaView>
+    <SafeAreaView style={styles.container}>
+      {renderTopButtons()}
+      {profileCards}
+      {renderBottomButtons()}
+    </SafeAreaView>
   );
 }
 
@@ -169,6 +165,6 @@ const nonCssStyles = {
     iconSize: 32,
     nopeIconColor: "#ec5288",
     likeIconColor: "#6ee3b4",
-    topIconColor: "gray"
-  }
-}
+    topIconColor: "gray",
+  },
+};

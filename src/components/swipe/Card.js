@@ -1,25 +1,25 @@
 import React from "react";
-import {Image, StyleSheet, View, Text} from "react-native";
+import { Image, StyleSheet, View, Text } from "react-native";
 import Animated from "react-native-reanimated";
 
-export default function Card({profile, likeOpacity=0, nopeOpacity=0}) {
+export default function Card({ profile, likeOpacity = 0, nopeOpacity = 0 }) {
   return (
-      <View style={StyleSheet.absoluteFill}>
-        <Image style={styles.image} source={profile.profile} />
-        <View style={styles.overlay}>
-          <View style={styles.header}>
-            <Animated.View style={[styles.like, { opacity: likeOpacity }]}>
-              <Text style={styles.likeLabel}>LIKE</Text>
-            </Animated.View>
-            <Animated.View style={[styles.nope, { opacity: nopeOpacity }]}>
-              <Text style={styles.nopeLabel}>NOPE</Text>
-            </Animated.View>
-          </View>
-          <View style={styles.footer}>
-            <Text style={styles.name}>{profile.name}</Text>
-          </View>
+    <View style={StyleSheet.absoluteFill}>
+      <Image style={styles.image} source={profile.profile} />
+      <View style={styles.overlay}>
+        <View style={styles.header}>
+          <Animated.View style={[styles.like, { opacity: likeOpacity }]}>
+            <Text style={styles.likeLabel}>LIKE</Text>
+          </Animated.View>
+          <Animated.View style={[styles.nope, { opacity: nopeOpacity }]}>
+            <Text style={styles.nopeLabel}>NOPE</Text>
+          </Animated.View>
+        </View>
+        <View style={styles.footer}>
+          <Text style={styles.name}>{profile.name}</Text>
         </View>
       </View>
+    </View>
   );
 }
 
@@ -56,7 +56,6 @@ const styles = StyleSheet.create({
     fontSize: 32,
     color: "#6ee3b4",
     fontWeight: "bold",
-
   },
   nope: {
     borderWidth: 4,

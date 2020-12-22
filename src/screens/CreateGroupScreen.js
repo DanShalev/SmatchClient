@@ -16,10 +16,7 @@ export function CreateGroupScreen() {
         <Text style={styles.text}>Please enter field name</Text>
       </View>
       <InputField setListOfFields={setListOfFields} />
-      <ListOfInputFields
-        listOfFields={listOfFields}
-        setListOfFields={setListOfFields}
-      />
+      <ListOfInputFields listOfFields={listOfFields} setListOfFields={setListOfFields} />
       <CreateGroupButton />
     </ScrollView>
   );
@@ -34,11 +31,7 @@ function InputField({ setListOfFields }) {
   }
   return (
     <View style={styles.inputFieldView}>
-      <TextInput
-        style={styles.inputFieldText}
-        onChangeText={(text) => setCurrentField(text)}
-        value={currentField}
-      />
+      <TextInput style={styles.inputFieldText} onChangeText={(text) => setCurrentField(text)} value={currentField} />
       <Icon
         name="pluscircleo"
         size={30}
@@ -61,18 +54,8 @@ function ListOfInputFields({ listOfFields, setListOfFields }) {
     <View>
       {listOfFields.map((field, i) => (
         <View key={i} style={styles.inputFieldView}>
-          <TextInput
-            style={styles.inputFieldText}
-            value={field}
-            editable={false}
-          />
-          <Icon
-            name="minuscircleo"
-            size={30}
-            color={colors.black}
-            style={styles.inputFieldIcon}
-            onPress={() => handleRemoveField(i)}
-          />
+          <TextInput style={styles.inputFieldText} value={field} editable={false} />
+          <Icon name="minuscircleo" size={30} color={colors.black} style={styles.inputFieldIcon} onPress={() => handleRemoveField(i)} />
         </View>
       ))}
     </View>
@@ -81,10 +64,7 @@ function ListOfInputFields({ listOfFields, setListOfFields }) {
 
 function CreateGroupButton() {
   return (
-    <TouchableOpacity
-      onPress={() => alert("group created")}
-      style={styles.createGroupButton}
-    >
+    <TouchableOpacity onPress={() => alert("group created")} style={styles.createGroupButton}>
       <Text>Create group</Text>
     </TouchableOpacity>
   );
