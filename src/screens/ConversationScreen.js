@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { GiftedChat, Bubble } from "react-native-gifted-chat";
-import { conversationText, generateResponse } from "../../mocks/images/conversation/ConversationMock";
+import { conversationText, generateResponse } from "../../mocks/ConversationMock";
 import colors from "../config/colors";
 
 export default function ConversationScreen() {

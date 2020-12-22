@@ -1,3 +1,5 @@
+const botUserAvatar = require("./images/conversation/user1_logo.png");
+
 export const conversationText = [
   {
     _id: 1,
@@ -5,7 +7,7 @@ export const conversationText = [
     createdAt: new Date(),
     user: {
       _id: 2,
-      avatar: require("./user1_logo.png"),
+      avatar: botUserAvatar,
     },
   },
   {
@@ -14,7 +16,7 @@ export const conversationText = [
     createdAt: new Date(),
     user: {
       _id: 2,
-      avatar: require("./user1_logo.png"),
+      avatar: botUserAvatar,
     },
   },
 ];
@@ -451,7 +453,7 @@ export function generateResponse() {
     createdAt: new Date(),
     user: {
       _id: 2,
-      avatar: require("./user1_logo.png"),
+      avatar: botUserAvatar,
     },
   };
 
