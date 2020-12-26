@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import React, {useState} from "react";
+import {ScrollView, StyleSheet, Text, View} from "react-native";
+import {TouchableOpacity} from "react-native-gesture-handler";
+
+import colors from "../config/colors";
 import InputFieldDynamic from "../components/createGroupComponents/InputFieldDynamic";
 import InputField from "../components/createGroupComponents/InputField";
 import InputFieldList from "../components/createGroupComponents/InputFieldList";
-import CreateGroupButton from "./utils/GroupButton";
 
 export function CreateGroupScreen() {
   let [listOfFields, setListOfFields] = useState([]);
@@ -27,17 +29,36 @@ export function CreateGroupScreen() {
       <View style={styles.textView}>
         <Text style={styles.text}>Please enter field name</Text>
       </View>
-      <InputFieldDynamic setListOfFields={setListOfFields} />
+      <InputFieldDynamic setListOfFields={setListOfFields}/>
       <InputFieldList
         listOfFields={listOfFields}
         setListOfFields={setListOfFields}
       />
-      <CreateGroupButton />
+      <CreateGroupButton/>
     </ScrollView>
   );
 }
 
+function CreateGroupButton() {
+  return (
+    <TouchableOpacity
+      onPress={() => alert("group created")}
+      style={styles.createGroupButton}
+    >
+      <Text>Create group</Text>
+    </TouchableOpacity>
+  );
+}
+
 const styles = StyleSheet.create({
+  createGroupButton: {
+    marginTop: 30,
+    alignItems: "center",
+    backgroundColor: colors.secondary,
+    padding: 10,
+    borderRadius: 17,
+    margin: 15,
+  },
   name: {
     height: 40,
     width: 350,
