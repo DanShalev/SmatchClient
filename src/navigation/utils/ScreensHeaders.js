@@ -47,3 +47,20 @@ export function setSettingsScreenHeaders() {
     },
   };
 }
+
+export function setAccountScreenHeaders() {
+  return {
+    options: {
+      headerLeft: () => <SmatchLogoHeader title="Account" />,
+      headerRight: () => <BackArrowHeader navigateLocation={"Groups"} />,
+    },
+  };
+}
+export function setAboutScreenHeaders() {
+  return {
+    options: {
+      headerLeft: () => <SmatchLogoHeader title="About" />,
+      headerRight: () => <BackArrowHeader navigateLocation={"Groups"} />,
+    },
+  };
+}
