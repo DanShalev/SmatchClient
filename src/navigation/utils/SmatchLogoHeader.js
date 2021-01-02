@@ -2,11 +2,11 @@ import * as React from "react";
 import { Platform, StyleSheet, SafeAreaView, Image, Text } from "react-native";
 import colors from "../../config/colors";
 
-export default function SmatchLogoHeader() {
+export default function SmatchLogoHeader({ title = "Smatch" }) {
   return (
     <SafeAreaView style={styles.logoContainer}>
       <Image source={require("../../../assets/smatchLogoLarge.png")} style={styles.logoImage} />
-      <Text style={styles.logoText}>Smatch</Text>
+      <Text style={styles.logoText}>{title}</Text>
     </SafeAreaView>
   );
 }
