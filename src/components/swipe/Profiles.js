@@ -18,7 +18,7 @@ export default function Profiles({profilesProp}) {
     <SafeAreaView style={styles.container}>
       <TopButtons/>
       <ProfileCards profiles={profiles} props={props.current}/>
-      <BottomButtons profiles={profiles}/>
+      <BottomButtons profiles={profiles} setProfiles={setProfiles}/>
     </SafeAreaView>
   );
 }
