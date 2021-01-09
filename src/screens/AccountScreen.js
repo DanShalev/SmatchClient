@@ -12,10 +12,10 @@ export default function AccountScreen() {
         <Avatar source={{ uri: MatchesScreenMocks[0].avatar_url }} size={200} rounded />
       </View>
       <View style={{ marginTop: 60 }}>
-        <UserField iconName="account" initialState="Name" />
-        <UserField iconName="map-marker" initialState="Location" />
-        <UserField iconName="cake-variant" initialState="Age" />
-        <UserField iconName="gender-male-female" initialState="Gender" />
+        <UserField iconName="account" initialState="Ronit the bibistit" />
+        <UserField iconName="map-marker" initialState="Tel Aviv - Yafo" />
+        <UserField iconName="cake-variant" initialState="57" />
+        <UserField iconName="gender-male-female" initialState="Female" />
       </View>
     </View>
   );
