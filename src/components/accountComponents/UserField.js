@@ -9,7 +9,7 @@ export default function UserField({ iconName, initialState }) {
   return (
     <View style={styles.fieldContainer}>
       <MaterialCommunityIcons style={styles.icon} name={iconName} size={30} color={colors.primary} />
-      <TextInput style={styles.inputFieldText} onChangeText={(text) => setField(text)} value={fieldValue} />
+      <TextInput editable={false} style={styles.inputFieldText} onChangeText={(text) => setField(text)} value={fieldValue} />
     </View>
   );
 }
