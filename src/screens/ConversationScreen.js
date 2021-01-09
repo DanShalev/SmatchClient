@@ -1,7 +1,7 @@
-import React, {useState, useEffect} from "react";
-import {GiftedChat, Bubble} from "react-native-gifted-chat";
+import React, {useEffect, useState} from "react";
+import {GiftedChat} from "react-native-gifted-chat";
 import {conversationText, generateResponse} from "../../mocks/ConversationMock";
-import colors from "../config/colors";
+import {renderCustomBubble} from "./utils/CustomBubble";
 
 export default function ConversationScreen() {
   const [messages, setMessages] = useState([]);
@@ -19,19 +19,6 @@ export default function ConversationScreen() {
       showAvatarForEveryMessage
       renderBubble={renderCustomBubble}
       isTyping={isTyping}
-    />
-  );
-}
-
-function renderCustomBubble(props) {
-  return (
-    <Bubble
-      {...props}
-      wrapperStyle={{
-        left: {
-          backgroundColor: colors.textBubbleBackgroundColor,
-        },
-      }}
     />
   );
 }
