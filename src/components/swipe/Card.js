@@ -1,19 +1,43 @@
-import React from "react";
-import { Image, StyleSheet, View, Text } from "react-native";
+import React, {useState, useEffect} from "react";
+import {Image, StyleSheet, View, Text, TouchableOpacity} from "react-native";
 import Animated from "react-native-reanimated";
 
-export default function Card({ profile, likeOpacity = 0, nopeOpacity = 0 }) {
+export default function Card({profile, likeOpacity = 0, nopeOpacity = 0}) {
+  const [index, setIndex] = useState(0)
+  const listSize = profile.pictures.length;
+
+  // Reset the index when profile id changes, for some reason the index is shared between all Card objects..
+  useEffect(() => {
+    setIndex(0);
+  }, [profile.id])
+
+  const showPrev = () => {
+    if (index !== 0) {
+      setIndex(index - 1)
+    }
+  }
+
+  const showNext = () => {
+    if (index < listSize - 1) {
+      setIndex(index + 1)
+    }
+  }
+
   return (
     <View style={StyleSheet.absoluteFill}>
-      <Image style={styles.image} source={profile.profile} />
+      <Image style={styles.image} source={profile.pictures[index]}/>
       <View style={styles.overlay}>
         <View style={styles.header}>
-          <Animated.View style={[styles.like, { opacity: likeOpacity }]}>
+          <Animated.View style={[styles.like, {opacity: likeOpacity}]}>
             <Text style={styles.likeLabel}>LIKE</Text>
           </Animated.View>
-          <Animated.View style={[styles.nope, { opacity: nopeOpacity }]}>
+          <Animated.View style={[styles.nope, {opacity: nopeOpacity}]}>
             <Text style={styles.nopeLabel}>NOPE</Text>
           </Animated.View>
+        </View>
+        <View style={styles.sideButtons}>
+          <TouchableOpacity onPress={showPrev} style={styles.button}/>
+          <TouchableOpacity onPress={showNext} style={styles.button}/>
         </View>
         <View style={styles.footer}>
           <Text style={styles.name}>{profile.name}</Text>
@@ -41,6 +65,13 @@ const styles = StyleSheet.create({
   },
   footer: {
     flexDirection: "row",
+  },
+  sideButtons: {
+    flex: 1,
+    flexDirection: "row",
+  },
+  button: {
+    flex: 1,
   },
   name: {
     color: "white",
