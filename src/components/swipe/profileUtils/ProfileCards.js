@@ -12,7 +12,7 @@ export function ProfileCards({profiles, props}) {
   return (
     lastProfile && (
       <View style={styles.cards}>
-        {restOfProfiles.reverse().map((profile) => (
+        {restOfProfiles.slice(0, 1).reverse().map((profile) => (
           <Card key={profile.id} {...{profile}} />
         ))}
         <PanGestureHandler onHandlerStateChange={onGestureEvent} {...{onGestureEvent}}>
