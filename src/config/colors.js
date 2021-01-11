@@ -5,6 +5,8 @@ export default {
   icon: "black",
   inputBox: "#C4C4C4",
   inputBoxLight: "#e0e0e0",
-  textBubbleBackgroundColor: "white",
+  textBubbleBackground: "white",
   messagesNotification: "green",
+  background: "#F1F1F1",
+  accountTitle: "white",
 };

@@ -8,7 +8,7 @@ export function renderCustomBubble(props) {
       {...props}
       wrapperStyle={{
         left: {
-          backgroundColor: colors.textBubbleBackgroundColor,
+          backgroundColor: colors.textBubbleBackground,
         },
       }}
     />

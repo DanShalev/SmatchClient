@@ -25,10 +25,20 @@ export function setConversationScreenHeaders() {
   return {
     options: {
       headerLeft: () => <SmatchLogoHeader />,
-      headerRight: () => <BackArrowHeader navigateLocation={"Swipe"} />,
+      headerRight: () => <BackArrowHeader navigateLocation={"Matches"} />,
     },
   };
 }
+
+export function setSmatchAccountScreenHeaders() {
+  return {
+    options: {
+      headerLeft: () => <SmatchLogoHeader />,
+      headerRight: () => <BackArrowHeader navigateLocation={"Matches"} />,
+    },
+  };
+}
+
 
 export function setCreateGroupScreenHeaders() {
   return {

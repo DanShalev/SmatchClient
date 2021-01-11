@@ -10,7 +10,7 @@ export default function MatchesScreen({ navigation }) {
     <ScrollView>
       {MatchesScreenMocks.map((l, i) => (
         <ListItem key={i} bottomDivider onPress={() => navigation.navigate("ConversationScreen")}>
-          <Avatar source={{ uri: l.avatar_url }} size="large" rounded />
+          <Avatar source={{ uri: l.avatar_url }} size="large" rounded onPress={() => navigateToSmatchAccountScreen(navigation, l)}/>
           <ListItem.Content>
             <ListItem.Title>{l.name}</ListItem.Title>
             <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
@@ -21,4 +21,16 @@ export default function MatchesScreen({ navigation }) {
       ))}
     </ScrollView>
   );
+}
+
+export function navigateToSmatchAccountScreen(navigation, smatchAccount) {
+  navigation.navigate("SmatchAccountScreen", {
+    image: smatchAccount.avatar_url,
+    name: smatchAccount.name,
+    subtitle: smatchAccount.subtitle,
+    fields: [
+      { title: "Age", value: smatchAccount.age },
+      { title: "Sex", value: smatchAccount.sex },
+    ],
+  });
 }
