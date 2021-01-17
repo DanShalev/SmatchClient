@@ -112,8 +112,7 @@ export function initAnimation(props, swipingEventTrigger) {
   return props;
 }
 
-export function generateAnimationParams(props) {
-  const { translateX, translateY } = props;
+export function generateAnimationParams({translateX, translateY}) {
   const rotateZ = concat(
     interpolate(translateX, {
       inputRange: [-width / 2, width / 2],

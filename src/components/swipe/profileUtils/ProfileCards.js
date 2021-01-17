@@ -5,23 +5,21 @@ import {PanGestureHandler} from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import React from "react";
 
-export function ProfileCards({profiles, props}) {
-  const {likeOpacity, nopeOpacity, style} = generateAnimationParams(props);
-  const {onGestureEvent} = props;
+export function ProfileCards({profiles, onGestureEvent, translateX, translateY}) {
   const [lastProfile, ...restOfProfiles] = profiles;
+  const {likeOpacity, nopeOpacity, style} = generateAnimationParams({translateX, translateY});
+
   return (
-    lastProfile && (
       <View style={styles.cards}>
         {restOfProfiles.slice(0, 1).reverse().map((profile) => (
-          <Card key={profile.id} {...{profile}} />
+            <Card key={profile.id} {...{profile}} />
         ))}
-        <PanGestureHandler onHandlerStateChange={onGestureEvent} {...{onGestureEvent}}>
+        <PanGestureHandler onHandlerStateChange={onGestureEvent} onGestureEvent={onGestureEvent}>
           <Animated.View {...{style}}>
             <Card profile={lastProfile} {...{likeOpacity, nopeOpacity}} />
           </Animated.View>
         </PanGestureHandler>
       </View>
-    )
   );
 }
 
