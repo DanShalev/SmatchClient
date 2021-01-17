@@ -23,8 +23,10 @@ export function setDrawerNavBarProperties() {
 }
 
 export function setStackNavBarProperties() {
+  const gestureDisabledProps = {...NavBarProperties(), gestureEnabled: false};  // Disable "go-back-swipe-gesture"
+
   return {
-    screenOptions: () => NavBarProperties(),
+    screenOptions: () => gestureDisabledProps
   };
 }
 
