@@ -1,57 +1,66 @@
-import React, {useState, useEffect} from "react";
-import {Image, StyleSheet, View, Text, TouchableOpacity} from "react-native";
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, TouchableHighlight } from "react-native";
 import Animated from "react-native-reanimated";
+import { navigateToSmatchAccountScreen } from "../../screens/MatchesScreen";
+import { useNavigation } from "@react-navigation/native";
+import { LinearGradient } from "expo-linear-gradient";
 
-export default function Card({profile, likeOpacity = 0, nopeOpacity = 0}) {
-  const [index, setIndex] = useState(0)
+export default function Card({ profile, likeOpacity = 0, nopeOpacity = 0 }) {
+  const [index, setIndex] = useState(0);
   const listSize = profile.pictures.length;
+  const navigation = useNavigation();
 
   // Reset the index when profile id changes, for some reason the index is shared between all Card objects..
   useEffect(() => {
     setIndex(0);
-  }, [profile.id])
+  }, [profile.id]);
 
   const showPrev = () => {
     if (index !== 0) {
-      setIndex(index - 1)
+      setIndex(index - 1);
     }
-  }
+  };
 
   const showNext = () => {
     if (index < listSize - 1) {
-      setIndex(index + 1)
+      setIndex(index + 1);
     }
-  }
+  };
 
   return (
     <View style={StyleSheet.absoluteFill}>
-      <Image style={styles.image} source={profile.pictures[index]}/>
+      <ImageBackground style={styles.imageView} imageStyle={ styles.image }
+                        source={{ uri: profile.pictures[0] }}>
+        <LinearGradient colors={["transparent", "black"]} style={styles.gradient} />
+      </ImageBackground>
       <View style={styles.overlay}>
         <View style={styles.header}>
-          <Animated.View style={[styles.like, {opacity: likeOpacity}]}>
+          <Animated.View style={[styles.like, { opacity: likeOpacity }]}>
             <Text style={styles.likeLabel}>LIKE</Text>
           </Animated.View>
-          <Animated.View style={[styles.nope, {opacity: nopeOpacity}]}>
+          <Animated.View style={[styles.nope, { opacity: nopeOpacity }]}>
             <Text style={styles.nopeLabel}>NOPE</Text>
           </Animated.View>
         </View>
         <View style={styles.sideButtons}>
-          <TouchableOpacity onPress={showPrev} style={styles.button}/>
-          <TouchableOpacity onPress={showNext} style={styles.button}/>
+          <TouchableOpacity onPress={showPrev} style={styles.button} />
+          <TouchableOpacity onPress={showNext} style={styles.button} />
         </View>
-        <View style={styles.footer}>
+        <TouchableOpacity style={styles.footer} onPress={() => navigateToSmatchAccountScreen(navigation, profile)}>
           <Text style={styles.name}>{profile.name}</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  image: {
+  imageView: {
     ...StyleSheet.absoluteFillObject,
     width: null,
     height: null,
+  },
+  image: {
     borderRadius: 8,
   },
   overlay: {
@@ -98,5 +107,14 @@ const styles = StyleSheet.create({
     fontSize: 32,
     color: "#ec5288",
     fontWeight: "bold",
+  },
+  gradient: {
+    opacity: 0.9,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: "30%",
+    borderRadius: 8,
   },
 });

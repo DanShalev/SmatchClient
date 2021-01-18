@@ -34,7 +34,7 @@ export function setSmatchAccountScreenHeaders() {
   return {
     options: {
       headerLeft: () => <SmatchLogoHeader />,
-      headerRight: () => <BackArrowHeader navigateLocation={"Matches"} />,
+      headerRight: () => <BackArrowHeader navigateLocation={"Swipe"} />,
     },
   };
 }
