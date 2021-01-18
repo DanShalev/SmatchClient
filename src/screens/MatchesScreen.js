@@ -1,36 +1,37 @@
 import { ScrollView } from "react-native";
-import MatchesScreenMocks from "../../mocks/MatchesScreenMocks";
 import { Avatar, ListItem } from "react-native-elements";
 import React from "react";
 
 import { MessagesBadge, SingleSmatchBadge } from "../components/Badges";
 
-export default function MatchesScreen({ navigation }) {
+export default function MatchesScreen({ navigation, route }) {
   return (
     <ScrollView>
-      {MatchesScreenMocks.map((l, i) => (
+      {route.params.matches.map((profile, i) => (
         <ListItem key={i} bottomDivider onPress={() => navigation.navigate("ConversationScreen")}>
-          <Avatar source={{ uri: l.avatar_url }} size="large" rounded onPress={() => navigateToSmatchAccountScreen(navigation, l)}/>
+          <Avatar
+            source={{ uri: profile.pictures[0] }}
+            size="large"
+            rounded
+            onPress={() => navigateToSmatchAccountScreen(navigation, profile)}
+          />
           <ListItem.Content>
-            <ListItem.Title>{l.name}</ListItem.Title>
-            <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+            <ListItem.Title>{profile.name}</ListItem.Title>
+            <ListItem.Subtitle>{profile.lastSeen}</ListItem.Subtitle>
           </ListItem.Content>
-          {l.newMessages !== 0 ? <MessagesBadge item={l} /> : null}
-          {l.newSmatch ? <SingleSmatchBadge item={l} /> : null}
+          {profile.newMessages !== 0 ? <MessagesBadge newMessages={profile.newMessages} /> : null}
+          {profile.newSmatch ? <SingleSmatchBadge newMessages={profile.newMessages} /> : null}
         </ListItem>
       ))}
     </ScrollView>
   );
 }
 
-export function navigateToSmatchAccountScreen(navigation, smatchAccount) {
+export function navigateToSmatchAccountScreen(navigation, profile) {
   navigation.navigate("SmatchAccountScreen", {
-    image: smatchAccount.avatar_url,
-    name: smatchAccount.name,
-    subtitle: smatchAccount.subtitle,
-    fields: [
-      { title: "Age", value: smatchAccount.age },
-      { title: "Sex", value: smatchAccount.sex },
-    ],
+    image: profile.pictures[0],
+    name: profile.name,
+    lastSeen: profile.lastSeen,
+    fields: profile.fields,
   });
 }

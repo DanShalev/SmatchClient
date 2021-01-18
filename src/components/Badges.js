@@ -3,35 +3,30 @@ import React from "react";
 import { StyleSheet } from "react-native";
 import colors from "../config/colors";
 
-export function SmatchesBadge({ item }) {
+export function SmatchesBadge({ newMessages, newSmatches }) {
   return (
     <Badge
       badgeStyle={styles.SmatchesBadge}
       textStyle={styles.badgeText}
-      value={item.newSmatches}
-      containerStyle={item.newMessages !== 0 ? styles.badgeOneContainer : styles.badgeTwoContainer}
+      value={newSmatches}
+      containerStyle={newMessages !== 0 ? styles.badgeOneContainer : styles.badgeTwoContainer}
     />
   );
 }
 
-export function SingleSmatchBadge({ item }) {
+export function SingleSmatchBadge({ newMessages }) {
   return (
     <Badge
       badgeStyle={styles.SmatchesBadge}
       textStyle={styles.badgeText}
-      containerStyle={item.newMessages !== 0 ? styles.badgeOneContainer : styles.badgeTwoContainer}
+      containerStyle={newMessages !== 0 ? styles.badgeOneContainer : styles.badgeTwoContainer}
     />
   );
 }
 
-export function MessagesBadge({ item }) {
+export function MessagesBadge({ newMessages }) {
   return (
-    <Badge
-      badgeStyle={styles.MessagesBadge}
-      textStyle={styles.badgeText}
-      value={item.newMessages}
-      containerStyle={styles.badgeTwoContainer}
-    />
+    <Badge badgeStyle={styles.MessagesBadge} textStyle={styles.badgeText} value={newMessages} containerStyle={styles.badgeTwoContainer} />
   );
 }
 

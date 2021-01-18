@@ -1,5 +1,5 @@
 import { ScrollView } from "react-native";
-import HomeScreenMocks from "../../mocks/HomeScreenMocks";
+import GroupsMocks from "../../mocks/GroupsMocks";
 import { Avatar, ListItem } from "react-native-elements";
 import React from "react";
 
@@ -8,17 +8,24 @@ import { SmatchesBadge, MessagesBadge } from "../components/Badges";
 export default function GroupsScreen({ navigation }) {
   return (
     <ScrollView>
-      {HomeScreenMocks.map((l, i) => (
-        <ListItem key={i} bottomDivider onPress={() => navigation.navigate("SwipeScreen")}>
-          <Avatar source={{ uri: l.avatar_url }} size="large" rounded />
+      {GroupsMocks.map((group, i) => (
+        <ListItem key={i} bottomDivider onPress={() => navigateToSwipeScreen(navigation, group)}>
+          <Avatar source={{ uri: group.avatar_url }} size="large" rounded />
           <ListItem.Content>
-            <ListItem.Title>{l.name}</ListItem.Title>
-            <ListItem.Subtitle>{l.subtitle}</ListItem.Subtitle>
+            <ListItem.Title>{group.name}</ListItem.Title>
+            <ListItem.Subtitle>{group.subtitle}</ListItem.Subtitle>
           </ListItem.Content>
-          {l.newSmatches !== 0 ? <SmatchesBadge item={l} /> : null}
-          {l.newMessages !== 0 ? <MessagesBadge item={l} /> : null}
+          {group.newSmatches !== 0 ? <SmatchesBadge newMessages={group.newMessages} newSmatches={group.newSmatches} /> : null}
+          {group.newMessages !== 0 ? <MessagesBadge newMessages={group.newMessages} /> : null}
         </ListItem>
       ))}
     </ScrollView>
   );
+}
+
+export function navigateToSwipeScreen(navigation, group) {
+  navigation.navigate("SwipeScreen", {
+    profiles: group.profiles,
+    matches: group.matches,
+  });
 }

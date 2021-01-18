@@ -14,7 +14,7 @@ export default function SmatchAccountScreen({ route }) {
       >
         <LinearGradient colors={["transparent", "black"]} style={styles.gradient} />
         <Text style={styles.name}> {route.params.name} </Text>
-        <Text style={styles.subtitle}> {route.params.subtitle} </Text>
+        <Text style={styles.lastSeen}> {route.params.lastSeen} </Text>
       </ImageBackground>
       <View style={styles.titleView}>
         <Text style={styles.titleText}> Info </Text>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     color: colors.accountTitle,
     fontSize: 25,
   },
-  subtitle: {
+  lastSeen: {
     marginLeft: 10,
     marginBottom: 10,
     color: colors.accountTitle,
