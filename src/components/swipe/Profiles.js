@@ -40,7 +40,7 @@ export default function Profiles({profilesProp}) {
       }
       <MatchModal
           isVisible={isModalVisible}
-          matchProfileImage={modalMatchData.profile}
+          matchProfileImage={modalMatchData.pictures ? modalMatchData.pictures[0] : null}
           onSwipeComplete={onModalSwipeCompleted(setIsModalVisible)}
       />
     </SafeAreaView>

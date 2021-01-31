@@ -16,7 +16,7 @@ export function MatchModal({matchProfileImage, isVisible, onSwipeComplete}) {
                     <Text style={styles.smatchText}> It's a Smatch!</Text>
                 </View>
                 <View style={styles.modalImagesRow}>
-                    <Image style={styles.modalImage} source={matchProfileImage}/>
+                    <Image style={styles.modalImage} source={{uri: matchProfileImage}}/>
                     <View style={styles.modalUserImage}>
                         <Text>User picture</Text>
                     </View>
