@@ -24,8 +24,15 @@ export default function GroupsScreen({ navigation }) {
 }
 
 export function navigateToSwipeScreen(navigation, group) {
-  navigation.navigate("SwipeScreen", {
-    profiles: group.profiles,
-    matches: group.matches,
+  navigation.navigate("Home", { // While navigating to deeply nested navigators, remember each navigator has its own params
+    screen: "SwipeScreen",
+    params: {
+      screen: "Swipe",
+      params: {
+        profiles: group.profiles,
+        matches: group.matches,
+        groupId: group.id
+      }
+    },
   });
 }

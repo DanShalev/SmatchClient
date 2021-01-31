@@ -8,6 +8,7 @@ import { LinearGradient } from "expo-linear-gradient";
 export default function Card({ profile, likeOpacity = 0, nopeOpacity = 0 }) {
   const [index, setIndex] = useState(0);
   const listSize = profile.pictures.length;
+
   const navigation = useNavigation();
 
   // Reset the index when profile id changes, for some reason the index is shared between all Card objects..
@@ -30,7 +31,7 @@ export default function Card({ profile, likeOpacity = 0, nopeOpacity = 0 }) {
   return (
     <View style={StyleSheet.absoluteFill}>
       <ImageBackground style={styles.imageView} imageStyle={ styles.image }
-                        source={{ uri: profile.pictures[0] }}>
+                        source={{ uri: profile.pictures[index] }}>
         <LinearGradient colors={["transparent", "black"]} style={styles.gradient} />
       </ImageBackground>
       <View style={styles.overlay}>
