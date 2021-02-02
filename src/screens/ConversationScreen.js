@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {GiftedChat} from "react-native-gifted-chat";
 import {conversationText, generateResponse} from "../../mocks/ConversationMock";
-import {renderCustomBubble} from "./utils/CustomBubble";
+import {renderCustomBubble} from "../components/CustomBubble";
 
 export default function ConversationScreen() {
   const [messages, setMessages] = useState([]);

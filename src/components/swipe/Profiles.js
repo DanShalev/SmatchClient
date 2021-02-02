@@ -2,10 +2,10 @@ import React, {useRef, useState} from "react";
 import {SafeAreaView, StyleSheet, Text, View} from "react-native";
 import Animated from "react-native-reanimated";
 
-import {initAnimation, initAnimationProps} from "../utils/swipingAnimationUtils";
-import {BottomButtons} from "./profileButtons/BottomButtons";
-import {ProfileCards} from "./profileUtils/ProfileCards";
-import {TopButtons} from "./profileButtons/TopButtons";
+import {initAnimation, initAnimationProps} from "../utils/SwipingAnimation";
+import {BottomButtons} from "./profile-buttons/BottomButtons";
+import {ProfileCards} from "./profile-utils/ProfileCards";
+import {TopButtons} from "./profile-buttons/TopButtons";
 import {MatchModal} from "./MatchModal";
 
 export default function Profiles({profilesProp}) {

@@ -1,4 +1,4 @@
-export function transerProfilesServerDataToMocksFormat(profiles) {
+export function transferProfilesServerDataToMocksFormat(profiles) {
     /* NOTE:
     *  This function is temporary, until we finish designing our data in the server and stop using our hard-coded mocks completely.
     * */
