@@ -1,12 +1,20 @@
 import React, {useState} from "react";
 import {ScrollView, StyleSheet, Text, View} from "react-native";
-import InputFieldDynamic from "../components/createGroupComponents/InputFieldDynamic";
-import InputField from "../components/createGroupComponents/InputField";
-import InputFieldList from "../components/createGroupComponents/InputFieldList";
-import CreateGroupButton from "./utils/GroupButton";
+import InputFieldDynamic from "../components/create-group/InputFieldDynamic";
+import InputField from "../components/create-group/InputField";
+import InputFieldList from "../components/create-group/InputFieldList";
+import CreateGroupButton from "../components/create-group/CreateGroupButton";
 
 export function CreateGroupScreen() {
-  let [listOfFields, setListOfFields] = useState([]);
+  let [fields, setFields] = useState([]);
+  let [name, setName] = useState("");
+  let [description, setDescription] = useState("");
+
+  const groupSetters = {
+      setName: setName,
+      setDescription: setDescription,
+      setFields: setFields,
+  }
 
   return (
     <ScrollView>
@@ -15,11 +23,11 @@ export function CreateGroupScreen() {
       </View>
       <View style={styles.textView}>
         <Text style={styles.text}>Name</Text>
-        <InputField style={styles.name}/>
+        <InputField style={styles.name} fieldValue={name} setFieldValue={setName}/>
       </View>
       <View style={styles.textView}>
         <Text style={styles.text}>Description</Text>
-        <InputField style={styles.description}/>
+        <InputField style={styles.description} fieldValue={description} setFieldValue={setDescription}/>
       </View>
       <View style={styles.titleView}>
         <Text style={styles.title}>Group fields</Text>
@@ -27,12 +35,16 @@ export function CreateGroupScreen() {
       <View style={styles.textView}>
         <Text style={styles.text}>Please enter field name</Text>
       </View>
-      <InputFieldDynamic setListOfFields={setListOfFields}/>
+      <InputFieldDynamic setListOfFields={setFields}/>
       <InputFieldList
-        listOfFields={listOfFields}
-        setListOfFields={setListOfFields}
+        listOfFields={fields}
+        setListOfFields={setFields}
       />
-      <CreateGroupButton/>
+      <CreateGroupButton groupInfo={{
+          name: name,
+          description: description,
+          fields: fields,} }
+            groupSetters={groupSetters}/>
     </ScrollView>
   );
 }

@@ -1,7 +1,7 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { Avatar } from "react-native-elements";
-import UserField from "../components/accountComponents/UserField";
+import UserField from "../components/account/UserField";
 
 export default function AccountScreen() {
   return (

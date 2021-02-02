@@ -1,4 +1,4 @@
-import {generateAnimationParams} from "../../utils/swipingAnimationUtils";
+import {generateAnimationParams} from "../../utils/SwipingAnimation";
 import {StyleSheet, View} from "react-native";
 import Card from "../Card";
 import {PanGestureHandler} from "react-native-gesture-handler";

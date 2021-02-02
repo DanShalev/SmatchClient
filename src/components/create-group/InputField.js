@@ -3,13 +3,12 @@ import { TextInput, View, StyleSheet } from "react-native";
 
 import colors from "../../config/colors";
 
-export default function InputField({ style }) {
-  let [fieldValue, setField] = useState("");
+export default function InputField({ style, fieldValue, setFieldValue }) {
   return (
     <View style={styles.container}>
       <TextInput
         style={[styles.inputFieldText, style]}
-        onChangeText={(text) => setField(text)}
+        onChangeText={(text) => setFieldValue(text)}
         value={fieldValue}
         textAlignVertical={"top"}
         multiline={true}
