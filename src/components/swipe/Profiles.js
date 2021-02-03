@@ -7,45 +7,59 @@ import {BottomButtons} from "./profile-buttons/BottomButtons";
 import {ProfileCards} from "./profile-utils/ProfileCards";
 import {TopButtons} from "./profile-buttons/TopButtons";
 import {MatchModal} from "./MatchModal";
+import {connect} from "react-redux";
+import {setModalVisible} from "../../actions/actionCreators";
 
-export default function Profiles({profilesProp}) {
-  const [profiles, setProfiles] = useState(profilesProp);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+
+function Profiles(props) {
+  const [profiles, setProfiles] = useState(props.profilesProp);
   const [modalMatchData, setModalMatchData] = useState({});
   const [manualSwipe, setManualSwipe] = useState(null);
 
-  const props = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
+  const refProps = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
 
-  initProps(props);
-  props.current = initAnimation(props.current, swipingEventTrigger(profiles, setProfiles, setModalMatchData), setProfiles);
+  initProps(refProps);
+  refProps.current = initAnimation(refProps.current, swipingEventTrigger(profiles, setProfiles, setModalMatchData), setProfiles);
 
   const nextProfileExist = profiles[0];
   return (
     <SafeAreaView style={styles.container}>
       <TopButtons/>
       {nextProfileExist ?
-          (<>
-                <ProfileCards
-                    profiles={profiles}
-                    onGestureEvent={props.current.onGestureEvent}
-                    translateX={manualSwipe ? manualSwipe.translateX : props.current.translateX}
-                    translateY={manualSwipe ? manualSwipe.translateY : props.current.translateY}
-                />
-                <BottomButtons
-                    onLikePressed={onLikeButtonPressed(setProfiles, profiles, setIsModalVisible, setModalMatchData, initManualSwipe(setManualSwipe))}
-                    onNopePressed={onNopeButtonPressed(setProfiles, profiles, initManualSwipe(setManualSwipe))}
-                />
-          </>) :
-          <NoMoreSwipes/>
+        (<>
+          <ProfileCards
+            profiles={profiles}
+            onGestureEvent={refProps.current.onGestureEvent}
+            translateX={manualSwipe ? manualSwipe.translateX : refProps.current.translateX}
+            translateY={manualSwipe ? manualSwipe.translateY : refProps.current.translateY}
+          />
+          <BottomButtons
+            onLikePressed={onLikeButtonPressed(setProfiles, profiles, props.setModalState, setModalMatchData, initManualSwipe(setManualSwipe))}
+            onNopePressed={onNopeButtonPressed(setProfiles, profiles, initManualSwipe(setManualSwipe))}
+          />
+        </>) :
+        <NoMoreSwipes/>
       }
       <MatchModal
-          isVisible={isModalVisible}
-          matchProfileImage={modalMatchData.pictures ? modalMatchData.pictures[0] : null}
-          onSwipeComplete={onModalSwipeCompleted(setIsModalVisible)}
+        isVisible={props.modalVisible}
+        matchProfileImage={modalMatchData.pictures ? modalMatchData.pictures[0] : null}
+        onSwipeComplete={onModalSwipeCompleted(props.setModalState)}
       />
     </SafeAreaView>
   );
 }
+
+const mapStateToProps = (state) => ({modalVisible: state.modalVisible.modalVisible});
+
+const mapDispatchToProps = (dispatch) => ({
+  setModalState(isVisible) {
+
+    dispatch(setModalVisible(isVisible))
+  }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Profiles)
+
 
 function initProps(props) {
   if (!props.current) {
@@ -93,17 +107,17 @@ function initManualSwipe(setManualSwipe) {
   }
 }
 
-function onModalSwipeCompleted(setIsModalVisible) {
+function onModalSwipeCompleted(setModalState) {
   return () => {
-    setIsModalVisible(false);
+    setModalState(false);
   }
 }
 
-function onLikeButtonPressed(setProfiles, profiles, setIsModalVisible, setModalMatchData, initManualSwipe) {
+function onLikeButtonPressed(setProfiles, profiles, setModalState, setModalMatchData, initManualSwipe) {
   return async () => {
     await initManualSwipe(true);
     likeEventPostProcess(setProfiles, profiles, setModalMatchData);
-    setIsModalVisible(true);
+    setModalState(true);
   }
 }
 

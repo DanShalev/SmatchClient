@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, ImageBackground, TouchableHighlight } from "react-native";
+import React, {useState, useEffect} from "react";
+import {StyleSheet, View, Text, TouchableOpacity, ImageBackground, TouchableHighlight} from "react-native";
 import Animated from "react-native-reanimated";
-import { navigateToSmatchAccountScreen } from "../../screens/MatchesScreen";
-import { useNavigation } from "@react-navigation/native";
-import { LinearGradient } from "expo-linear-gradient";
+import {navigateToSmatchAccountScreen} from "../../screens/MatchesScreen";
+import {useNavigation} from "@react-navigation/native";
+import {LinearGradient} from "expo-linear-gradient";
+import {setProfileIndex} from "../../actions/actionCreators";
+import {connect} from "react-redux";
 
-export default function Card({ profile, likeOpacity = 0, nopeOpacity = 0 }) {
-  const [index, setIndex] = useState(0);
+function Card({profile, likeOpacity = 0, nopeOpacity = 0, index, setIndex}) {
+
   const listSize = profile.pictures.length;
 
   const navigation = useNavigation();
@@ -44,8 +46,8 @@ export default function Card({ profile, likeOpacity = 0, nopeOpacity = 0 }) {
           </Animated.View>
         </View>
         <View style={styles.sideButtons}>
-          <TouchableOpacity onPress={showPrev} style={styles.button} />
-          <TouchableOpacity onPress={showNext} style={styles.button} />
+          <TouchableOpacity onPress={showPrev} style={styles.button}/>
+          <TouchableOpacity onPress={showNext} style={styles.button}/>
         </View>
         <TouchableOpacity style={styles.footer} onPress={() => navigateToSmatchAccountScreen(navigation, profile)}>
           <Text style={styles.name}>{profile.name}</Text>
@@ -54,6 +56,17 @@ export default function Card({ profile, likeOpacity = 0, nopeOpacity = 0 }) {
     </View>
   );
 }
+
+const mapStateToProps = (state) => ({index: state.profilePictureIndex.profilePictureIndex});
+
+const mapDispatchToProps = (dispatch) => ({
+  setIndex(index) {
+    dispatch(setProfileIndex(index))
+  }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Card)
+
 
 const styles = StyleSheet.create({
   imageView: {

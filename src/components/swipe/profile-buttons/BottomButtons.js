@@ -1,6 +1,6 @@
 import {StyleSheet, View} from "react-native";
 import {Feather as Icon} from "@expo/vector-icons";
-import React, {useState} from "react";
+import React from "react";
 import {nonCssStyles} from "./IconStyle";
 
 export function BottomButtons({onLikePressed, onNopePressed}) {

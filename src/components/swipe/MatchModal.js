@@ -1,6 +1,6 @@
 import Modal from "react-native-modal";
 import {Image, Pressable, StyleSheet, Text, View} from "react-native";
-import React, {useState} from "react";
+import React from "react";
 
 export function MatchModal({matchProfileImage, isVisible, onSwipeComplete}) {
     return (
