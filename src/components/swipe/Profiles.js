@@ -11,15 +11,15 @@ import {connect} from "react-redux";
 import {setModalVisible} from "../../actions/actionCreators";
 
 
-function Profiles(props) {
-  const [profiles, setProfiles] = useState(props.profilesProp);
+function Profiles({profilesProp, setModalState, modalVisible}) {
+  const [profiles, setProfiles] = useState(profilesProp);
   const [modalMatchData, setModalMatchData] = useState({});
   const [manualSwipe, setManualSwipe] = useState(null);
 
-  const refProps = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
+  const props = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
 
-  initProps(refProps);
-  refProps.current = initAnimation(refProps.current, swipingEventTrigger(profiles, setProfiles, setModalMatchData), setProfiles);
+  initProps(props);
+  props.current = initAnimation(props.current, swipingEventTrigger(profiles, setProfiles, setModalMatchData), setProfiles);
 
   const nextProfileExist = profiles[0];
   return (
@@ -29,21 +29,21 @@ function Profiles(props) {
         (<>
           <ProfileCards
             profiles={profiles}
-            onGestureEvent={refProps.current.onGestureEvent}
-            translateX={manualSwipe ? manualSwipe.translateX : refProps.current.translateX}
-            translateY={manualSwipe ? manualSwipe.translateY : refProps.current.translateY}
+            onGestureEvent={props.current.onGestureEvent}
+            translateX={manualSwipe ? manualSwipe.translateX : props.current.translateX}
+            translateY={manualSwipe ? manualSwipe.translateY : props.current.translateY}
           />
           <BottomButtons
-            onLikePressed={onLikeButtonPressed(setProfiles, profiles, props.setModalState, setModalMatchData, initManualSwipe(setManualSwipe))}
+            onLikePressed={onLikeButtonPressed(setProfiles, profiles, setModalState, setModalMatchData, initManualSwipe(setManualSwipe))}
             onNopePressed={onNopeButtonPressed(setProfiles, profiles, initManualSwipe(setManualSwipe))}
           />
         </>) :
         <NoMoreSwipes/>
       }
       <MatchModal
-        isVisible={props.modalVisible}
+        isVisible={modalVisible}
         matchProfileImage={modalMatchData.pictures ? modalMatchData.pictures[0] : null}
-        onSwipeComplete={onModalSwipeCompleted(props.setModalState)}
+        onSwipeComplete={onModalSwipeCompleted(setModalState)}
       />
     </SafeAreaView>
   );
