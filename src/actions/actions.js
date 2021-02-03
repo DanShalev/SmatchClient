@@ -1,0 +1,2 @@
+export const MODAL_VISIBLE = "MODAL_VISIBLE";
+export const PROFILE_INDEX = "PROFILE_PIC_INDEX";

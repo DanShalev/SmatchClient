@@ -1,21 +1,22 @@
 export const indiaTripPartnersProfiles = [
   {
     id: "1",
-    name: "Caroline",
+    name: "Bill Jobs",
     lastSeen: "last seen on Dec 22 12:34",
     newMessages: 0,
     newSmatch: true,
     fields: [
-      { title: "Age", value: 26 },
-      { title: "Sex", value: "Female" },
-      { title: "Trip Dates", value: "1/3/2021-1/6/2021" },
-      { title: "Destinations", value: "Goa, Delhi" },
-      { title: "Parties", value: "High" },
-      { title: "Tracks", value: "Medium" },
-      { title: "Extreme Sports", value: "Low" },
+      {title: "Age", value: 26},
+      {title: "Sex", value: "Female"},
+      {title: "Trip Dates", value: "1/3/2021-1/6/2021"},
+      {title: "Destinations", value: "Goa, Delhi"},
+      {title: "Parties", value: "High"},
+      {title: "Tracks", value: "Medium"},
+      {title: "Extreme Sports", value: "Low"},
     ],
     pictures: [
-      "https://images.generated.photos/Gi7-cTTPR4LFHJG6GWYCEz6u6LWQ-Bz1X-FbsKQtvnQ/rs:fit:512:512/wm:0.95:sowe:18:18:0.33/Z3M6Ly9nZW5lcmF0/ZWQtcGhvdG9zL3Yz/XzAwOTA2OTAuanBn.jpg",
+      "http://1.bp.blogspot.com/-Uy-hJwh4zC0/UoyXq0-27eI/AAAAAAAAF3w/MmtBqWArnW4/s1600/tumblr_llg0kgs3t21qkrq33o1_500.jpg",
+      "https://upload.wikimedia.org/wikipedia/commons/2/21/Meeting_with_Bill_Gates_-_Nov._8%2C_2019_%2849054512147%29_%28cropped%29.jpg",
     ],
   },
   {
