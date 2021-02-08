@@ -20,7 +20,7 @@
     "expo": "^40.0.1",
     "expo-linear-gradient": "^8.4.0",
     "react": "16.13.1",
-    "react-dom": "16.13.1",
+    "react-dom": "^17.0.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.0.tar.gz",
     "react-native-elements": "^3.0.0-alpha.1",
     "react-native-gesture-handler": "~1.8.0",
