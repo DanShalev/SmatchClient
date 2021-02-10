@@ -1,13 +1,16 @@
 import { ScrollView } from "react-native";
 import { Avatar, ListItem } from "react-native-elements";
 import React from "react";
+import { indiaTripPartnersMatches } from "../../mocks/MatchesMocks";
 
 import { MessagesBadge, SingleSmatchBadge } from "../components/Badges";
 
 export default function MatchesScreen({ navigation, route }) {
+  const matches = indiaTripPartnersMatches;
+
   return (
     <ScrollView>
-      {route.params.matches.map((profile, i) => (
+      {matches.map((profile, i) => (
         <ListItem key={i} bottomDivider onPress={() => navigation.navigate("ConversationScreen")}>
           <Avatar
             source={{ uri: profile.pictures[0] }}
