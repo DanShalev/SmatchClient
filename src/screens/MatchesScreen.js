@@ -13,7 +13,7 @@ export default function MatchesScreen({ navigation, route }) {
       {matches.map((profile, i) => (
         <ListItem key={i} bottomDivider onPress={() => navigation.navigate("ConversationScreen")}>
           <Avatar
-            source={{ uri: profile.pictures[0] }}
+            source={{uri: profile.pictures[0]}}
             size="large"
             rounded
             onPress={() => navigateToSmatchAccountScreen(navigation, profile)}
@@ -22,13 +22,16 @@ export default function MatchesScreen({ navigation, route }) {
             <ListItem.Title>{profile.name}</ListItem.Title>
             <ListItem.Subtitle>{profile.lastSeen}</ListItem.Subtitle>
           </ListItem.Content>
-          {profile.newMessages !== 0 ? <MessagesBadge newMessages={profile.newMessages} /> : null}
-          {profile.newSmatch ? <SingleSmatchBadge newMessages={profile.newMessages} /> : null}
+          {profile.newMessages !== 0 ? <MessagesBadge newMessages={profile.newMessages}/> : null}
+          {profile.newSmatch ? <SingleSmatchBadge newMessages={profile.newMessages}/> : null}
         </ListItem>
       ))}
     </ScrollView>
   );
 }
+
+//TODO - a deletion option should be added to each match conversation, and then this needs to be connected
+// to redux in order to delete match (with the same match reducer)
 
 export function navigateToSmatchAccountScreen(navigation, profile) {
   navigation.navigate("SmatchAccountScreen", {
