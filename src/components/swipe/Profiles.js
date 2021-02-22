@@ -8,10 +8,10 @@ import {ProfileCards} from "./profile-utils/ProfileCards";
 import {TopButtons} from "./profile-buttons/TopButtons";
 import {MatchModal} from "./MatchModal";
 import {connect} from "react-redux";
-import {setModalVisible} from "../../actions/actionCreators";
+import {addMatch, setModalVisible} from "../../actions/actionCreators";
 
 
-function Profiles({profilesProp, setModalState, modalVisible}) {
+function Profiles({profilesProp, setModalState, modalVisible, addMatch}) {
   const [profiles, setProfiles] = useState(profilesProp);
   const [modalMatchData, setModalMatchData] = useState({});
   const [manualSwipe, setManualSwipe] = useState(null);
@@ -34,7 +34,7 @@ function Profiles({profilesProp, setModalState, modalVisible}) {
             translateY={manualSwipe ? manualSwipe.translateY : props.current.translateY}
           />
           <BottomButtons
-            onLikePressed={onLikeButtonPressed(setProfiles, profiles, setModalState, setModalMatchData, initManualSwipe(setManualSwipe))}
+            onLikePressed={onLikeButtonPressed(setProfiles, profiles, addMatch, setModalState, setModalMatchData, initManualSwipe(setManualSwipe))}
             onNopePressed={onNopeButtonPressed(setProfiles, profiles, initManualSwipe(setManualSwipe))}
           />
         </>) :
@@ -49,13 +49,15 @@ function Profiles({profilesProp, setModalState, modalVisible}) {
   );
 }
 
-const mapStateToProps = (state) => ({modalVisible: state.modalVisible.modalVisible});
+const mapStateToProps = (state) => ({modalVisible: state.modalVisible.modalVisible, matches: state.matches});
 
 const mapDispatchToProps = (dispatch) => ({
   setModalState(isVisible) {
-
     dispatch(setModalVisible(isVisible))
-  }
+  },
+  addMatch(matchId, groupId, matchUserId) {
+    dispatch(addMatch(matchId, groupId, matchUserId))
+  },
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Profiles)
@@ -113,10 +115,10 @@ function onModalSwipeCompleted(setModalState) {
   }
 }
 
-function onLikeButtonPressed(setProfiles, profiles, setModalState, setModalMatchData, initManualSwipe) {
+function onLikeButtonPressed(setProfiles, profiles, addMatch, setModalState, setModalMatchData, initManualSwipe) {
   return async () => {
     await initManualSwipe(true);
-    likeEventPostProcess(setProfiles, profiles, setModalMatchData);
+    likeEventPostProcess(setProfiles, profiles, setModalMatchData, addMatch);
     setModalState(true);
   }
 }
@@ -128,13 +130,15 @@ function onNopeButtonPressed(setProfiles, profiles, initManualSwipe) {
   }
 }
 
-function likeEventPostProcess(setProfiles, profiles, setModalMatchData) {
+function likeEventPostProcess(setProfiles, profiles, setModalMatchData, addMatch) {
   const [lastProfile, ...restOfProfiles] = profiles;
 
   // TODO - like event server process should start here
   // Alert.alert("Like Pressed");
   setProfiles(restOfProfiles);
   setModalMatchData(lastProfile);
+  //TODO - match stores in redux here
+  // addMatch(generateId(), selfId, profile.userId)
 }
 
 function nopeEventPostProcess(setProfiles, profiles) {
