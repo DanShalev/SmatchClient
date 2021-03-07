@@ -2,12 +2,12 @@ import {createStore, applyMiddleware} from "redux";
 import {persistStore} from 'redux-persist'
 import thunk from 'redux-thunk';
 
-import reducer from "../src/reducers/RootReducer";
+import reducer from "../reducers/RootReducer";
 
 export const store = createStore(reducer, applyMiddleware(thunk));
 
-//TODO only for testing purposes
 store.subscribe(() => {
+  console.log("Printing REDUX store (for debugging):")
   console.log(store.getState())
 })
 

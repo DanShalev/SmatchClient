@@ -1,5 +1,5 @@
 import smatchServer from "./SmatchServer";
-import { transferProfilesServerDataToMocksFormat, transferGroupsServerDataToMocksFormat } from "./Utils";
+import { transferProfilesServerDataToMocksFormat } from "./Utils";
 
 export async function getGroupSubscribers(groupId) {
   const url = `/subscription/group/${groupId}`;
@@ -11,10 +11,16 @@ export async function getGroupSubscribers(groupId) {
   }
 }
 
-export async function getUserSubscriptions(userId) {
+export async function getUserSubscriptions(userId, addUserSubscription) {
   const url = `/subscription/user/${userId}`;
   try {
-    return await smatchServer.get(url).then((result) => transferGroupsServerDataToMocksFormat(result.data));
+    let result = await smatchServer.get(url);
+
+    for (let group of result.data) {
+      addUserSubscription(group.id, group.name, group.avatarUrl, group.numberOfMembers)
+    }
+
+    return true;
   } catch (err) {
     console.log("Error while process server request ", url);
     return null;

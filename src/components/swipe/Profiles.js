@@ -8,7 +8,7 @@ import {ProfileCards} from "./profile-utils/ProfileCards";
 import {TopButtons} from "./profile-buttons/TopButtons";
 import {MatchModal} from "./MatchModal";
 import {connect} from "react-redux";
-import {addMatch, setModalVisible} from "../../actions/actionCreators";
+import {addMatch, setModalVisible} from "../../redux/actions/actionCreators";
 
 
 function Profiles({profilesProp, setModalState, modalVisible, addMatch}) {

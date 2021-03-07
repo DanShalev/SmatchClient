@@ -17,11 +17,11 @@ export function HomeScreenTabNavigator() {
   );
 }
 
-export function SwipeScreenTabNavigator({ route }) {
+export function SwipeScreenTabNavigator() {
   return (
     <Tab.Navigator {...setTabNavigationProperties()}>
-      <Tab.Screen name="Swipe" component={SwipeScreen} initialParams={{ profiles: route.params.profiles }} />
-      <Tab.Screen name="Matches" component={MatchesScreen} initialParams={{ matches: route.params.matches }} />
+      <Tab.Screen name="Swipe" component={SwipeScreen} />
+      <Tab.Screen name="Matches" component={MatchesScreen} />
     </Tab.Navigator>
   );
 }
