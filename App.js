@@ -3,7 +3,7 @@ import {Provider} from "react-redux";
 import {PersistGate} from 'redux-persist/integration/react'
 
 import DrawerNavigator from "./src/navigation/DrawerNavigator";
-import {store, persistor} from "./store/Store";
+import {store, persistor} from "./src/redux/store/Store";
 
 const ReactNative = require("react-native");
 try {

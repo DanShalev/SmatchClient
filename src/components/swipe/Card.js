@@ -4,7 +4,7 @@ import Animated from "react-native-reanimated";
 import {navigateToSmatchAccountScreen} from "../../screens/MatchesScreen";
 import {useNavigation} from "@react-navigation/native";
 import {LinearGradient} from "expo-linear-gradient";
-import {setProfileIndex} from "../../actions/actionCreators";
+import {setProfileIndex} from "../../redux/actions/actionCreators";
 import {connect} from "react-redux";
 
 function Card({profile, likeOpacity = 0, nopeOpacity = 0, index, setIndex}) {
