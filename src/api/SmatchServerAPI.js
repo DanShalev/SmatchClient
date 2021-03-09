@@ -17,7 +17,7 @@ export async function getUserSubscriptions(userId, addUserSubscription) {
     let result = await smatchServer.get(url);
 
     for (let group of result.data) {
-      addUserSubscription(group.id, group.name, group.avatarUrl, group.numberOfMembers)
+      addUserSubscription(group.id, group.name, group.avatarUrl, group.numberOfMembers, group.fields);
     }
 
     return true;
