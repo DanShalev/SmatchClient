@@ -1,21 +1,18 @@
 import * as React from "react";
-import {useEffect, useState} from "react";
+import { useEffect } from "react";
 import Profiles from "../components/swipe/Profiles";
-import {getGroupSubscribers} from "../api/SmatchServerAPI";
-import { indiaTripPartnersProfiles } from "../../mocks/ProfilesMocks";
+import { getGroupProfiles } from "../api/SmatchServerAPI";
 import { connect } from "react-redux";
+import { addProfile } from "../redux/actions/actionCreators";
 
-function SwipeScreen({ currentSubscriptionId }) {
-  const [groupProfiles, setGroupProfiles] = useState(null);
-
+function SwipeScreen({ currentGroupId, addProfile }) {
   useEffect(() => {
-          getGroupSubscribers(currentSubscriptionId)
-          .then(result => setGroupProfiles(result ? result : indiaTripPartnersProfiles));
-      },
-      []);
+    getGroupProfiles(currentGroupId, addProfile);
+  }, []);
 
-    return groupProfiles ? (<Profiles profilesProp={groupProfiles} />) : (<></>);
+  return <Profiles />;
 }
 
-const mapStateToProps = (state) => ({ currentSubscriptionId: state.subscriptions.currentSubscriptionId });
-export default connect(mapStateToProps, null)(SwipeScreen);
+const mapStateToProps = (state) => ({ currentGroupId: state.groupsInfo.currentGroupId });
+const mapDispatchToProps = { addProfile: addProfile };
+export default connect(mapStateToProps, mapDispatchToProps)(SwipeScreen);
