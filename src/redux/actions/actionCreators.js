@@ -1,11 +1,12 @@
 import {
   ADD_MATCH,
-  ADD_USER_SUBSCRIPTION,
+  ADD_GROUP,
   DELETE_MATCH,
   MODAL_VISIBLE,
   PROFILE_INDEX,
+  RESET_GROUPS_INFO,
   SET_LOGIN_TOKEN,
-  UPDATE_CURRENT_VIEWED_SUBSCRIPTION,
+  UPDATE_CURRENT_GROUP_ID, REMOVE_FIRST_PROFILE, ADD_PROFILE,
 } from "./actions";
 
 export function setModalVisible(modalVisible) {
@@ -47,11 +48,11 @@ export function setUserId(userId) {
   };
 }
 
-export function addUserSubscription(subscriptionId, name, avatarUrl, numberOfMembers, fields) {
+export function addGroup(groupId, name, avatarUrl, numberOfMembers, fields) {
   return {
-    type: ADD_USER_SUBSCRIPTION,
+    type: ADD_GROUP,
     payload: {
-      subscriptionId,
+      currentGroupId: groupId,
       name,
       avatarUrl,
       numberOfMembers,
@@ -61,9 +62,39 @@ export function addUserSubscription(subscriptionId, name, avatarUrl, numberOfMem
     },
   };
 }
-export function updateCurrentViewedSubscription(groupId) {
+export function updateCurrentGroupId(groupId) {
   return {
-    type: UPDATE_CURRENT_VIEWED_SUBSCRIPTION,
+    type: UPDATE_CURRENT_GROUP_ID,
     payload: groupId,
+  };
+}
+
+export function addProfile(id, name, age, sex, imageUrl) {
+  return {
+    type: ADD_PROFILE,
+    payload: {
+      id,
+      name,
+      lastSeen: "last seen 5 minutes ago",
+      newMessages: 0,
+      newSmatch: false,
+      fields: {
+        0: { title: "Age", value: age },
+        1: { title: "Sex", value: sex },
+      },
+      pictures: [imageUrl],
+    },
+  };
+}
+
+export function removeFirstProfile() {
+  return {
+    type: REMOVE_FIRST_PROFILE,
+  };
+}
+
+export function resetGroupsInfo() {
+  return {
+    type: RESET_GROUPS_INFO,
   };
 }

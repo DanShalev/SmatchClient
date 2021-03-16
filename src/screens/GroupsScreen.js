@@ -1,59 +1,61 @@
 import { ScrollView, StyleSheet, Text } from "react-native";
-import { useEffect, useState } from "react";
-import { getUserSubscriptions } from "../api/SmatchServerAPI";
+import { useEffect } from "react";
+import { getGroups } from "../api/SmatchServerAPI";
 import { Avatar, ListItem } from "react-native-elements";
 import React from "react";
 import { SmatchesBadge, MessagesBadge } from "../components/Badges";
 import { connect } from "react-redux";
 import colors from "../config/colors";
-import { addUserSubscription, updateCurrentViewedSubscription } from "../redux/actions/actionCreators";
+import { addGroup, updateCurrentGroupId } from "../redux/actions/actionCreators";
 
-function GroupsScreen({ navigation, loggedUserId, addUserSubscription, userSubscriptions,
-                        updateCurrentViewedSubscription }) {
-
+function GroupsScreen({ navigation, loggedUserId, addGroup, groups, updateCurrentGroupId }) {
   useEffect(() => {
-    getUserSubscriptions(loggedUserId, addUserSubscription);
+    getGroups(loggedUserId, addGroup);
   }, []);
 
-  const areSubscriptionsAvailable = Object.keys(userSubscriptions).length > 0;
+  const areGroupsAvailable = Object.keys(groups).length > 0;
 
   return (
     <ScrollView>
-      {!areSubscriptionsAvailable
-        ? <ServerOfflineErrorMessage/>
-         : Object.keys(userSubscriptions).map((groupKey, i) => {
-           let group = userSubscriptions[groupKey];
-           return (
-         <ListItem
-           key={i}
-           bottomDivider
-           onPress={() => {
-             updateCurrentViewedSubscription(groupKey);
-             navigation.navigate("Home", {screen: "SwipeScreen", params: {screen: "Swipe" }});
-           }}
-         >
-           <Avatar source={{ uri: group.avatarUrl }} size="large" rounded />
-           <ListItem.Content>
-             <ListItem.Title>{group.name}</ListItem.Title>
-             <ListItem.Subtitle>{group.numberOfMembers}</ListItem.Subtitle>
-           </ListItem.Content>
-           {group.newSmatches !== 0 ? <SmatchesBadge newMessages={group.newMessages} newSmatches={group.newSmatches} /> : null}
-           {group.newMessages !== 0 ? <MessagesBadge newMessages={group.newMessages} /> : null}
-         </ListItem>
-       )})}
+      {!areGroupsAvailable ? (
+        <ServerOfflineErrorMessage />
+      ) : (
+        Object.keys(groups).map((groupKey, i) => {
+          let group = groups[groupKey];
+          return (
+            <ListItem
+              key={i}
+              bottomDivider
+              onPress={() => {
+                updateCurrentGroupId(groupKey);
+                navigation.navigate("Home", { screen: "SwipeScreen", params: { screen: "Swipe" } });
+              }}
+            >
+              <Avatar source={{ uri: group.avatarUrl }} size="large" rounded />
+              <ListItem.Content>
+                <ListItem.Title>{group.name}</ListItem.Title>
+                <ListItem.Subtitle>{group.numberOfMembers}</ListItem.Subtitle>
+              </ListItem.Content>
+              {group.newSmatches !== 0 ? <SmatchesBadge newMessages={group.newMessages} newSmatches={group.newSmatches} /> : null}
+              {group.newMessages !== 0 ? <MessagesBadge newMessages={group.newMessages} /> : null}
+            </ListItem>
+          );
+        })
+      )}
     </ScrollView>
   );
 }
 
 const mapStateToProps = (state) => ({
   loggedUserId: state.authentication.id,
-  userSubscriptions: state.subscriptions.subscriptions,
+  groups: state.groupsInfo.groups,
 });
-const mapDispatchToProps = { addUserSubscription, updateCurrentViewedSubscription }
+const mapDispatchToProps = { addGroup, updateCurrentGroupId };
 export default connect(mapStateToProps, mapDispatchToProps)(GroupsScreen);
 
 function ServerOfflineErrorMessage() {
-  return (<>
+  return (
+    <>
       <Text style={styles.errTextStyle}>Please load java server & ngrok to see results!</Text>
       <Text style={styles.errTextStyle}>Groups mocks are deprecated</Text>
     </>

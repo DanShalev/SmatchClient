@@ -15,7 +15,7 @@ import Axios from 'axios';
 * */
 
 const smatchServer = Axios.create({
-    baseURL: 'http://43775563c467.ngrok.io'
+    baseURL: 'http://10.0.0.3:8080'
 });
 
 export default smatchServer;
