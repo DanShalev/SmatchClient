@@ -7,43 +7,45 @@ import { BottomButtons } from "./profile-buttons/BottomButtons";
 import { ProfileCards } from "./profile-utils/ProfileCards";
 import { TopButtons } from "./profile-buttons/TopButtons";
 import { MatchModal } from "./MatchModal";
-import { connect } from "react-redux";
-import { addMatch, removeFirstProfile, setModalVisible } from "../../redux/actions/actionCreators";
+import {connect} from "react-redux";
+import {addMatch, removeFirstProfile, setModalVisible} from "../../redux/actions/actionCreators";
+import {insertDislike, insertLike} from "../../api/SmatchServerAPI";
 
-function Profiles({ groupsInfo, removeLastProfile, setModalState, modalVisible, addMatch }) {
+function Profiles(props) {
   const [modalMatchData, setModalMatchData] = useState({});
   const [manualSwipe, setManualSwipe] = useState(null);
-
-  const props = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
-
-  const profiles = groupsInfo.groupsProfiles[groupsInfo.currentGroupId];
-
-  initProps(props);
-  props.current = initAnimation(props.current, swipingEventTrigger(profiles, removeLastProfile, setModalMatchData));
+  const {modalVisible, setModalState, addMatch, authId, groupsInfo, removeLastProfile} = props;
+  const refProps = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
+  const currentGroupId = groupsInfo.currentGroupId;
+  const profiles = groupsInfo.groupsProfiles[currentGroupId];
+  initProps(refProps);
+  refProps.current = initAnimation(refProps.current, swipingEventTrigger(profiles, removeLastProfile, setModalMatchData, addMatch, authId, currentGroupId, setModalState));
 
   const nextProfileExist = profiles !== undefined && profiles.length !== 0 ? profiles[0] : undefined;
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopButtons />
+      <TopButtons/>
       {nextProfileExist ? (
         <>
           <ProfileCards
             profiles={profiles}
-            onGestureEvent={props.current.onGestureEvent}
-            translateX={manualSwipe ? manualSwipe.translateX : props.current.translateX}
-            translateY={manualSwipe ? manualSwipe.translateY : props.current.translateY}
+            onGestureEvent={refProps.current.onGestureEvent}
+            translateX={manualSwipe ? manualSwipe.translateX : refProps.current.translateX}
+            translateY={manualSwipe ? manualSwipe.translateY : refProps.current.translateY}
           />
           <BottomButtons
             onLikePressed={onLikeButtonPressed(
-              removeLastProfile,
               profiles,
-              addMatch,
-              setModalState,
               setModalMatchData,
+              removeLastProfile,
+              setModalState,
+              addMatch,
+              authId,
+              currentGroupId,
               initManualSwipe(setManualSwipe)
             )}
-            onNopePressed={onNopeButtonPressed(removeLastProfile, profiles, initManualSwipe(setManualSwipe))}
+            onNopePressed={onNopeButtonPressed(removeLastProfile, profiles, currentGroupId, authId, initManualSwipe(setManualSwipe))}
           />
         </>
       ) : (
@@ -62,14 +64,15 @@ const mapStateToProps = (state) => ({
   groupsInfo: state.groupsInfo,
   modalVisible: state.modalVisible.modalVisible,
   matches: state.matches,
+  authId: state.authentication.id
 });
 
 const mapDispatchToProps = (dispatch) => ({
   setModalState(isVisible) {
     dispatch(setModalVisible(isVisible));
   },
-  addMatch(matchId, groupId, matchUserId) {
-    dispatch(addMatch(matchId, groupId, matchUserId));
+  addMatch(groupId, userProfile) {
+    dispatch(addMatch(groupId, userProfile));
   },
   removeLastProfile() {
     dispatch(removeFirstProfile());
@@ -97,10 +100,10 @@ function initProps(props) {
   }
 }
 
-function swipingEventTrigger(profiles, removeLastProfile, setModalMatchData) {
+function swipingEventTrigger(profiles, removeLastProfile, setModalMatchData, addMatch, authId, currentGroupId, setModalState) {
   return ([translationX]) => {
     let liked = translationX > 0; // Check user action (likes/noped profile card)
-    liked ? likeEventPostProcess(removeLastProfile, profiles, setModalMatchData) : nopeEventPostProcess(removeLastProfile, profiles);
+    liked ? likeEventPostProcess(removeLastProfile, profiles, setModalMatchData, addMatch, authId, currentGroupId, setModalState) : nopeEventPostProcess(removeLastProfile, profiles, currentGroupId, authId);
   };
 }
 
@@ -130,34 +133,36 @@ function onModalSwipeCompleted(setModalState) {
   };
 }
 
-function onLikeButtonPressed(removeLastProfiles, profiles, addMatch, setModalState, setModalMatchData, initManualSwipe) {
+function onLikeButtonPressed(profiles, setModalMatchData, removeLastProfile, setModalState, addMatch, authId, currentGroupId, initManualSwipe) {
   return async () => {
     await initManualSwipe(true);
-    likeEventPostProcess(removeLastProfiles, profiles, setModalMatchData, addMatch);
-    setModalState(true);
+    await likeEventPostProcess(removeLastProfile, profiles, setModalMatchData, addMatch, authId, currentGroupId, setModalState);
   };
 }
 
-function onNopeButtonPressed(removeLastProfiles, profiles, initManualSwipe) {
+function onNopeButtonPressed(removeLastProfile, profiles, currentGroupId, authId, initManualSwipe) {
   return async () => {
     await initManualSwipe(false);
-    nopeEventPostProcess(removeLastProfiles, profiles);
+    await nopeEventPostProcess(removeLastProfile, profiles, currentGroupId, authId);
   };
 }
 
-function likeEventPostProcess(removeLastProfile, profiles, setModalMatchData, addMatch) {
-  const [lastProfile, ...restOfProfiles] = profiles;
-  // TODO - like event server process should start here
-  // Alert.alert("Like Pressed");
+async function likeEventPostProcess(removeLastProfile, profiles, setModalMatchData, addMatch, authId, currentGroupId, setModalState) {
+  const [lastProfile] = profiles;
+
+  let res = await insertLike(currentGroupId, authId, lastProfile.id);
+  if (res.data) {
+    addMatch(currentGroupId, lastProfile)
+    setModalState(true)
+    setModalMatchData(lastProfile);
+  }
   removeLastProfile();
-  setModalMatchData(lastProfile);
-  //TODO - match stores in redux here
-  // addMatch(generateId(), selfId, profile.userId)
 }
 
-function nopeEventPostProcess(removeLastProfile) {
-  // TODO - nope event server process should start here
-  // Alert.alert("Nope Pressed");
+async function nopeEventPostProcess(removeLastProfile, profiles, currentGroupId, authId) {
+  const [lastProfile] = profiles;
+
+  insertDislike(currentGroupId, authId, lastProfile.id).catch(error => console.log("Backend Error: " + error));
   removeLastProfile();
 }
 

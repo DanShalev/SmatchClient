@@ -6,7 +6,7 @@ import {
   PROFILE_INDEX,
   RESET_GROUPS_INFO,
   SET_LOGIN_TOKEN,
-  UPDATE_CURRENT_GROUP_ID, REMOVE_FIRST_PROFILE, ADD_PROFILE,
+  UPDATE_CURRENT_GROUP_ID, REMOVE_FIRST_PROFILE, ADD_PROFILE, RESET_MATCHES,
 } from "./actions";
 
 export function setModalVisible(modalVisible) {
@@ -23,13 +23,18 @@ export function setProfileIndex(profilePictureIndex) {
   };
 }
 
-export function addMatch(matchId, groupId, matchUserId) {
+export function resetMatches() {
+  return {
+    type: RESET_MATCHES,
+  };
+}
+
+export function addMatch(groupId, userProfile) {
   return {
     type: ADD_MATCH,
     payload: {
-      matchId,
       groupId,
-      matchUserId,
+      userProfile
     },
   };
 }
