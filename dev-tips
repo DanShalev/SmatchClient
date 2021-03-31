@@ -1,0 +1,7 @@
+Remove all redux data:
+
+In the RootReducer file add the following line:
+AsyncStorage.clear()
+
+Print a complex object in console.log:
+console.log(JSON.stringify(objectToPrint, null, 2))
