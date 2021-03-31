@@ -4,7 +4,7 @@ import { combineReducers } from "redux";
 
 import modalVisibleReducer from "./ModalVisible";
 import profilePictureIndexReducer from "./ProfilePictureIndex";
-import matches from "./Matches";
+import matchesReducer from "./MatchesReducer";
 import groupsReducer from "./GroupsReducer";
 import authReducer from "./AuthReducer";
 
@@ -18,7 +18,7 @@ const rootReducer = combineReducers({
   groupsInfo: groupsReducer,
   modalVisible: modalVisibleReducer,
   profilePictureIndex: profilePictureIndexReducer,
-  matches: matches,
+  matches: matchesReducer,
 });
 
 export default persistReducer(persistConfig, rootReducer);

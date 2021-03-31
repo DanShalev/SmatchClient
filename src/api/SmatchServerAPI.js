@@ -14,8 +14,8 @@ function printErrorDetails(error, url) {
   }
 }
 
-export async function getGroupProfiles(groupId, addProfile) {
-  const url = `/subscription/group/${groupId}`;
+export async function getGroupProfiles(groupId, userId, addProfile) {
+  const url = `/group/${groupId}/${userId}`;
   try {
     let result = await smatchServer.get(url);
     for (let profile of result.data) {
@@ -49,5 +49,22 @@ export async function createGroup(group) {
   } catch (err) {
     printErrorDetails(error, url);
   }
+}
 
+export async function insertLike(groupId, userId, otherUserId) {
+  const url = `/match/like/${groupId}/${userId}/${otherUserId}`;
+  try {
+    return await smatchServer.post(url)
+  } catch (err) {
+    printErrorDetails(error, url);
+  }
+}
+
+export async function insertDislike(groupId, userId, otherUserId) {
+  const url = `/match/dislike/${groupId}/${userId}/${otherUserId}`;
+  try {
+    return await smatchServer.post(url)
+  } catch (err) {
+    printErrorDetails(error, url);
+  }
 }
