@@ -83,10 +83,10 @@ export function addProfile(id, name, age, sex, imageUrl) {
       lastSeen: "last seen 5 minutes ago",
       newMessages: 0,
       newSmatch: false,
-      fields: {
-        0: { title: "Age", value: age },
-        1: { title: "Sex", value: sex },
-      },
+      fields: [
+         { title: "Age", value: age },
+         { title: "Sex", value: sex },
+      ],
       pictures: [imageUrl],
     },
   };
