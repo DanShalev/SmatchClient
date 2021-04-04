@@ -14,12 +14,12 @@ function printErrorDetails(error, url) {
   }
 }
 
-export async function getGroupProfiles(groupId, userId, addProfile) {
+export async function getProfiles(groupId, userId, addProfile) {
   const url = `/group/${groupId}/${userId}`;
   try {
     let result = await smatchServer.get(url);
     for (let profile of result.data) {
-      addProfile(profile.id, profile.name, profile.age, profile.sex, profile.imageUrl)
+      addProfile(profile.id, profile.name, profile.age, profile.sex, profile.imageUrl, groupId)
     }
     return true
   } catch (err) {

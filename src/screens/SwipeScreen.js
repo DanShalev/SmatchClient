@@ -1,20 +1,20 @@
 import * as React from "react";
 import { useEffect } from "react";
 import Profiles from "../components/swipe/Profiles";
-import { getGroupProfiles } from "../api/SmatchServerAPI";
+import { getProfiles } from "../api/SmatchServerAPI";
 import { connect } from "react-redux";
 import { addProfile } from "../redux/actions/actionCreators";
 
 function SwipeScreen({ currentGroupId, addProfile, loggedUserId }) {
   useEffect(() => {
-    getGroupProfiles(currentGroupId, loggedUserId, addProfile);
+    getProfiles(currentGroupId, loggedUserId, addProfile);
   }, []);
 
   return <Profiles />;
 }
 
 const mapStateToProps = (state) => ({
-  currentGroupId: state.groupsInfo.currentGroupId,
+  currentGroupId: state.groups.currentGroupId,
   loggedUserId: state.authentication.id,
 });
 const mapDispatchToProps = { addProfile: addProfile };

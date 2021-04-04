@@ -7,6 +7,7 @@ import { SmatchesBadge, MessagesBadge } from "../components/Badges";
 import { connect } from "react-redux";
 import colors from "../config/colors";
 import { addGroup, updateCurrentGroupId } from "../redux/actions/actionCreators";
+import Swipeout from "react-native-swipeout";
 
 function GroupsScreen({ navigation, loggedUserId, addGroup, groups, updateCurrentGroupId }) {
   useEffect(() => {
@@ -14,6 +15,17 @@ function GroupsScreen({ navigation, loggedUserId, addGroup, groups, updateCurren
   }, []);
 
   const areGroupsAvailable = Object.keys(groups).length > 0;
+
+  let deleteButtons = [
+    {
+      text: "Delete",
+      backgroundColor: "red",
+      underlayColor: "rgba(0, 0, 0, 1, 0.5)",
+      onPress: () => {
+        alert("Group deleted");
+      },
+    },
+  ];
 
   return (
     <ScrollView>
@@ -23,22 +35,23 @@ function GroupsScreen({ navigation, loggedUserId, addGroup, groups, updateCurren
         Object.keys(groups).map((groupKey, i) => {
           let group = groups[groupKey];
           return (
-            <ListItem
-              key={i}
-              bottomDivider
-              onPress={() => {
-                updateCurrentGroupId(groupKey);
-                navigation.navigate("Home", { screen: "SwipeScreen", params: { screen: "Swipe" } });
-              }}
-            >
-              <Avatar source={{ uri: group.avatarUrl }} size="large" rounded />
-              <ListItem.Content>
-                <ListItem.Title>{group.name}</ListItem.Title>
-                <ListItem.Subtitle>{group.numberOfMembers}</ListItem.Subtitle>
-              </ListItem.Content>
-              {group.newSmatches !== 0 ? <SmatchesBadge newMessages={group.newMessages} newSmatches={group.newSmatches} /> : null}
-              {group.newMessages !== 0 ? <MessagesBadge newMessages={group.newMessages} /> : null}
-            </ListItem>
+            <Swipeout right={deleteButtons} autoClose={true} backgroundColor="transparent" key={i}>
+              <ListItem
+                bottomDivider
+                onPress={() => {
+                  updateCurrentGroupId(groupKey);
+                  navigation.navigate("Home", { screen: "SwipeScreen", params: { screen: "Swipe" } });
+                }}
+              >
+                <Avatar source={{ uri: group.avatarUrl }} size="large" rounded />
+                <ListItem.Content>
+                  <ListItem.Title>{group.name}</ListItem.Title>
+                  <ListItem.Subtitle>{group.numberOfMembers}</ListItem.Subtitle>
+                </ListItem.Content>
+                {group.newSmatches !== 0 ? <SmatchesBadge newMessages={group.newMessages} newSmatches={group.newSmatches} /> : null}
+                {group.newMessages !== 0 ? <MessagesBadge newMessages={group.newMessages} /> : null}
+              </ListItem>
+            </Swipeout>
           );
         })
       )}
@@ -48,7 +61,7 @@ function GroupsScreen({ navigation, loggedUserId, addGroup, groups, updateCurren
 
 const mapStateToProps = (state) => ({
   loggedUserId: state.authentication.id,
-  groups: state.groupsInfo.groups,
+  groups: state.groups.groups,
 });
 const mapDispatchToProps = { addGroup, updateCurrentGroupId };
 export default connect(mapStateToProps, mapDispatchToProps)(GroupsScreen);
