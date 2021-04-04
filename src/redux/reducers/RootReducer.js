@@ -7,6 +7,8 @@ import profilePictureIndexReducer from "./ProfilePictureIndex";
 import matchesReducer from "./MatchesReducer";
 import groupsReducer from "./GroupsReducer";
 import authReducer from "./AuthReducer";
+import profilesReducer from "./ProfilesReducer";
+
 
 const persistConfig = {
   key: "root",
@@ -15,10 +17,11 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   authentication: authReducer,
-  groupsInfo: groupsReducer,
+  groups: groupsReducer,
   modalVisible: modalVisibleReducer,
   profilePictureIndex: profilePictureIndexReducer,
   matches: matchesReducer,
+  profiles: profilesReducer,
 });
 
 export default persistReducer(persistConfig, rootReducer);

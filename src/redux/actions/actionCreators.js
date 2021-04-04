@@ -4,7 +4,7 @@ import {
   DELETE_MATCH,
   MODAL_VISIBLE,
   PROFILE_INDEX,
-  RESET_GROUPS_INFO,
+  RESET_GROUPS,
   SET_LOGIN_TOKEN,
   UPDATE_CURRENT_GROUP_ID, REMOVE_FIRST_PROFILE, ADD_PROFILE, RESET_MATCHES,
 } from "./actions";
@@ -74,7 +74,7 @@ export function updateCurrentGroupId(groupId) {
   };
 }
 
-export function addProfile(id, name, age, sex, imageUrl) {
+export function addProfile(id, name, age, sex, imageUrl, currentGroupId) {
   return {
     type: ADD_PROFILE,
     payload: {
@@ -89,17 +89,19 @@ export function addProfile(id, name, age, sex, imageUrl) {
       ],
       pictures: [imageUrl],
     },
+    currentGroupId: currentGroupId
   };
 }
 
-export function removeFirstProfile() {
+export function removeFirstProfile(currentGroupId) {
   return {
     type: REMOVE_FIRST_PROFILE,
+    currentGroupId: currentGroupId
   };
 }
 
-export function resetGroupsInfo() {
+export function resetGroups() {
   return {
-    type: RESET_GROUPS_INFO,
+    type: RESET_GROUPS,
   };
 }
