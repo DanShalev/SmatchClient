@@ -3,11 +3,11 @@ import { Avatar, ListItem } from "react-native-elements";
 import React from "react";
 
 import { MessagesBadge, SingleSmatchBadge } from "../components/Badges";
-import { deleteMatch } from "../redux/actions/actionCreators";
+import { deleteMatch, updateCurrentConversationId } from "../redux/actions/actionCreators";
 import { connect } from "react-redux";
 import Swipeout from "react-native-swipeout";
 
-function MatchesScreen({ navigation, currentGroupId, matches }) {
+function MatchesScreen({ navigation, currentGroupId, matches, updateCurrentConversationId }) {
   const profiles = matches.matches[currentGroupId];
   const matchesExist = profiles !== undefined && profiles.length !== 0 ? true : undefined;
 
@@ -28,8 +28,19 @@ function MatchesScreen({ navigation, currentGroupId, matches }) {
         {matchesExist ? (
           <>
             {profiles.map((profile, i) => (
-              <Swipeout right={unmatchButtons} autoClose={true} backgroundColor="transparent" key={i}>
-                <ListItem bottomDivider onPress={() => navigation.navigate("ConversationScreen")}>
+              <Swipeout
+                right={unmatchButtons}
+                autoClose={true}
+                backgroundColor="transparent"
+                key={i}
+              >
+                <ListItem
+                  bottomDivider
+                  onPress={() => {
+                    updateCurrentConversationId(profile, currentGroupId);
+                    navigation.navigate("ConversationScreen");
+                  }}
+                >
                   <Avatar
                     source={{ uri: profile.pictures[0] }}
                     size="large"
@@ -59,11 +70,7 @@ const mapStateToProps = (state) => ({
   matches: state.matches,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  deleteMatch(matchId) {
-    dispatch(deleteMatch(matchId));
-  },
-});
+const mapDispatchToProps = { deleteMatch, updateCurrentConversationId };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MatchesScreen);
 
