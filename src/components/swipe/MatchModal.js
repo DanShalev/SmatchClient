@@ -21,7 +21,7 @@ export function MatchModal({matchProfileImage, isVisible, onSwipeComplete}) {
                   <View style={styles.modalImagesRow}>
                       <Image style={styles.modalImage} source={{uri: matchProfileImage}}/>
                       {/*TODO replace mock with user image*/}
-                      <Image style={styles.modalImage} source={require("../../../mocks/images/swipe/3.jpg")}/>
+                      <Image style={styles.modalImage} source={require("../../../mocks/images/loggedInUserPhoto.png")}/>
                   </View>
                   <TouchableOpacity style={styles.messageBox}>
                       <Text style={styles.messageText}>Send a message</Text>

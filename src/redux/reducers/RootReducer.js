@@ -7,6 +7,7 @@ import profilePictureIndexReducer from "./ProfilePictureIndex";
 import matchesReducer from "./MatchesReducer";
 import groupsReducer from "./GroupsReducer";
 import authReducer from "./AuthReducer";
+import conversationsReducer from "./ConversationsReducer";
 import profilesReducer from "./ProfilesReducer";
 
 
@@ -22,6 +23,7 @@ const rootReducer = combineReducers({
   profilePictureIndex: profilePictureIndexReducer,
   matches: matchesReducer,
   profiles: profilesReducer,
+  conversations: conversationsReducer,
 });
 
 export default persistReducer(persistConfig, rootReducer);

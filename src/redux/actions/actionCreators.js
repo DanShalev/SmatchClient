@@ -6,7 +6,7 @@ import {
   PROFILE_INDEX,
   RESET_GROUPS,
   SET_LOGIN_TOKEN,
-  UPDATE_CURRENT_GROUP_ID, REMOVE_FIRST_PROFILE, ADD_PROFILE, RESET_MATCHES,
+  UPDATE_CURRENT_GROUP_ID, REMOVE_FIRST_PROFILE, ADD_PROFILE, RESET_MATCHES, UPDATE_CURRENT_CONVERSATION_ID, ADD_MESSAGE
 } from "./actions";
 
 export function setModalVisible(modalVisible) {
@@ -103,5 +103,19 @@ export function removeFirstProfile(currentGroupId) {
 export function resetGroups() {
   return {
     type: RESET_GROUPS,
+  };
+}
+
+export function updateCurrentConversationId(matchedUser, groupId) {
+  return {
+    type: UPDATE_CURRENT_CONVERSATION_ID,
+    payload: {user: matchedUser, group: groupId},
+  };
+}
+
+export function addMessage(groupId, otherUserId, msg) {
+  return {
+    type: ADD_MESSAGE,
+    payload: {groupId: groupId, otherUserId: otherUserId, message: msg},
   };
 }

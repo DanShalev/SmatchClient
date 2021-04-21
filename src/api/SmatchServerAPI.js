@@ -68,3 +68,15 @@ export async function insertDislike(groupId, userId, otherUserId) {
     printErrorDetails(error, url);
   }
 }
+
+export function initMessages(loggedUserId, groupId, otherUser, addMessage, generateGiftedChatMessage) {
+  const messages = [
+    // {message: "Hey", sender: true},
+    // {message: "Hey you!", sender: false},
+  ]; // FIXME Fetch server message here
+
+  for (let message of messages) {
+    const msg = generateGiftedChatMessage(loggedUserId, otherUser, message.message, message.sender);
+    addMessage(groupId, otherUser.id, [msg]);
+  }
+}

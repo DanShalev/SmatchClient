@@ -1,26 +1,3 @@
-const botUserAvatar = require("./images/conversation/user1_logo.png");
-
-export const conversationText = [
-  {
-    _id: 1,
-    text: "Ready to get SMATCHED?",
-    createdAt: new Date(),
-    user: {
-      _id: 2,
-      avatar: botUserAvatar,
-    },
-  },
-  {
-    _id: 3,
-    text: "Hello Developer",
-    createdAt: new Date(),
-    user: {
-      _id: 2,
-      avatar: botUserAvatar,
-    },
-  },
-];
-
 const randomQuotes = [
   {
     quote: "Life isn’t about getting and having, it’s about giving and being.",
@@ -444,18 +421,7 @@ const randomQuotes = [
   },
 ];
 
-export function generateResponse() {
-  const randomId = Math.random() * 1000000000;
+export function generateQuote() {
   const randomItem = randomQuotes[Math.floor(Math.random() * randomQuotes.length)];
-  const response = {
-    _id: randomId,
-    text: `💬\"${randomItem["quote"]}\"\n~${randomItem["author"]}`,
-    createdAt: new Date(),
-    user: {
-      _id: 2,
-      avatar: botUserAvatar,
-    },
-  };
-
-  return response;
+  return `💬\"${randomItem["quote"]}\"\n~${randomItem["author"]}`;
 }
