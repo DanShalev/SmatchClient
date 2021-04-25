@@ -8,13 +8,14 @@ import { ProfileCards } from "./profile-utils/ProfileCards";
 import { TopButtons } from "./profile-buttons/TopButtons";
 import { MatchModal } from "./MatchModal";
 import {connect} from "react-redux";
-import {addMatch, removeFirstProfile, setModalVisible} from "../../redux/actions/actionCreators";
+import {addMatch, removeFirstProfile} from "../../redux/actions/actionCreators";
 import {insertDislike, insertLike} from "../../api/SmatchServerAPI";
 
 function Profiles(props) {
   const [modalMatchData, setModalMatchData] = useState({});
+  const [modalVisible, setModalState] = useState(false);
   const [manualSwipe, setManualSwipe] = useState(null);
-  const {modalVisible, setModalState, addMatch, authId, groups, removeFirstProfile, profiles} = props;
+  const {addMatch, authId, groups, removeFirstProfile, profiles} = props;
   const refProps = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
   const currentGroupId = groups.currentGroupId;
   const currentProfiles = profiles.profiles[currentGroupId];
@@ -62,16 +63,12 @@ function Profiles(props) {
 
 const mapStateToProps = (state) => ({
   groups: state.groups,
-  modalVisible: state.modalVisible.modalVisible,
   matches: state.matches,
   authId: state.authentication.id,
   profiles: state.profiles,
 });
 
 const mapDispatchToProps = (dispatch) => ({
-  setModalState(isVisible) {
-    dispatch(setModalVisible(isVisible));
-  },
   addMatch(groupId, userProfile) {
     dispatch(addMatch(groupId, userProfile));
   },

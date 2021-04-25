@@ -1,16 +1,14 @@
 import React, {useState, useEffect} from "react";
-import {StyleSheet, View, Text, TouchableOpacity, ImageBackground, TouchableHighlight} from "react-native";
+import {StyleSheet, View, Text, TouchableOpacity, ImageBackground} from "react-native";
 import Animated from "react-native-reanimated";
 import {navigateToSmatchAccountScreen} from "../../screens/MatchesScreen";
 import {useNavigation} from "@react-navigation/native";
 import {LinearGradient} from "expo-linear-gradient";
-import {setProfileIndex} from "../../redux/actions/actionCreators";
-import {connect} from "react-redux";
 
-function Card({profile, likeOpacity = 0, nopeOpacity = 0, index, setIndex}) {
+export default function Card({profile, likeOpacity = 0, nopeOpacity = 0}) {
 
   const listSize = profile.pictures.length;
-
+  const [index, setIndex] = useState(0);
   const navigation = useNavigation();
 
   // Reset the index when profile id changes, for some reason the index is shared between all Card objects..
@@ -56,17 +54,6 @@ function Card({profile, likeOpacity = 0, nopeOpacity = 0, index, setIndex}) {
     </View>
   );
 }
-
-const mapStateToProps = (state) => ({index: state.profilePictureIndex.profilePictureIndex});
-
-const mapDispatchToProps = (dispatch) => ({
-  setIndex(index) {
-    dispatch(setProfileIndex(index))
-  }
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(Card)
-
 
 const styles = StyleSheet.create({
   imageView: {
