@@ -2,26 +2,10 @@ import {
   ADD_MATCH,
   ADD_GROUP,
   DELETE_MATCH,
-  MODAL_VISIBLE,
-  PROFILE_INDEX,
   RESET_GROUPS,
   SET_LOGIN_TOKEN,
   UPDATE_CURRENT_GROUP_ID, REMOVE_FIRST_PROFILE, ADD_PROFILE, RESET_MATCHES, UPDATE_CURRENT_CONVERSATION_ID, ADD_MESSAGE
 } from "./actions";
-
-export function setModalVisible(modalVisible) {
-  return {
-    type: MODAL_VISIBLE,
-    payload: modalVisible,
-  };
-}
-
-export function setProfileIndex(profilePictureIndex) {
-  return {
-    type: PROFILE_INDEX,
-    payload: profilePictureIndex,
-  };
-}
 
 export function resetMatches() {
   return {

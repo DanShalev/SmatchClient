@@ -1,5 +1,3 @@
-export const MODAL_VISIBLE = "MODAL_VISIBLE";
-export const PROFILE_INDEX = "PROFILE_PIC_INDEX";
 export const DELETE_MATCH = "DELETE_MATCH";
 export const ADD_MATCH = "ADD_MATCH";
 export const RESET_MATCHES = "RESET_MATCHES";
