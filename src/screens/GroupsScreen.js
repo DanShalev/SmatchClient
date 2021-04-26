@@ -1,18 +1,44 @@
+import React from "react";
+import Swipeout from "react-native-swipeout";
+import * as Notifications from "expo-notifications";
+import * as Permissions from "expo-permissions";
+
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { useEffect } from "react";
-import { getGroups } from "../api/SmatchServerAPI";
+import { getGroups, registerForPushNotifications } from "../api/SmatchServerAPI";
 import { Avatar, ListItem } from "react-native-elements";
-import React from "react";
 import { SmatchesBadge, MessagesBadge } from "../components/Badges";
 import { connect } from "react-redux";
 import colors from "../config/colors";
 import { addGroup, updateCurrentGroupId } from "../redux/actions/actionCreators";
-import Swipeout from "react-native-swipeout";
+
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: true,
+    shouldSetBadge: true,
+  }),
+});
 
 function GroupsScreen({ navigation, loggedUserId, addGroup, groups, updateCurrentGroupId }) {
   useEffect(() => {
     getGroups(loggedUserId, addGroup);
   }, []);
+
+  useEffect(() => {
+    registerForPushNotification();
+  }, []);
+
+  const registerForPushNotification = async () => {
+    try {
+      const permission = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+      if (!permission.granted) return;
+      const token = await Notifications.getExpoPushTokenAsync();
+      registerForPushNotifications(1, token);
+    } catch (error) {
+      console.log("Error getting a push token", error);
+    }
+  };
 
   const areGroupsAvailable = Object.keys(groups).length > 0;
 
