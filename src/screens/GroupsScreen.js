@@ -43,7 +43,7 @@ function GroupsScreen({ navigation, loggedUserId, addGroup, groups, updateCurren
                   navigation.navigate("Home", { screen: "SwipeScreen", params: { screen: "Swipe" } });
                 }}
               >
-                <Avatar source={{ uri: group.avatarUrl }} size="large" rounded />
+                <Avatar source={{uri: group.avatar}} size="large" rounded/>
                 <ListItem.Content>
                   <ListItem.Title>{group.name}</ListItem.Title>
                   <ListItem.Subtitle>{group.numberOfMembers}</ListItem.Subtitle>
