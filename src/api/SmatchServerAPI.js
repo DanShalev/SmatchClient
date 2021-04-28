@@ -80,3 +80,14 @@ export function initMessages(loggedUserId, groupId, otherUser, addMessage, gener
     addMessage(groupId, otherUser.id, [msg]);
   }
 }
+
+export async function getUserFieldsFromBE(userId, groupId, setFields) {
+  const url = `/group/fields/${groupId}/${userId}`;
+  try {
+    console.log(url)
+    let result = await smatchServer.get(url);
+    setFields(result.data);
+  } catch (err) {
+    printErrorDetails(err, url);
+  }
+}

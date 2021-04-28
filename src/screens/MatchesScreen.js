@@ -78,8 +78,8 @@ export function navigateToSmatchAccountScreen(navigation, profile) {
   navigation.navigate("SmatchAccountScreen", {
     image: profile.pictures[0],
     name: profile.name,
+    id: profile.id,
     lastSeen: profile.lastSeen,
-    fields: profile.fields,
   });
 }
 
