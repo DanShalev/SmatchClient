@@ -91,3 +91,14 @@ export async function getUserFieldsFromBE(userId, groupId, setFields) {
     printErrorDetails(err, url);
   }
 }
+
+export async function getUserFieldsFromBE(userId, groupId, setFields) {
+  const url = `/group/fields/${groupId}/${userId}`;
+  try {
+    console.log(url)
+    let result = await smatchServer.get(url);
+    setFields(result.data);
+  } catch (err) {
+    printErrorDetails(err, url);
+  }
+}
