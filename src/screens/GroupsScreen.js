@@ -34,7 +34,7 @@ function GroupsScreen({ navigation, loggedUserId, addGroup, groups, updateCurren
       const permission = await Permissions.askAsync(Permissions.NOTIFICATIONS);
       if (!permission.granted) return;
       const token = await Notifications.getExpoPushTokenAsync();
-      registerForPushNotifications(1, token);
+      registerForPushNotifications(loggedUserId, token);
     } catch (error) {
       console.log("Error getting a push token", error);
     }

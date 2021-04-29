@@ -177,8 +177,6 @@ async function likeEventPostProcess(removeFirstProfile, profiles, setModalMatchD
     addMatch(currentGroupId, lastProfile);
     setModalState(true);
     setModalMatchData(lastProfile);
-    await sendPushNotifications(authId);
-    await sendPushNotifications(lastProfile.id);
   }
   removeFirstProfile(currentGroupId);
 }
