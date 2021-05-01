@@ -1,9 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import colors from "../config/colors";
 import { LinearGradient } from "expo-linear-gradient";
+import { connect } from "react-redux";
+import { getUserFieldsFromBE } from "../api/SmatchServerAPI";
 
-export default function SmatchAccountScreen({ route }) {
+function SmatchAccountScreen({ route, currentGroupId }) {
+  const [fields, setFields] = useState([]);
+
+  useEffect(() => {
+    getUserFieldsFromBE(route.params.id, currentGroupId, setFields);
+  }, [route]);
+
   return (
     <ScrollView style={styles.background}>
       <ImageBackground
@@ -19,15 +27,20 @@ export default function SmatchAccountScreen({ route }) {
       <View style={styles.titleView}>
         <Text style={styles.titleText}> Info </Text>
       </View>
-      {route.params.fields.map((l, i) => (
+      {fields.map((l, i) => (
         <TouchableOpacity style={styles.field} key={i}>
-          <Text style={styles.fieldValue}> {l.value} </Text>
-          <Text style={styles.fieldName}> {l.title} </Text>
+          <Text style={styles.fieldValue}> {l.data} </Text>
+          <Text style={styles.fieldName}> {l.name} </Text>
         </TouchableOpacity>
       ))}
     </ScrollView>
   );
 }
+
+const mapStateToProps = (state) => ({
+  currentGroupId: state.groups.currentGroupId,
+});
+export default connect(mapStateToProps, null)(SmatchAccountScreen);
 
 const styles = StyleSheet.create({
   background: {
