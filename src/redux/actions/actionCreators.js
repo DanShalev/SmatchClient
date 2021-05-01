@@ -6,6 +6,7 @@ import {
   SET_LOGIN_TOKEN,
   UPDATE_CURRENT_GROUP_ID, REMOVE_FIRST_PROFILE, ADD_PROFILE, RESET_MATCHES, UPDATE_CURRENT_CONVERSATION_ID, ADD_MESSAGE
 } from "./actions";
+import {appendImagePrefix, appendImagePrefixes} from "./actionUtils";
 
 export function resetMatches() {
   return {
@@ -37,13 +38,14 @@ export function setUserId(userId) {
   };
 }
 
-export function addGroup(groupId, name, avatarUrl, numberOfMembers, fields) {
+export function addGroup(groupId, name, avatar, numberOfMembers, fields) {
+  avatar = appendImagePrefix(avatar);
   return {
     type: ADD_GROUP,
     payload: {
       currentGroupId: groupId,
       name,
-      avatarUrl,
+      avatar,
       numberOfMembers,
       fields,
       newSmatches: 0,
@@ -51,6 +53,7 @@ export function addGroup(groupId, name, avatarUrl, numberOfMembers, fields) {
     },
   };
 }
+
 export function updateCurrentGroupId(groupId) {
   return {
     type: UPDATE_CURRENT_GROUP_ID,
@@ -58,7 +61,8 @@ export function updateCurrentGroupId(groupId) {
   };
 }
 
-export function addProfile(id, name, age, sex, imageUrl, currentGroupId) {
+export function addProfile(id, name, age, sex, image1, image2, image3, currentGroupId) {
+  let images = appendImagePrefixes([image1, image2, image3])
   return {
     type: ADD_PROFILE,
     payload: {
@@ -68,10 +72,10 @@ export function addProfile(id, name, age, sex, imageUrl, currentGroupId) {
       newMessages: 0,
       newSmatch: false,
       fields: [
-         { title: "Age", value: age },
-         { title: "Sex", value: sex },
+        {title: "Age", value: age},
+        {title: "Sex", value: sex},
       ],
-      pictures: [imageUrl],
+      pictures: [...images],
     },
     currentGroupId: currentGroupId
   };
