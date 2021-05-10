@@ -19,7 +19,7 @@ export async function getProfiles(groupId, userId, addProfile) {
   try {
     let result = await smatchServer.get(url);
     for (let profile of result.data) {
-      addProfile(profile.id, profile.name, profile.age, profile.sex, profile.imageUrl, groupId);
+      addProfile(profile.id, profile.name, profile.age, profile.sex, profile.image1, profile.image2, profile.image3, groupId);
     }
     return true;
   } catch (err) {
@@ -33,7 +33,7 @@ export async function getGroups(userId, addGroup) {
   try {
     let result = await smatchServer.get(url);
     for (let group of result.data) {
-      addGroup(group.id, group.name, group.avatarUrl, group.numberOfMembers, group.fields);
+      addGroup(group.id, group.name, group.avatar, group.numberOfMembers, group.fields);
     }
   } catch (err) {
     printErrorDetails(error, url);
