@@ -17,6 +17,7 @@ export default function InputFieldDynamic({ setListOfFields }) {
         style={styles.inputFieldText}
         onChangeText={(text) => setCurrentField(text)}
         value={currentField}
+        placeholder={"Add group field..."}
       />
       <Icon
         name="pluscircleo"
@@ -24,7 +25,9 @@ export default function InputFieldDynamic({ setListOfFields }) {
         color={colors.black}
         style={styles.inputFieldIcon}
         onPress={() => {
-          handleAddField(currentField);
+          if (currentField) {
+            handleAddField(currentField);
+          }
         }}
       />
     </View>
@@ -35,12 +38,13 @@ const styles = StyleSheet.create({
   inputFieldView: {
     flexDirection: "row",
     justifyContent: "center",
+    marginTop: 50
   },
   inputFieldText: {
     height: 40,
     width: 200,
-    borderRadius: 17,
-    backgroundColor: colors.inputBox,
+    borderRadius: 15,
+    backgroundColor: "lightgrey",
     textAlign: "center",
     fontSize: 17,
     marginTop: 12,

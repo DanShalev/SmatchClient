@@ -43,8 +43,13 @@ export async function getGroups(userId, addGroup) {
 
 export async function createGroup(group) {
   const url = `/group/create`;
+  let config = {
+    headers: {
+      auth: group.auth,
+    }
+  }
   try {
-    return await smatchServer.post(url, group);
+    return await smatchServer.post(url, group, config);
   } catch (err) {
     printErrorDetails(error, url);
   }
