@@ -1,16 +1,17 @@
 import {TouchableOpacity} from "react-native-gesture-handler";
 import {StyleSheet, Text} from "react-native";
-import React from "react";
+import React, {useEffect} from "react";
 import colors from "../../config/colors";
 import {createGroup} from "../../api/SmatchServerAPI";
 import {useNavigation} from "@react-navigation/native";
 
 function handleCreateGroup(groupInfo, navigation, groupSetters) {
-    createGroup(groupInfo).then(() => alert("Group created"));
-    navigation.navigate("Groups")
-    groupSetters.setName("")
-    groupSetters.setDescription("")
-    groupSetters.setFields([])
+  createGroup(groupInfo).then(() => alert("Group created"));
+  groupSetters.setName("")
+  groupSetters.setDescription("")
+  groupSetters.setFields([])
+  groupSetters.setImage(null)
+  navigation.navigate("Groups")
 }
 
 export default function CreateGroupButton({ groupInfo, groupSetters }) {
@@ -19,22 +20,23 @@ export default function CreateGroupButton({ groupInfo, groupSetters }) {
   return (
     <TouchableOpacity
       onPress={() => {
-          handleCreateGroup(groupInfo, navigation, groupSetters);
+        handleCreateGroup(groupInfo, navigation, groupSetters);
       }}
       style={styles.createGroupButton}
     >
-      <Text>Create group</Text>
+      <Text style={{fontSize: 18, color: "white"}}>Done</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   createGroupButton: {
-    marginTop: 30,
+    width: 250,
+    marginTop: 80,
     alignItems: "center",
     backgroundColor: colors.secondary,
     padding: 10,
-    borderRadius: 17,
+    borderRadius: 15,
     margin: 15,
   }
 });
