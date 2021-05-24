@@ -23,10 +23,10 @@ export function setDrawerNavBarProperties() {
 }
 
 export function setStackNavBarProperties() {
-  const gestureDisabledProps = {...NavBarProperties(), gestureEnabled: false};  // Disable "go-back-swipe-gesture"
+  const gestureDisabledProps = { ...NavBarProperties(), gestureEnabled: false }; // Disable "go-back-swipe-gesture"
 
   return {
-    screenOptions: () => gestureDisabledProps
+    screenOptions: () => gestureDisabledProps,
   };
 }
 
@@ -44,7 +44,7 @@ export function setTabNavigationProperties() {
             iconName = "ios-people";
           } else if (route.name === "Browse") {
             iconName = "ios-search";
-          } else if (route.name === "Swipe") {
+          } else if (route.name === "Profiles") {
             iconName = "ios-infinite";
           } else if (route.name === "Matches") {
             iconName = "ios-chatbubbles";

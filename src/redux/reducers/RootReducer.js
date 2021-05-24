@@ -2,11 +2,9 @@ import { persistReducer } from "redux-persist";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { combineReducers } from "redux";
 
-import matchesReducer from "./MatchesReducer";
-import groupsReducer from "./GroupsReducer";
 import authReducer from "./AuthReducer";
 import conversationsReducer from "./ConversationsReducer";
-import profilesReducer from "./ProfilesReducer";
+import mainReducer from "./MainReducer";
 
 
 const persistConfig = {
@@ -16,9 +14,7 @@ const persistConfig = {
 
 const rootReducer = combineReducers({
   authentication: authReducer,
-  groups: groupsReducer,
-  matches: matchesReducer,
-  profiles: profilesReducer,
+  mainReducer: mainReducer,
   conversations: conversationsReducer,
 });
 

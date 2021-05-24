@@ -3,12 +3,12 @@ import { Avatar, ListItem } from "react-native-elements";
 import React from "react";
 
 import { MessagesBadge, SingleSmatchBadge } from "../components/Badges";
-import { deleteMatch, updateCurrentConversationId } from "../redux/actions/actionCreators";
+import { resetSmatchBadge, updateCurrentConversationId } from "../redux/actions/actionCreators";
 import { connect } from "react-redux";
 import Swipeout from "react-native-swipeout";
 
-function MatchesScreen({ navigation, currentGroupId, matches, updateCurrentConversationId }) {
-  const profiles = matches.matches[currentGroupId];
+function MatchesScreen({ navigation, currentGroupId, matches, updateCurrentConversationId, resetSmatchBadge }) {
+  const profiles = matches[currentGroupId];
   const matchesExist = profiles !== undefined && profiles.length !== 0 ? true : undefined;
 
   let unmatchButtons = [
@@ -28,16 +28,12 @@ function MatchesScreen({ navigation, currentGroupId, matches, updateCurrentConve
         {matchesExist ? (
           <>
             {profiles.map((profile, i) => (
-              <Swipeout
-                right={unmatchButtons}
-                autoClose={true}
-                backgroundColor="transparent"
-                key={i}
-              >
+              <Swipeout right={unmatchButtons} autoClose={true} backgroundColor="transparent" key={i}>
                 <ListItem
                   bottomDivider
                   onPress={() => {
                     updateCurrentConversationId(profile, currentGroupId);
+                    resetSmatchBadge(profile.id);
                     navigation.navigate("ConversationScreen");
                   }}
                 >
@@ -66,11 +62,11 @@ function MatchesScreen({ navigation, currentGroupId, matches, updateCurrentConve
 }
 
 const mapStateToProps = (state) => ({
-  currentGroupId: state.groups.currentGroupId,
-  matches: state.matches,
+  currentGroupId: state.mainReducer.currentGroupId,
+  matches: state.mainReducer.matches,
 });
 
-const mapDispatchToProps = { deleteMatch, updateCurrentConversationId };
+const mapDispatchToProps = { updateCurrentConversationId, resetSmatchBadge };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MatchesScreen);
 
