@@ -38,7 +38,7 @@ function SmatchAccountScreen({ route, currentGroupId }) {
 }
 
 const mapStateToProps = (state) => ({
-  currentGroupId: state.groups.currentGroupId,
+  currentGroupId: state.mainReducer.currentGroupId,
 });
 export default connect(mapStateToProps, null)(SmatchAccountScreen);
 

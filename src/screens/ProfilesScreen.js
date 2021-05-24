@@ -2,23 +2,22 @@ import React, { useRef, useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import Animated from "react-native-reanimated";
 
-import { initAnimation, initAnimationProps } from "../utils/SwipingAnimation";
-import { BottomButtons } from "./profile-buttons/BottomButtons";
-import { ProfileCards } from "./profile-utils/ProfileCards";
-import { TopButtons } from "./profile-buttons/TopButtons";
-import { MatchModal } from "./MatchModal";
+import { initAnimation, initAnimationProps } from "../components/utils/SwipingAnimation";
+import { BottomButtons } from "../components/swipe/profile-buttons/BottomButtons";
+import { ProfileCards } from "../components/swipe/profile-utils/ProfileCards";
+import { TopButtons } from "../components/swipe/profile-buttons/TopButtons";
+import { MatchModal } from "../components/swipe/MatchModal";
 import { connect } from "react-redux";
-import { addMatch, removeFirstProfile } from "../../redux/actions/actionCreators";
-import { insertDislike, insertLike } from "../../api/SmatchServerAPI";
+import { addMatch, removeFirstProfile } from "../redux/actions/actionCreators";
+import { insertDislike, insertLike } from "../api/SmatchServerAPI";
 
-function Profiles(props) {
+function ProfilesScreen(props) {
   const [modalMatchData, setModalMatchData] = useState({});
   const [modalVisible, setModalState] = useState(false);
   const [manualSwipe, setManualSwipe] = useState(null);
-  const { addMatch, authId, groups, removeFirstProfile, profiles } = props;
+  const { authId, currentGroupId, profiles, addMatch, removeFirstProfile } = props;
   const refProps = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
-  const currentGroupId = groups.currentGroupId;
-  const currentProfiles = profiles.profiles[currentGroupId];
+  const currentProfiles = profiles[currentGroupId];
 
   initProps(refProps);
   refProps.current = initAnimation(
@@ -72,10 +71,9 @@ function Profiles(props) {
 }
 
 const mapStateToProps = (state) => ({
-  groups: state.groups,
-  matches: state.matches,
   authId: state.authentication.id,
-  profiles: state.profiles,
+  currentGroupId: state.mainReducer.currentGroupId,
+  profiles: state.mainReducer.profiles,
 });
 
 const mapDispatchToProps = (dispatch) => ({
@@ -87,7 +85,7 @@ const mapDispatchToProps = (dispatch) => ({
   },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(Profiles);
+export default connect(mapStateToProps, mapDispatchToProps)(ProfilesScreen);
 
 function initProps(props) {
   if (!props.current) {
@@ -171,7 +169,7 @@ async function likeEventPostProcess(removeFirstProfile, profiles, setModalMatchD
 
   let res = await insertLike(currentGroupId, authId, lastProfile.id);
   if (res.data) {
-    addMatch(currentGroupId, lastProfile);
+    addMatch(lastProfile);
     setModalState(true);
     setModalMatchData(lastProfile);
   }

@@ -5,12 +5,12 @@ import * as Permissions from "expo-permissions";
 
 import { ScrollView, StyleSheet, Text } from "react-native";
 import { useEffect } from "react";
-import { getGroups, registerForPushNotifications } from "../api/SmatchServerAPI";
+import { registerForPushNotifications, updateGroupsProfilesAndMatches } from "../api/SmatchServerAPI";
 import { Avatar, ListItem } from "react-native-elements";
 import { SmatchesBadge, MessagesBadge } from "../components/Badges";
 import { connect } from "react-redux";
 import colors from "../config/colors";
-import { addGroup, updateCurrentGroupId } from "../redux/actions/actionCreators";
+import { updateCurrentGroupId, updateProfiles, updateMatches, updateGroups } from "../redux/actions/actionCreators";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -20,9 +20,9 @@ Notifications.setNotificationHandler({
   }),
 });
 
-function GroupsScreen({ navigation, loggedUserId, addGroup, groups, updateCurrentGroupId }) {
+function GroupsScreen({ navigation, loggedUserId, groups, updateCurrentGroupId, updateGroups, updateProfiles, updateMatches }) {
   useEffect(() => {
-    getGroups(loggedUserId, addGroup);
+    updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches);
   }, []);
 
   useEffect(() => {
@@ -69,7 +69,7 @@ function GroupsScreen({ navigation, loggedUserId, addGroup, groups, updateCurren
                   navigation.navigate("Home", { screen: "SwipeScreen", params: { screen: "Swipe" } });
                 }}
               >
-                <Avatar source={{uri: group.avatar}} size="large" rounded/>
+                <Avatar source={{ uri: group.avatar }} size="large" rounded />
                 <ListItem.Content>
                   <ListItem.Title>{group.name}</ListItem.Title>
                   <ListItem.Subtitle>{group.numberOfMembers}</ListItem.Subtitle>
@@ -87,9 +87,9 @@ function GroupsScreen({ navigation, loggedUserId, addGroup, groups, updateCurren
 
 const mapStateToProps = (state) => ({
   loggedUserId: state.authentication.id,
-  groups: state.groups.groups,
+  groups: state.mainReducer.groups,
 });
-const mapDispatchToProps = { addGroup, updateCurrentGroupId };
+const mapDispatchToProps = { updateGroups, updateProfiles, updateMatches, updateCurrentGroupId };
 export default connect(mapStateToProps, mapDispatchToProps)(GroupsScreen);
 
 function ServerOfflineErrorMessage() {

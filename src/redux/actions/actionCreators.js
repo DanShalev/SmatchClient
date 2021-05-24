@@ -1,12 +1,17 @@
 import {
   ADD_MATCH,
-  ADD_GROUP,
   DELETE_MATCH,
-  RESET_GROUPS,
   SET_LOGIN_TOKEN,
-  UPDATE_CURRENT_GROUP_ID, REMOVE_FIRST_PROFILE, ADD_PROFILE, RESET_MATCHES, UPDATE_CURRENT_CONVERSATION_ID, ADD_MESSAGE
+  UPDATE_CURRENT_GROUP_ID,
+  REMOVE_FIRST_PROFILE,
+  RESET_MATCHES,
+  UPDATE_CURRENT_CONVERSATION_ID,
+  ADD_MESSAGE,
+  UPDATE_MATCHES,
+  UPDATE_PROFILES,
+  UPDATE_GROUPS,
+  RESET_SMATCH_BADGE,
 } from "./actions";
-import {appendImagePrefix, appendImagePrefixes} from "./actionUtils";
 
 export function resetMatches() {
   return {
@@ -14,13 +19,10 @@ export function resetMatches() {
   };
 }
 
-export function addMatch(groupId, userProfile) {
+export function addMatch(match) {
   return {
     type: ADD_MATCH,
-    payload: {
-      groupId,
-      userProfile
-    },
+    match: match,
   };
 }
 
@@ -38,19 +40,24 @@ export function setUserId(userId) {
   };
 }
 
-export function addGroup(groupId, name, avatar, numberOfMembers, fields) {
-  avatar = appendImagePrefix(avatar);
+export function updateGroups(groups) {
   return {
-    type: ADD_GROUP,
-    payload: {
-      currentGroupId: groupId,
-      name,
-      avatar,
-      numberOfMembers,
-      fields,
-      newSmatches: 0,
-      newMessages: 0,
-    },
+    type: UPDATE_GROUPS,
+    groups: groups,
+  };
+}
+
+export function updateProfiles(profiles) {
+  return {
+    type: UPDATE_PROFILES,
+    profiles: profiles,
+  };
+}
+
+export function updateMatches(matches) {
+  return {
+    type: UPDATE_MATCHES,
+    matches: matches,
   };
 }
 
@@ -61,49 +68,30 @@ export function updateCurrentGroupId(groupId) {
   };
 }
 
-export function addProfile(id, name, age, sex, image1, image2, image3, currentGroupId) {
-  let images = appendImagePrefixes([image1, image2, image3])
-  return {
-    type: ADD_PROFILE,
-    payload: {
-      id,
-      name,
-      lastSeen: "last seen 5 minutes ago",
-      newMessages: 0,
-      newSmatch: false,
-      fields: [
-        {title: "Age", value: age},
-        {title: "Sex", value: sex},
-      ],
-      pictures: [...images],
-    },
-    currentGroupId: currentGroupId
-  };
-}
-
 export function removeFirstProfile(currentGroupId) {
   return {
     type: REMOVE_FIRST_PROFILE,
-    currentGroupId: currentGroupId
-  };
-}
-
-export function resetGroups() {
-  return {
-    type: RESET_GROUPS,
+    currentGroupId: currentGroupId,
   };
 }
 
 export function updateCurrentConversationId(matchedUser, groupId) {
   return {
     type: UPDATE_CURRENT_CONVERSATION_ID,
-    payload: {user: matchedUser, group: groupId},
+    payload: { user: matchedUser, group: groupId },
   };
 }
 
 export function addMessage(groupId, otherUserId, msg) {
   return {
     type: ADD_MESSAGE,
-    payload: {groupId: groupId, otherUserId: otherUserId, message: msg},
+    payload: { groupId: groupId, otherUserId: otherUserId, message: msg },
+  };
+}
+
+export function resetSmatchBadge(matchId) {
+  return {
+    type: RESET_SMATCH_BADGE,
+    matchId: matchId,
   };
 }

@@ -14,32 +14,42 @@ function printErrorDetails(error, url) {
   }
 }
 
-export async function getProfiles(groupId, userId, addProfile) {
-  const url = `/group/${groupId}/${userId}`;
+export function updateGroupsProfilesAndMatches(userId, updateGroups, updateProfiles, updateMatches){
+  getAndUpdateGroups(userId, updateGroups);
+  getAndUpdateProfiles(userId, updateProfiles);
+  getAndUpdateMatches(userId, updateMatches);
+}
+
+export function getAndUpdateGroups(userId, updateGroups) {
+  const url = `/subscription/user/${userId}`;
   try {
-    let result = await smatchServer.get(url);
-    for (let profile of result.data) {
-      addProfile(profile.id, profile.name, profile.age, profile.sex, profile.image1, profile.image2, profile.image3, groupId);
-    }
-    return true;
+    smatchServer.get(url).then(result => updateGroups(result.data))
   } catch (err) {
     printErrorDetails(error, url);
     return null;
   }
 }
 
-export async function getGroups(userId, addGroup) {
-  const url = `/subscription/user/${userId}`;
+export function getAndUpdateProfiles(userId, updateProfiles) {
+  const url = `/group/profiles/${userId}`;
   try {
-    let result = await smatchServer.get(url);
-    for (let group of result.data) {
-      addGroup(group.id, group.name, group.avatar, group.numberOfMembers, group.fields);
-    }
+    smatchServer.get(url).then(result => {updateProfiles(result.data)});
   } catch (err) {
     printErrorDetails(error, url);
     return null;
   }
 }
+
+export function getAndUpdateMatches(userId, updateMatches) {
+  const url = `/group/matches/${userId}`;
+  try {
+    smatchServer.get(url).then(result => {updateMatches(result.data)});
+  } catch (err) {
+    printErrorDetails(error, url);
+    return null;
+  }
+}
+
 
 export async function createGroup(group) {
   const url = `/group/create`;

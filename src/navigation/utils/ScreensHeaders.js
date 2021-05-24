@@ -34,11 +34,10 @@ export function setSmatchAccountScreenHeaders() {
   return {
     options: {
       headerLeft: () => <SmatchLogoHeader />,
-      headerRight: () => <BackArrowHeader navigateLocation={"Swipe"} />,
+      headerRight: () => <BackArrowHeader navigateLocation={"Profiles"} />,
     },
   };
 }
-
 
 export function setCreateGroupScreenHeaders() {
   return {
