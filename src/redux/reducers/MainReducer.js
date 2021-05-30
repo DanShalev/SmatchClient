@@ -6,6 +6,8 @@ import {
   UPDATE_GROUPS,
   UPDATE_MATCHES,
   UPDATE_PROFILES,
+  ADD_MESSAGE,
+  UPDATE_CURRENT_CONVERSATION_ID
 } from "../actions/actions";
 import { appendImagePrefix, appendImagePrefixes } from "../actions/actionUtils";
 
@@ -14,6 +16,21 @@ const initialState = {
   groups: {},
   profiles: {},
   matches: {},
+  conversation: {
+    /*
+      * This reducer will hold an hash map of groups, and for each group it will hold an hash map for each user.
+      * For each user, all messages will be saved there.
+      * Example (user id 1, group 99):
+      * groups: {
+      *         99: {
+      *             2: [{text: "hey there", sender: true}]
+      *           }
+      *       }
+      * }
+      * */
+    conversationsMapByGroupAndUser: {},
+    currentConversationId: {user: null, group: null},
+  }
 };
 
 const mainReducer = (state = initialState, action) => {
@@ -163,6 +180,35 @@ const mainReducer = (state = initialState, action) => {
           ...state.matches,
           [state.currentGroupId]: currentMatches,
         },
+      };
+    case ADD_MESSAGE:
+      const groupId = action.payload.groupId;
+      const userId = action.payload.otherUserId;
+
+      return {
+        ...state,
+        conversation: {
+          ...state.conversation,
+          conversationsMapByGroupAndUser: {
+            ...state.conversation.conversationsMapByGroupAndUser,
+            [groupId]: (groupId in state.conversation.conversationsMapByGroupAndUser) ? {
+              ...state.conversation.conversationsMapByGroupAndUser[groupId],
+              [userId]: (userId in state.conversation.conversationsMapByGroupAndUser[groupId]) ?
+                        [...state.conversation.conversationsMapByGroupAndUser[groupId][userId], ...action.payload.message] :
+                        [...action.payload.message]
+            } : {
+              [userId]: [...action.payload.message]
+            },
+          },
+        }
+      };
+    case UPDATE_CURRENT_CONVERSATION_ID:
+      return {
+        ...state,
+        conversation: {
+          ...state.conversation,
+          currentConversationId: action.payload
+        }
       };
     default:
       return state;

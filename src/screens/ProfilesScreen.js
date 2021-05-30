@@ -5,7 +5,6 @@ import Animated from "react-native-reanimated";
 import { initAnimation, initAnimationProps } from "../components/utils/SwipingAnimation";
 import { BottomButtons } from "../components/swipe/profile-buttons/BottomButtons";
 import { ProfileCards } from "../components/swipe/profile-utils/ProfileCards";
-import { TopButtons } from "../components/swipe/profile-buttons/TopButtons";
 import { MatchModal } from "../components/swipe/MatchModal";
 import { connect } from "react-redux";
 import { addMatch, removeFirstProfile } from "../redux/actions/actionCreators";
@@ -29,7 +28,6 @@ function ProfilesScreen(props) {
 
   return (
     <SafeAreaView style={styles.container}>
-      <TopButtons />
       {nextProfileExist ? (
         <>
           <ProfileCards
