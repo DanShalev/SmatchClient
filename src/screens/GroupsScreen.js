@@ -10,7 +10,7 @@ import { Avatar, ListItem } from "react-native-elements";
 import { SmatchesBadge, MessagesBadge } from "../components/Badges";
 import { connect } from "react-redux";
 import colors from "../config/colors";
-import { updateCurrentGroupId, updateProfiles, updateMatches, updateGroups } from "../redux/actions/actionCreators";
+import { updateCurrentGroupId, updateProfiles, updateMatches, updateGroups, addMessage } from "../redux/actions/actionCreators";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -20,9 +20,9 @@ Notifications.setNotificationHandler({
   }),
 });
 
-function GroupsScreen({ navigation, loggedUserId, groups, updateCurrentGroupId, updateGroups, updateProfiles, updateMatches }) {
+function GroupsScreen({ navigation, loggedUserId, groups, updateCurrentGroupId, updateGroups, updateProfiles, updateMatches, addMessage }) {
   useEffect(() => {
-    updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches);
+    updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
   }, []);
 
   useEffect(() => {
@@ -89,7 +89,7 @@ const mapStateToProps = (state) => ({
   loggedUserId: state.authentication.id,
   groups: state.mainReducer.groups,
 });
-const mapDispatchToProps = { updateGroups, updateProfiles, updateMatches, updateCurrentGroupId };
+const mapDispatchToProps = { updateGroups, updateProfiles, updateMatches, addMessage, updateCurrentGroupId };
 export default connect(mapStateToProps, mapDispatchToProps)(GroupsScreen);
 
 function ServerOfflineErrorMessage() {

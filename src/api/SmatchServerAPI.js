@@ -1,4 +1,5 @@
 import smatchServer from "./SmatchServer";
+import { generateReceiverChatMessage } from "../components/utils/ChatUtils";
 
 function printErrorDetails(error, url) {
   if (error.response) {
@@ -14,17 +15,18 @@ function printErrorDetails(error, url) {
   }
 }
 
-export function updateGroupsProfilesAndMatches(userId, updateGroups, updateProfiles, updateMatches){
+export function updateGroupsProfilesAndMatches(userId, updateGroups, updateProfiles, updateMatches, addMessage) {
   getAndUpdateGroups(userId, updateGroups);
   getAndUpdateProfiles(userId, updateProfiles);
   getAndUpdateMatches(userId, updateMatches);
+  getAndUpdateConversations(userId, addMessage);
 }
 
 export function getAndUpdateGroups(userId, updateGroups) {
   const url = `/subscription/user/${userId}`;
   try {
     smatchServer.get(url).then(result => updateGroups(result.data))
-  } catch (err) {
+  } catch (error) {
     printErrorDetails(error, url);
     return null;
   }
@@ -34,7 +36,7 @@ export function getAndUpdateProfiles(userId, updateProfiles) {
   const url = `/group/profiles/${userId}`;
   try {
     smatchServer.get(url).then(result => {updateProfiles(result.data)});
-  } catch (err) {
+  } catch (error) {
     printErrorDetails(error, url);
     return null;
   }
@@ -44,12 +46,29 @@ export function getAndUpdateMatches(userId, updateMatches) {
   const url = `/group/matches/${userId}`;
   try {
     smatchServer.get(url).then(result => {updateMatches(result.data)});
-  } catch (err) {
+  } catch (error) {
     printErrorDetails(error, url);
     return null;
   }
 }
 
+export async function getAndUpdateConversations(userId, addMessage) {
+  const url = `/chat/get/${userId}`;
+  try {
+    const response = await smatchServer.get(url);
+    for (const [groupId, groupData] of Object.entries(response.data)) {
+      for (const [otherUserId, messageArray] of Object.entries(groupData)) {
+        for (const messageData of messageArray) {
+          const receiverMsg = generateReceiverChatMessage(loggedUserId, otherUser, null, message.message);
+          addMessage(groupId, otherUserId, [receiverMsg]);
+        }
+      }
+    }
+  } catch (error) {
+    printErrorDetails(error, url);
+    return null;
+  }
+}
 
 export async function createGroup(group) {
   const url = `/group/create`;
@@ -60,7 +79,7 @@ export async function createGroup(group) {
   }
   try {
     return await smatchServer.post(url, group, config);
-  } catch (err) {
+  } catch (error) {
     printErrorDetails(error, url);
   }
 }
@@ -69,7 +88,7 @@ export async function insertLike(groupId, userId, otherUserId) {
   const url = `/match/like/${groupId}/${userId}/${otherUserId}`;
   try {
     return await smatchServer.post(url);
-  } catch (err) {
+  } catch (error) {
     printErrorDetails(error, url);
   }
 }
@@ -78,20 +97,34 @@ export async function insertDislike(groupId, userId, otherUserId) {
   const url = `/match/dislike/${groupId}/${userId}/${otherUserId}`;
   try {
     return await smatchServer.post(url);
-  } catch (err) {
+  } catch (error) {
     printErrorDetails(error, url);
   }
 }
 
-export function initMessages(loggedUserId, groupId, otherUser, addMessage, generateGiftedChatMessage) {
-  const messages = [
-    // {message: "Hey", sender: true},
-    // {message: "Hey you!", sender: false},
-  ]; // FIXME Fetch server message here
+export function initMessages(loggedUserId, groupId, otherUser, addMessage) {
+  // TODO add server fetching of specific conversation here
+  // const messages = [
+  //   // {message: "Hey", sender: true},
+  //   // {message: "Hey you!", sender: false},
+  // ];
+  // for (let message of messages) {
+  //   const msg = generateReceiverChatMessage(loggedUserId, otherUser, null, message.message);
+  //   addMessage(groupId, otherUser.id, [msg]);
+  // }
+}
 
-  for (let message of messages) {
-    const msg = generateGiftedChatMessage(loggedUserId, otherUser, message.message, message.sender);
-    addMessage(groupId, otherUser.id, [msg]);
+export async function sendMessage(groupId, otherUser, loggedUserId, message) {
+  const url = `/chat/send`;
+  try {
+    return await smatchServer.post(url, {
+      content: message,
+      groupId: groupId,
+      receiverId: otherUser,
+      senderId: loggedUserId
+    });
+  } catch (error) {
+    printErrorDetails(error, url);
   }
 }
 
@@ -99,7 +132,7 @@ export async function registerForPushNotifications(userId, token) {
   const url = `/user/registerUserForPushNotifications/${userId}`;
   try {
     return await smatchServer.post(url, { token: token.data });
-  } catch (err) {
+  } catch (error) {
     printErrorDetails(error, url);
   }
 }
@@ -108,7 +141,7 @@ export async function sendPushNotifications(userId) {
   const url = `/user/push/${userId}`;
   try {
     return await smatchServer.post(url);
-  } catch (err) {
+  } catch (error) {
     printErrorDetails(error, url);
   }
 }
@@ -118,7 +151,7 @@ export async function getUserFieldsFromBE(userId, groupId, setFields) {
   try {
     let result = await smatchServer.get(url);
     setFields(result.data);
-  } catch (err) {
-    printErrorDetails(err, url);
+  } catch (error) {
+    printErrorDetails(error, url);
   }
 }
