@@ -1,5 +1,6 @@
 import {
-  ADD_MATCH,
+  ADD_MATCH, DELETE_GROUP, DELETE_MATCH,
+  DELETE_MATCHES_BY_GROUP_ID,
   REMOVE_FIRST_PROFILE,
   RESET_SMATCH_BADGE,
   UPDATE_CURRENT_GROUP_ID,
@@ -69,6 +70,12 @@ const mainReducer = (state = initialState, action) => {
         ...state,
         currentGroupId: action.payload,
       };
+    case DELETE_GROUP:
+      let {[action.groupId]: groupToDelete, ...restOfGroups} = state.groups;
+      return {
+        ...state,
+        groups: restOfGroups
+      };
     case UPDATE_PROFILES:
       let currentProfiles = {};
       for (let [groupId, profilesList] of Object.entries(action.profiles)) {
@@ -131,6 +138,22 @@ const mainReducer = (state = initialState, action) => {
         ...state,
         groups: currentGroups,
         matches: currentMatches,
+      };
+    case DELETE_MATCH:
+      let groupMatches = state.matches[state.currentGroupId]
+      groupMatches = groupMatches.filter((match) => match.id !== action.otherUserId)
+      return {
+        ...state,
+        matches: {
+          ...state.matches,
+          [state.currentGroupId]: groupMatches
+        }
+      };
+    case DELETE_MATCHES_BY_GROUP_ID:
+      let {[action.groupId]: matchesToDelete, ...restOfMatches} = state.matches;
+      return {
+        ...state,
+        matches: restOfMatches
       };
     case ADD_MATCH:
       let currentGroupMatches = state.matches[state.currentGroupId] || [];

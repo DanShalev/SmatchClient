@@ -1,23 +1,19 @@
 import {
   ADD_MATCH,
-  DELETE_MATCH,
   SET_LOGIN_TOKEN,
   UPDATE_CURRENT_GROUP_ID,
   REMOVE_FIRST_PROFILE,
-  RESET_MATCHES,
+  DELETE_GROUP,
   UPDATE_CURRENT_CONVERSATION_ID,
   ADD_MESSAGE,
   UPDATE_MATCHES,
   UPDATE_PROFILES,
   UPDATE_GROUPS,
   RESET_SMATCH_BADGE,
+  DELETE_MATCHES_BY_GROUP_ID,
+  DELETE_MATCH,
 } from "./actions";
 
-export function resetMatches() {
-  return {
-    type: RESET_MATCHES,
-  };
-}
 
 export function addMatch(match) {
   return {
@@ -26,10 +22,10 @@ export function addMatch(match) {
   };
 }
 
-export function deleteMatch(matchId) {
+export function deleteMatch(otherUserId) {
   return {
     type: DELETE_MATCH,
-    payload: matchId,
+    otherUserId: otherUserId,
   };
 }
 
@@ -46,6 +42,21 @@ export function updateGroups(groups) {
     groups: groups,
   };
 }
+
+export function deleteGroup(groupId) {
+  return {
+    type: DELETE_GROUP,
+    groupId: groupId,
+  };
+}
+
+export function deleteMatchesByGroupId(groupId) {
+  return {
+    type: DELETE_MATCHES_BY_GROUP_ID,
+    groupId: groupId,
+  };
+}
+
 
 export function updateProfiles(profiles) {
   return {
