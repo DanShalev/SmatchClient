@@ -15,6 +15,14 @@ function printErrorDetails(error, url) {
   }
 }
 
+const header = (userId) => {
+  return {
+    headers: {
+      userId: userId,
+    }
+  }
+}
+
 export function updateGroupsProfilesAndMatches(userId, updateGroups, updateProfiles, updateMatches, addMessage) {
   getAndUpdateGroups(userId, updateGroups);
   getAndUpdateProfiles(userId, updateProfiles);
@@ -72,13 +80,17 @@ export async function getAndUpdateConversations(userId, addMessage) {
 
 export async function createGroup(group) {
   const url = `/group/create`;
-  let config = {
-    headers: {
-      auth: group.auth,
-    }
-  }
   try {
-    return await smatchServer.post(url, group, config);
+    return await smatchServer.post(url, group, header(group.auth));
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
+
+export async function removeFromGroup(groupId, userId) {
+  const url = `/subscription/delete/${groupId}/${userId}`;
+  try {
+    return await smatchServer.delete(url);
   } catch (error) {
     printErrorDetails(error, url);
   }
@@ -97,6 +109,24 @@ export async function insertDislike(groupId, userId, otherUserId) {
   const url = `/match/dislike/${groupId}/${userId}/${otherUserId}`;
   try {
     return await smatchServer.post(url);
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
+
+export async function unmatch(groupId, userId, otherUserId) {
+  const url = `/match/update/${groupId}/${otherUserId}`;
+  try {
+    return await smatchServer.put(url, null, header(userId));
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
+
+export async function unmatchAllGroupUsers(groupId, userId) {
+  const url = `/match/update/${groupId}`;
+  try {
+    return await smatchServer.put(url, null, header(userId));
   } catch (error) {
     printErrorDetails(error, url);
   }

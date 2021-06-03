@@ -1,23 +1,35 @@
-import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
-import { Avatar, ListItem } from "react-native-elements";
+import {SafeAreaView, ScrollView, StyleSheet, Text, View} from "react-native";
+import {Avatar, ListItem} from "react-native-elements";
 import React from "react";
 
-import { MessagesBadge, SingleSmatchBadge } from "../components/Badges";
-import { resetSmatchBadge, updateCurrentConversationId } from "../redux/actions/actionCreators";
-import { connect } from "react-redux";
+import {MessagesBadge, SingleSmatchBadge} from "../components/Badges";
+import {deleteMatch, resetSmatchBadge, updateCurrentConversationId} from "../redux/actions/actionCreators";
+import {connect} from "react-redux";
 import Swipeout from "react-native-swipeout";
+import {unmatch} from "../api/SmatchServerAPI";
 
-function MatchesScreen({ navigation, currentGroupId, matches, updateCurrentConversationId, resetSmatchBadge }) {
+function MatchesScreen({
+                         loggedUserId,
+                         navigation,
+                         currentGroupId,
+                         matches,
+                         updateCurrentConversationId,
+                         resetSmatchBadge,
+                         deleteMatch
+                       }) {
   const profiles = matches[currentGroupId];
   const matchesExist = profiles !== undefined && profiles.length !== 0 ? true : undefined;
 
-  let unmatchButtons = [
+  const unmatchButtons = (otherUserId) => [
     {
       text: "Unmatch",
       backgroundColor: "red",
       underlayColor: "rgba(0, 0, 0, 1, 0.5)",
       onPress: () => {
-        alert("Unmatched");
+        unmatch(currentGroupId, loggedUserId, otherUserId)
+          .then(deleteMatch(otherUserId))
+          .catch((err) => console.error(err))
+        //TODO delete messages
       },
     },
   ];
@@ -28,7 +40,7 @@ function MatchesScreen({ navigation, currentGroupId, matches, updateCurrentConve
         {matchesExist ? (
           <>
             {profiles.map((profile, i) => (
-              <Swipeout right={unmatchButtons} autoClose={true} backgroundColor="transparent" key={i}>
+              <Swipeout right={unmatchButtons(profile.id)} autoClose={true} backgroundColor="transparent" key={i}>
                 <ListItem
                   bottomDivider
                   onPress={() => {
@@ -38,7 +50,7 @@ function MatchesScreen({ navigation, currentGroupId, matches, updateCurrentConve
                   }}
                 >
                   <Avatar
-                    source={{ uri: profile.pictures[0] }}
+                    source={{uri: profile.pictures[0]}}
                     size="large"
                     rounded
                     onPress={() => navigateToSmatchAccountScreen(navigation, profile)}
@@ -64,9 +76,10 @@ function MatchesScreen({ navigation, currentGroupId, matches, updateCurrentConve
 const mapStateToProps = (state) => ({
   currentGroupId: state.mainReducer.currentGroupId,
   matches: state.mainReducer.matches,
+  loggedUserId: state.authentication.id,
 });
 
-const mapDispatchToProps = { updateCurrentConversationId, resetSmatchBadge };
+const mapDispatchToProps = {updateCurrentConversationId, resetSmatchBadge, deleteMatch};
 
 export default connect(mapStateToProps, mapDispatchToProps)(MatchesScreen);
 
