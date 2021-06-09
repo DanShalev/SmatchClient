@@ -3,6 +3,7 @@ import { loggedInUserMockData } from "../../../mocks/LoggedInUserMockData";
 
 const initialState = {
   id: loggedInUserMockData.id,
+  loggedIn: false,
 };
 
 const authReducer = (state = initialState, action) => {

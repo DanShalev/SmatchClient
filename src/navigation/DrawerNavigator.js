@@ -3,7 +3,6 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import { setDrawerNavBarProperties } from "./utils/NavBarProperties";
 import { CreateGroupScreen } from "../screens/CreateGroupScreen";
 import { HomeScreenStackNavigator } from "./StackNavigator";
-import { NavigationContainer } from "@react-navigation/native";
 import {
   setCreateGroupScreenHeaders,
   setSettingsScreenHeaders,
@@ -18,7 +17,6 @@ const Drawer = createDrawerNavigator();
 
 export default function DrawerNavigator() {
   return (
-    <NavigationContainer>
       <Drawer.Navigator {...setDrawerNavBarProperties()}>
         <Drawer.Screen name="Home" component={HomeScreenStackNavigator} {...disableDrawerNavBar()} />
         <Drawer.Screen name="Create Group" component={CreateGroupScreen} {...setCreateGroupScreenHeaders()} />
@@ -27,7 +25,6 @@ export default function DrawerNavigator() {
         <Drawer.Screen name="Account" component={AccountScreen} {...setAccountScreenHeaders()} />
         <Drawer.Screen name="Log out" component={SettingsScreen} {...setSettingsScreenHeaders()} />
       </Drawer.Navigator>
-    </NavigationContainer>
   );
 }
 
