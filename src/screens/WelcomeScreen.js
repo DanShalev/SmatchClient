@@ -1,8 +1,12 @@
 import React from "react";
-import {Button, Image, StyleSheet, Text, View} from "react-native";
+import {Image, StyleSheet, Text, View} from "react-native";
 import { logInUsingFacebookApi } from "../api/facebook-login/facebookLoginUtils";
+import { updateAuthLogIn } from "../redux/actions/actionCreators";
+import { connect } from "react-redux";
+import Icon from 'react-native-vector-icons/FontAwesome';
+import { Button } from 'react-native-elements';
 
-function LoginScreen({ navigation }) {
+function LoginScreen({ navigation, updateAuthLogIn }) {
     return (
         <View style={styles.container}>
             <Image source={require("../../assets/WelcomeLogo.png")} style={styles.logo} />
@@ -11,7 +15,12 @@ function LoginScreen({ navigation }) {
                 <Text style={styles.introText}>Tap "Login" to start using Smatch</Text>
             </View>
             <View style={styles.form}>
-                <Button color="orange" title="Login Using Facebook" onPress={() => logInUsingFacebookApi()/*navigation.navigate("Login")*/}/>
+                <Button
+                  icon={<Icon name="facebook-square" size={15} color="white"/>}
+                  title="   Login Using Facebook"
+                  color="navy"
+                  onPress={() => logInUsingFacebookApi(updateAuthLogIn)}
+                />
             </View>
         </View>
     );
@@ -50,7 +59,11 @@ const styles = StyleSheet.create({
     }
 });
 
-export default LoginScreen;
+const mapDispatchToProps = {
+    updateAuthLogIn
+};
+export default connect(null, mapDispatchToProps)(LoginScreen);
+
 
 
 

@@ -11,7 +11,7 @@ import {
   UPDATE_GROUPS,
   RESET_SMATCH_BADGE,
   DELETE_MATCHES_BY_GROUP_ID,
-  DELETE_MATCH,
+  DELETE_MATCH, LOG_IN
 } from "./actions";
 
 
@@ -104,5 +104,11 @@ export function resetSmatchBadge(matchId) {
   return {
     type: RESET_SMATCH_BADGE,
     matchId: matchId,
+  };
+}
+
+export function updateAuthLogIn() {
+  return {
+    type: LOG_IN
   };
 }

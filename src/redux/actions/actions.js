@@ -11,3 +11,4 @@ export const UPDATE_GROUPS = "UPDATE_GROUPS";
 export const UPDATE_PROFILES = "UPDATE_PROFILES";
 export const UPDATE_MATCHES = "UPDATE_MATCHES";
 export const RESET_SMATCH_BADGE = "RESET_SMATCH_BADGE";
+export const LOG_IN = "LOG_IN";

@@ -1,4 +1,4 @@
-import { SET_LOGIN_TOKEN } from "../actions/actions";
+import { LOG_IN, SET_LOGIN_TOKEN } from "../actions/actions";
 import { loggedInUserMockData } from "../../../mocks/LoggedInUserMockData";
 
 const initialState = {
@@ -12,6 +12,11 @@ const authReducer = (state = initialState, action) => {
       return {
         ...state,
         id: [action.payload.id],
+      };
+    case LOG_IN:
+      return {
+        ...state,
+        loggedIn: true
       };
     default:
       return state;
