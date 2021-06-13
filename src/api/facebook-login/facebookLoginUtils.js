@@ -22,6 +22,17 @@ export async function logInUsingFacebookApi(updateAuthLogIn) {
   }
 }
 
+export async function logoutUsingFacebookApi() {
+  try {
+    await Facebook.initializeAsync({
+      appId: Constants.manifest.facebookAppId,  // Declared in app.json
+    });
+    await Facebook.logOutAsync();
+  } catch (props) {
+    Alert.alert(`Facebook Logout Error: ${props.message}`);
+  }
+}
+
 // TODO use facebook authenticate credentials to see if user needs to log in
-// TODO add log out
 // TODO check on loading if user need to reauthenticate or not
+// TODO change logo

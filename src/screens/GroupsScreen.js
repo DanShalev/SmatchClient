@@ -132,16 +132,14 @@ export default connect(mapStateToProps, mapDispatchToProps)(GroupsScreen);
 function ServerOfflineErrorMessage() {
   return (
     <>
-      <Text style={styles.errTextStyle}>Please load java server & ngrok to see results!</Text>
-      <Text style={styles.errTextStyle}>Groups mocks are deprecated</Text>
+      <Text style={styles.errTextStyle}>No groups found</Text>
     </>
   );
 }
 
 const styles = StyleSheet.create({
   errTextStyle: {
-    fontSize: 50,
     textAlign: "center",
-    backgroundColor: colors.secondary,
-  },
+    fontSize: 40,
+    color: "red",  },
 });

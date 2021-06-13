@@ -10,7 +10,7 @@ import {
   UPDATE_GROUPS,
   RESET_SMATCH_BADGE,
   DELETE_MATCHES_BY_GROUP_ID,
-  DELETE_MATCH, LOG_IN
+  DELETE_MATCH, LOG_IN, LOG_OUT
 } from "./actions";
 
 
@@ -103,5 +103,11 @@ export function setLoggedInCredentials(facebook_id) {
   return {
     type: LOG_IN,
     payload: { facebook_id: facebook_id },
+  };
+}
+
+export function setLoggedOutCredentials() {
+  return {
+    type: LOG_OUT,
   };
 }
