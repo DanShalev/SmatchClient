@@ -22,8 +22,9 @@ import {
   updateGroups,
   deleteGroup,
   addMessage,
-  deleteMatchesByGroupId
+  deleteMatchesByGroupId, setLoggedOutCredentials
 } from "../redux/actions/actionCreators";
+import { validateFacebookAuthentication } from "../api/facebook-login/facebookLoginUtils";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -43,14 +44,14 @@ function GroupsScreen({
                         updateMatches,
                         deleteGroup,
                         deleteMatchesByGroupId,
-                        addMessage
-                      }) {
+                        addMessage,
+                        setLoggedOutCredentials
+                      })
+{
   useEffect(() => {
     updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
-  }, []);
-
-  useEffect(() => {
     registerForPushNotification();
+    validateFacebookAuthentication(setLoggedOutCredentials);
   }, []);
 
   const registerForPushNotification = async () => {
@@ -125,7 +126,8 @@ const mapDispatchToProps = {
   updateProfiles,
   updateMatches,
   updateCurrentGroupId,
-  addMessage
+  addMessage,
+  setLoggedOutCredentials
 };
 export default connect(mapStateToProps, mapDispatchToProps)(GroupsScreen);
 

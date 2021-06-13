@@ -2,11 +2,15 @@ import * as Facebook from "expo-facebook";
 import { Alert } from "react-native";
 import Constants from "expo-constants";
 
+async function initializeFacebookApi() {
+  await Facebook.initializeAsync({
+    appId: Constants.manifest.facebookAppId,  // Declared in app.json
+  });
+}
+
 export async function logInUsingFacebookApi(updateAuthLogIn) {
   try {
-    await Facebook.initializeAsync({
-      appId: Constants.manifest.facebookAppId,  // Declared in app.json
-    });
+    await initializeFacebookApi();
     const { type, token, expirationDate, permissions, declinedPermissions } = await Facebook.logInWithReadPermissionsAsync({
       permissions: ['public_profile', 'email'],
     });
@@ -24,15 +28,24 @@ export async function logInUsingFacebookApi(updateAuthLogIn) {
 
 export async function logoutUsingFacebookApi() {
   try {
-    await Facebook.initializeAsync({
-      appId: Constants.manifest.facebookAppId,  // Declared in app.json
-    });
+    await initializeFacebookApi();
     await Facebook.logOutAsync();
   } catch (props) {
     Alert.alert(`Facebook Logout Error: ${props.message}`);
   }
 }
 
-// TODO use facebook authenticate credentials to see if user needs to log in
-// TODO check on loading if user need to reauthenticate or not
-// TODO change logo
+async function isUserAuthenticated() {
+  await initializeFacebookApi();
+  return await Facebook.getAuthenticationCredentialAsync();
+}
+
+
+export async function validateFacebookAuthentication(logout) {
+  // This function will logout if user is not authenticate. It is used to verify stored login token is up to date
+  let auth = await isUserAuthenticated();
+  console.log(auth)
+  if (!auth) {
+    logout();
+  }
+}
