@@ -11,9 +11,7 @@ const StackNavigator = createStackNavigator();
 function AuthStackNavigator({ loggedIn }) {
   return (
     <NavigationContainer>
-      <StackNavigator.Navigator screenOptions={{
-        headerShown: false
-      }}>
+      <StackNavigator.Navigator screenOptions={{ headerShown: false }}>
         {loggedIn ? (
           <StackNavigator.Screen name="HomeScreen" component={DrawerNavigator} {...setHomeScreenHeaders()} />
         ) : (
@@ -25,6 +23,6 @@ function AuthStackNavigator({ loggedIn }) {
 }
 
 const mapStateToProps = (state) => ({
-  loggedIn: state.authentication.loggedIn,
+  loggedIn: state.authentication.authCredentials.isCurrentlyAuthenticated,
 });
 export default connect(mapStateToProps, {})(AuthStackNavigator);

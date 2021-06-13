@@ -1,22 +1,31 @@
-import { LOG_IN, SET_LOGIN_TOKEN } from "../actions/actions";
+import { LOG_IN, LOG_OUT } from "../actions/actions";
 import { loggedInUserMockData } from "../../../mocks/LoggedInUserMockData";
 
 const initialState = {
   id: loggedInUserMockData.id,
-  loggedIn: false,
+  authCredentials: {
+    isCurrentlyAuthenticated: false, // Updating this will cause AuthNavigator to re-render, and display different pages
+    facebook_id: null
+  },
 };
 
 const authReducer = (state = initialState, action) => {
   switch (action.type) {
-    case SET_LOGIN_TOKEN:
-      return {
-        ...state,
-        id: [action.payload.id],
-      };
     case LOG_IN:
       return {
         ...state,
-        loggedIn: true
+        authCredentials: {
+          isCurrentlyAuthenticated: true,
+          facebook_id: action.payload.id
+        }
+      };
+    case LOG_OUT:
+      return {
+        ...state,
+        authCredentials: {
+          isCurrentlyAuthenticated: false,
+          facebook_id: null
+        }
       };
     default:
       return state;

@@ -7,23 +7,15 @@ export async function logInUsingFacebookApi(updateAuthLogIn) {
     await Facebook.initializeAsync({
       appId: Constants.manifest.facebookAppId,  // Declared in app.json
     });
-    const {
-      type,
-      token,
-      expirationDate,
-      permissions,
-      declinedPermissions,
-    } = await Facebook.logInWithReadPermissionsAsync({
+    const { type, token, expirationDate, permissions, declinedPermissions } = await Facebook.logInWithReadPermissionsAsync({
       permissions: ['public_profile', 'email'],
     });
-    if (type === 'success') {
+    if (type === 'success') { // If user pressed on "login" rather then "cancel" (type==='cancel')
       // Get the user's name using Facebook's Graph API
       const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
       // Alert.alert('Logged in!', `Hi ${(await response.json()).name}!`);
       console.log(await response.json())
-    } else {  // User canceled login (type === 'cancel')
-
-      // updateAuthLogIn();
+      updateAuthLogIn();
     }
   } catch (props) {
     Alert.alert(`Facebook Login Error: ${props.message}`);

@@ -1,6 +1,5 @@
 import {
   ADD_MATCH,
-  SET_LOGIN_TOKEN,
   UPDATE_CURRENT_GROUP_ID,
   REMOVE_FIRST_PROFILE,
   DELETE_GROUP,
@@ -26,13 +25,6 @@ export function deleteMatch(otherUserId) {
   return {
     type: DELETE_MATCH,
     otherUserId: otherUserId,
-  };
-}
-
-export function setUserId(userId) {
-  return {
-    type: SET_LOGIN_TOKEN,
-    payload: userId,
   };
 }
 
@@ -107,8 +99,9 @@ export function resetSmatchBadge(matchId) {
   };
 }
 
-export function updateAuthLogIn() {
+export function setLoggedInCredentials(facebook_id) {
   return {
-    type: LOG_IN
+    type: LOG_IN,
+    payload: { facebook_id: facebook_id },
   };
 }
