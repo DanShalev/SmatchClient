@@ -14,12 +14,14 @@ export async function logInUsingFacebookApi(updateAuthLogIn) {
     const { type, token, expirationDate, permissions, declinedPermissions } = await Facebook.logInWithReadPermissionsAsync({
       permissions: ['public_profile', 'email'],
     });
+
     if (type === 'success') { // If user pressed on "login" rather then "cancel" (type==='cancel')
       // Get the user's name using Facebook's Graph API
       const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
-      // Alert.alert('Logged in!', `Hi ${(await response.json()).name}!`);
-      console.log(await response.json())
-      updateAuthLogIn();
+      const { id, name } = await response.json();
+      console.log("response...", id, name)
+      // Fixme Add registerIfNotExist()
+      updateAuthLogIn(id);
     }
   } catch (props) {
     Alert.alert(`Facebook Login Error: ${props.message}`);
@@ -44,7 +46,7 @@ async function isUserAuthenticated() {
 export async function validateFacebookAuthentication(logout) {
   // This function will logout if user is not authenticate. It is used to verify stored login token is up to date
   let auth = await isUserAuthenticated();
-  console.log(auth)
+
   if (!auth) {
     logout();
   }

@@ -116,7 +116,7 @@ function GroupsScreen({
 }
 
 const mapStateToProps = (state) => ({
-  loggedUserId: state.authentication.id,
+  loggedUserId: state.authentication.authCredentials.facebook_id,
   groups: state.mainReducer.groups,
 });
 const mapDispatchToProps = {

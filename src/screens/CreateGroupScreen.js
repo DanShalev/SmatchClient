@@ -100,7 +100,7 @@ export function CreateGroupScreen() {
           setListOfFields={setFields}
         />
         <CreateGroupButton groupInfo={{
-          auth: state.authentication.id,
+          auth: state.authentication.authCredentials.facebook_id,
           name: name,
           description: description,
           fields: convertToMap(fields),

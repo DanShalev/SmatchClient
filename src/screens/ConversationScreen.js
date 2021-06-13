@@ -30,7 +30,7 @@ function ConversationScreen(props) {
 }
 
 const mapStateToProps = (state) => ({
-  loggedUserId: state.authentication.id,
+  loggedUserId: state.authentication.authCredentials.facebook_id,
   groupId: state.mainReducer.conversation.currentConversationId.group,
   otherUser: state.mainReducer.conversation.currentConversationId.user,
   messagesMapping: state.mainReducer.conversation.conversationsMapByGroupAndUser,

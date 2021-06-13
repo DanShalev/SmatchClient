@@ -69,7 +69,7 @@ function ProfilesScreen(props) {
 }
 
 const mapStateToProps = (state) => ({
-  authId: state.authentication.id,
+  authId: state.authentication.authCredentials.facebook_id,
   currentGroupId: state.mainReducer.currentGroupId,
   profiles: state.mainReducer.profiles,
 });

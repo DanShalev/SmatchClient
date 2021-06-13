@@ -1,8 +1,6 @@
 import { LOG_IN, LOG_OUT } from "../actions/actions";
-import { loggedInUserMockData } from "../../../mocks/LoggedInUserMockData";
 
 const initialState = {
-  id: loggedInUserMockData.id,
   authCredentials: {
     isCurrentlyAuthenticated: false, // Updating this will cause AuthNavigator to re-render, and display different pages
     facebook_id: null
@@ -16,7 +14,7 @@ const authReducer = (state = initialState, action) => {
         ...state,
         authCredentials: {
           isCurrentlyAuthenticated: true,
-          facebook_id: action.payload.id
+          facebook_id: action.payload.facebook_id
         }
       };
     case LOG_OUT:
