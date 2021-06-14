@@ -185,3 +185,21 @@ export async function getUserFieldsFromBE(userId, groupId, setFields) {
     printErrorDetails(error, url);
   }
 }
+
+export async function addUser(id, name, age, gender, picture) {
+  const url = `/user/add`;
+  try {
+    return await smatchServer.post(url, {
+      age: age,
+      id: id,
+      image1: picture,
+      image2: null,
+      image3: null,
+      name: name,
+      pushNotificationToken: null,
+      sex: gender
+    });
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
