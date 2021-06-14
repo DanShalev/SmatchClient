@@ -3,7 +3,7 @@ import { StyleSheet, View } from "react-native";
 import { Avatar } from "react-native-elements";
 import UserField from "../components/account/UserField";
 
-export default function AccountScreen() {
+export default function PersonalAccountScreen() {
   return (
     <View style={{ flex: 1 }}>
       <View style={styles.avatarContainer}>

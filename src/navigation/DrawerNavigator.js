@@ -16,7 +16,7 @@ import {
 } from "./utils/ScreensHeaders";
 import SettingsScreen from "../screens/SettingsScreen";
 import AboutScreen from "../screens/AboutScreen";
-import AccountScreen from "../screens/AccountScreen";
+import PersonalAccountScreen from "../screens/PersonalAccountScreen";
 import { setLoggedOutCredentials } from "../redux/actions/actionCreators";
 import { connect } from "react-redux";
 import { logoutUsingFacebookApi } from "../api/facebook-login/facebookLoginUtils";
@@ -30,7 +30,7 @@ export function DrawerNavigator({ setLoggedOutCredentials }) {
         <Drawer.Screen name="Create Group" component={CreateGroupScreen} {...setCreateGroupScreenHeaders()} />
         <Drawer.Screen name="Settings" component={SettingsScreen} {...setSettingsScreenHeaders()} />
         <Drawer.Screen name="About" component={AboutScreen} {...setAboutScreenHeaders()} />
-        <Drawer.Screen name="Account" component={AccountScreen} {...setAccountScreenHeaders()} />
+        <Drawer.Screen name="Account" component={PersonalAccountScreen} {...setAccountScreenHeaders()} />
       </Drawer.Navigator>
   );
 }

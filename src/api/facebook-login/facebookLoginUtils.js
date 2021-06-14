@@ -31,6 +31,7 @@ export async function runLoginScheme(updateAuthLogIn) {
 
   // 2. SmatchServer: check if user is registered, register it if not
   // Fixme Add registerIfNotExist()
+  // TODO fix personal account screen
 
   // 3. Update redux auth, and rerender main screen
   updateAuthLogIn(id);

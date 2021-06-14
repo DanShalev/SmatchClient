@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
   inputFieldText: {
     height: 40,
     width: "80%",
-    borderRadius: 25,
+    borderRadius: 10,
     backgroundColor: colors.inputBoxLight,
     textAlign: "left",
     fontSize: 17,
