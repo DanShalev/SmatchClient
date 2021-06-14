@@ -12,3 +12,4 @@ export const UPDATE_MATCHES = "UPDATE_MATCHES";
 export const RESET_SMATCH_BADGE = "RESET_SMATCH_BADGE";
 export const LOG_IN = "LOG_IN";
 export const LOG_OUT = "LOG_OUT";
+export const SET_CURRENT_USER_DATA = "SET_CURRENT_USER_DATA";

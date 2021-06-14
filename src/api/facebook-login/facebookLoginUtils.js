@@ -8,7 +8,7 @@ async function initializeFacebookApi() {
   });
 }
 
-export async function runLoginScheme(updateAuthLogIn) {
+export async function runLoginScheme(updateAuthLogIn, setCurrentUserData) {
   /* This function will run the following login scheme:
    * 1. Authenticate using facebook-login
    * 2. Send request to SmatchServer API to check if user exist, if not - register it.
@@ -32,9 +32,21 @@ export async function runLoginScheme(updateAuthLogIn) {
   // 2. SmatchServer: check if user is registered, register it if not
   // Fixme Add registerIfNotExist()
   // TODO fix personal account screen
+  // TODO fix image in new smatch
 
-  // 3. Update redux auth, and rerender main screen
+  // 3.1 Update current user account data in redux store
+  setCurrentUserData(token, id, name, calculateAge(birthday), gender);
+
+  // 3.2 Update redux auth, and rerender main screen
   updateAuthLogIn(id);
+}
+
+function calculateAge(birthday) {
+  const birthDate = new Date(birthday);
+  const difference = Date.now() - birthDate.getTime();
+  const age = new Date(difference);
+
+  return Math.abs(age.getUTCFullYear() - 1970);
 }
 
 async function logInUsingFacebookApi() {

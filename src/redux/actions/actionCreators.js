@@ -10,7 +10,7 @@ import {
   UPDATE_GROUPS,
   RESET_SMATCH_BADGE,
   DELETE_MATCHES_BY_GROUP_ID,
-  DELETE_MATCH, LOG_IN, LOG_OUT
+  DELETE_MATCH, LOG_IN, LOG_OUT, SET_CURRENT_USER_DATA
 } from "./actions";
 
 
@@ -109,5 +109,18 @@ export function setLoggedInCredentials(facebook_id) {
 export function setLoggedOutCredentials() {
   return {
     type: LOG_OUT,
+  };
+}
+
+export function setCurrentUserData(fb_token, facebook_id, name, age, gender) {
+  return {
+    type: SET_CURRENT_USER_DATA,
+    payload: {
+      fb_token: fb_token,
+      facebook_id: facebook_id,
+      name: name,
+      age: age,
+      gender: gender,
+    },
   };
 }

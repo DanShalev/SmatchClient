@@ -1,12 +1,12 @@
 import React from "react";
 import {Image, StyleSheet, Text, View} from "react-native";
 import { runLoginScheme } from "../api/facebook-login/facebookLoginUtils";
-import { setLoggedInCredentials } from "../redux/actions/actionCreators";
+import { setCurrentUserData, setLoggedInCredentials } from "../redux/actions/actionCreators";
 import { connect } from "react-redux";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'react-native-elements';
 
-function LoginScreen({ setLoggedInCredentials }) {
+function LoginScreen({ setLoggedInCredentials, setCurrentUserData }) {
     return (
         <View style={styles.container}>
             <Image source={require("../../assets/WelcomeLogo.png")} style={styles.logo} />
@@ -19,7 +19,7 @@ function LoginScreen({ setLoggedInCredentials }) {
                   icon={<Icon name="facebook-square" size={15} color="white"/>}
                   title="   Login Using Facebook"
                   color="navy"
-                  onPress={() => runLoginScheme(setLoggedInCredentials)}
+                  onPress={() => runLoginScheme(setLoggedInCredentials, setCurrentUserData)}
                 />
             </View>
         </View>
@@ -60,7 +60,8 @@ const styles = StyleSheet.create({
 });
 
 const mapDispatchToProps = {
-    setLoggedInCredentials
+    setLoggedInCredentials,
+    setCurrentUserData
 };
 export default connect(null, mapDispatchToProps)(LoginScreen);
 
