@@ -8,23 +8,46 @@ async function initializeFacebookApi() {
   });
 }
 
-export async function logInUsingFacebookApi(updateAuthLogIn) {
+export async function runLoginScheme(updateAuthLogIn) {
+  /* This function will run the following login scheme:
+   * 1. Authenticate using facebook-login
+   * 2. Send request to SmatchServer API to check if user exist, if not - register it.
+   * 3. Update redux credentials, which will automatically re-render the main app screen.
+   * */
+
+  // 1.1 Login & get FB token
+  const { token } = await logInUsingFacebookApi();
+
+  if (!token) {
+    console.log("Error: no token returned from fb-login");
+    return;
+  }
+
+  // 1.2 Get FB user-id (& other metadata) using the token
+  const response = await fetch(`https://graph.facebook.com/me?fields=id,name,gender,birthday&access_token=${token}`);
+  const res = await response.json();
+
+  const { id, name, gender, birthday } = res
+
+  // 2. SmatchServer: check if user is registered, register it if not
+  // Fixme Add registerIfNotExist()
+
+  // 3. Update redux auth, and rerender main screen
+  updateAuthLogIn(id);
+}
+
+async function logInUsingFacebookApi() {
   try {
     await initializeFacebookApi();
     const { type, token, expirationDate, permissions, declinedPermissions } = await Facebook.logInWithReadPermissionsAsync({
-      permissions: ['public_profile', 'email'],
+      permissions: ['public_profile', 'user_gender', 'user_birthday'],
     });
-
-    if (type === 'success') { // If user pressed on "login" rather then "cancel" (type==='cancel')
-      // Get the user's name using Facebook's Graph API
-      const response = await fetch(`https://graph.facebook.com/me?access_token=${token}`);
-      const { id, name } = await response.json();
-      console.log("response...", id, name)
-      // Fixme Add registerIfNotExist()
-      updateAuthLogIn(id);
-    }
+    return {
+      token: (type === 'success') ? token : null
+    };
   } catch (props) {
     Alert.alert(`Facebook Login Error: ${props.message}`);
+    return { token: null };
   }
 }
 
