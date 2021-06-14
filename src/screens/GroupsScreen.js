@@ -3,17 +3,18 @@ import Swipeout from "react-native-swipeout";
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
 
-import {ScrollView, StyleSheet, Text} from "react-native";
-import {useEffect} from "react";
+import { ScrollView, StyleSheet, Text } from "react-native";
+import { useEffect } from "react";
 import {
   registerForPushNotifications,
   removeFromGroup,
   updateGroupsProfilesAndMatches,
-  unmatchAllGroupUsers
+  unmatchAllGroupUsers,
+  initMessages,
 } from "../api/SmatchServerAPI";
-import {Avatar, ListItem} from "react-native-elements";
-import {SmatchesBadge, MessagesBadge} from "../components/Badges";
-import {connect} from "react-redux";
+import { Avatar, ListItem } from "react-native-elements";
+import { SmatchesBadge, MessagesBadge } from "../components/Badges";
+import { connect } from "react-redux";
 import colors from "../config/colors";
 import {
   updateCurrentGroupId,
@@ -22,7 +23,8 @@ import {
   updateGroups,
   deleteGroup,
   addMessage,
-  deleteMatchesByGroupId, setLoggedOutCredentials
+  deleteMatchesByGroupId,
+  setLoggedOutCredentials,
 } from "../redux/actions/actionCreators";
 import { validateFacebookAuthentication } from "../api/facebook-login/facebookLoginUtils";
 
@@ -45,13 +47,19 @@ function GroupsScreen({
                         deleteGroup,
                         deleteMatchesByGroupId,
                         addMessage,
-                        setLoggedOutCredentials
+                        setLoggedOutCredentials,
                       })
 {
   useEffect(() => {
     updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
     registerForPushNotification();
     validateFacebookAuthentication(setLoggedOutCredentials);
+    Notifications.addNotificationReceivedListener((notification) => {
+      const loggedUserId = notification.request.content.data.userId;
+      const otherUserId = notification.request.content.data.otherUserId;
+      const groupId = notification.request.content.data.groupId;
+      initMessages(loggedUserId, groupId, otherUserId, addMessage);
+    });
   }, []);
 
   const registerForPushNotification = async () => {
@@ -73,11 +81,11 @@ function GroupsScreen({
       backgroundColor: "red",
       underlayColor: "rgba(0, 0, 0, 1, 0.5)",
       onPress: () => {
-        deleteGroup(groupKey)
-        deleteMatchesByGroupId(groupKey)
-        updateCurrentGroupId(null)
-        unmatchAllGroupUsers(groupKey, loggedUserId)
-        removeFromGroup(groupKey, loggedUserId)
+        deleteGroup(groupKey);
+        deleteMatchesByGroupId(groupKey);
+        updateCurrentGroupId(null);
+        unmatchAllGroupUsers(groupKey, loggedUserId);
+        removeFromGroup(groupKey, loggedUserId);
         //TODO add delete messagesByGroupId (BE)
       },
     },
@@ -96,10 +104,10 @@ function GroupsScreen({
                 bottomDivider
                 onPress={() => {
                   updateCurrentGroupId(groupKey);
-                  navigation.navigate("Home", {screen: "SwipeScreen", params: {screen: "Swipe"}});
+                  navigation.navigate("Home", { screen: "SwipeScreen", params: { screen: "Swipe" } });
                 }}
               >
-                <Avatar source={{uri: group.avatar}} size="large" rounded/>
+                <Avatar source={{ uri: group.avatar }} size="large" rounded />
                 <ListItem.Content>
                   <ListItem.Title>{group.name}</ListItem.Title>
                   <ListItem.Subtitle>{group.numberOfMembers}</ListItem.Subtitle>
@@ -127,7 +135,7 @@ const mapDispatchToProps = {
   updateMatches,
   updateCurrentGroupId,
   addMessage,
-  setLoggedOutCredentials
+  setLoggedOutCredentials,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(GroupsScreen);
 
