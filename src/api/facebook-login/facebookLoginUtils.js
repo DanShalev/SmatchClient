@@ -24,18 +24,18 @@ export async function runLoginScheme(updateAuthLogIn, setCurrentUserData) {
   }
 
   // 1.2 Get FB user-id (& other metadata) using the token
-  const response = await fetch(`https://graph.facebook.com/me?fields=id,name,gender,birthday&access_token=${token}`);
+  const response = await fetch(`https://graph.facebook.com/me?
+                                fields=id,name,gender,birthday,picture.width(300).height(300)
+                                &access_token=${token}`);
   const res = await response.json();
 
-  const { id, name, gender, birthday } = res
+  const { id, name, gender, birthday, picture } = res
 
   // 2. SmatchServer: check if user is registered, register it if not
   // Fixme Add registerIfNotExist()
-  // TODO fix personal account screen
-  // TODO fix image in new smatch
 
   // 3.1 Update current user account data in redux store
-  setCurrentUserData(token, id, name, calculateAge(birthday), gender);
+  setCurrentUserData(token, id, name, calculateAge(birthday), gender, picture.data.url);
 
   // 3.2 Update redux auth, and rerender main screen
   updateAuthLogIn(id);

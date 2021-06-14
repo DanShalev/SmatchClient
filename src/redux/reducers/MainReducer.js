@@ -243,7 +243,7 @@ const mainReducer = (state = initialState, action) => {
           name: action.payload.name,
           age: action.payload.age,
           gender: action.payload.gender,
-          picture: require("../../../mocks/images/loggedInUserPhoto.png"),  // TODO fix modal image in smatch
+          picture: action.payload.picture,
         }
       };
     default:

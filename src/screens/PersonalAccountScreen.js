@@ -1,15 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Avatar } from "react-native-elements";
-import UserField from "../components/account/UserField";
-import {
-  addMessage,
-  deleteGroup,
-  deleteMatchesByGroupId, setLoggedOutCredentials, updateCurrentGroupId,
-  updateGroups,
-  updateMatches,
-  updateProfiles
-} from "../redux/actions/actionCreators";
 import { connect } from "react-redux";
 import { LinearGradient } from "expo-linear-gradient";
 import colors from "../config/colors";
@@ -21,10 +11,9 @@ function PersonalAccountScreen({ currentUserData }) {
   <ScrollView style={styles.background}>
     <ImageBackground
       style={styles.image}
-      // source={{
-      //   uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTVwB80Syes2p3QDnG1mMZ9NQQFxdC5U1Hobg&usqp=CAU",
-      // }}
-      source={picture}
+      source={{
+        uri: picture,
+      }}
     >
       <LinearGradient colors={["transparent", "black"]} style={styles.gradient} />
       <Text style={styles.name}> {name} </Text>

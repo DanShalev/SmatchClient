@@ -112,7 +112,7 @@ export function setLoggedOutCredentials() {
   };
 }
 
-export function setCurrentUserData(fb_token, facebook_id, name, age, gender) {
+export function setCurrentUserData(fb_token, facebook_id, name, age, gender, picture) {
   return {
     type: SET_CURRENT_USER_DATA,
     payload: {
@@ -121,6 +121,7 @@ export function setCurrentUserData(fb_token, facebook_id, name, age, gender) {
       name: name,
       age: age,
       gender: gender,
+      picture: picture
     },
   };
 }
