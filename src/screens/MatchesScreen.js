@@ -1,16 +1,17 @@
-import { RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
+import {Image, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import { Avatar, ListItem } from "react-native-elements";
 import React from "react";
 
 import { MessagesBadge, SingleSmatchBadge } from "../components/Badges";
 import {
+  addMessage,
   deleteMatch,
   resetSmatchBadge,
   updateCurrentConversationId,
   updateGroups,
   updateMatches,
   updateProfiles,
-} from "../redux/actions/actionCreators";
+} from '../redux/actions/actionCreators';
 import { connect } from "react-redux";
 import Swipeout from "react-native-swipeout";
 import { unmatch } from "../api/SmatchServerAPI";
@@ -27,6 +28,7 @@ function MatchesScreen({
   updateGroups,
   updateProfiles,
   updateMatches,
+  addMessage
 }) {
   const profiles = matches[currentGroupId];
   const matchesExist = profiles !== undefined && profiles.length !== 0 ? true : undefined;
@@ -52,17 +54,16 @@ function MatchesScreen({
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches);
+    updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
     wait(2000).then(() => {
       setRefreshing(false);
     });
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+      <SafeAreaView style={styles.container} >
         {matchesExist ? (
-          <>
+          <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
             {profiles.map((profile, i) => (
               <Swipeout right={unmatchButtons(profile.id)} autoClose={true} backgroundColor="transparent" key={i}>
                 <ListItem
@@ -88,12 +89,12 @@ function MatchesScreen({
                 </ListItem>
               </Swipeout>
             ))}
-          </>
-        ) : (
-          <NoMatches />
+          </ScrollView>) : (
+              <ScrollView style={styles.errorContainer} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
+                <NoMatches />
+              </ScrollView>
         )}
-      </ScrollView>
-    </SafeAreaView>
+      </SafeAreaView>
   );
 }
 
@@ -103,7 +104,7 @@ const mapStateToProps = (state) => ({
   loggedUserId: state.authentication.id,
 });
 
-const mapDispatchToProps = { updateCurrentConversationId, resetSmatchBadge, updateGroups, updateProfiles, updateMatches, deleteMatch };
+const mapDispatchToProps = { updateCurrentConversationId, resetSmatchBadge, updateGroups, updateProfiles, updateMatches, deleteMatch, addMessage };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MatchesScreen);
 
@@ -118,8 +119,10 @@ export function navigateToSmatchAccountScreen(navigation, profile) {
 
 function NoMatches() {
   return (
-    <View style={styles.noSwipesView}>
-      <Text style={styles.noSwipesText}>No Matches!</Text>
+    <View>
+      <Image style={styles.errorImage} source={require("../../assets/emptyMatches.jpeg")} />
+      <Text style={styles.errorText}>Currently no matches to display</Text>
+      <Text style={styles.errorText}>Pull to refresh or keep swiping right</Text>
     </View>
   );
 }
@@ -128,11 +131,20 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  noSwipesView: {
-    alignItems: "center",
+  errorContainer: {
+    flex: 1,
+    backgroundColor: "white",
   },
-  noSwipesText: {
-    fontSize: 40,
-    color: "red",
+  errorImage: {
+    marginTop: 70,
+    marginLeft: 80,
+    width: 250,
+    height: 250,
   },
+  errorText: {
+    marginTop: 50,
+    fontSize: 15,
+    textAlign: "center",
+  },
+
 });
