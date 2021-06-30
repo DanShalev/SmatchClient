@@ -1,22 +1,33 @@
-import React, {useState} from "react";
-import {Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View} from "react-native";
-import {FontAwesome} from '@expo/vector-icons';
+import React, { useState } from "react";
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { FontAwesome } from "@expo/vector-icons";
 import Modal from "react-native-modal";
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
 import InputFieldDynamic from "../components/create-group/InputFieldDynamic";
 import InputFieldList from "../components/create-group/InputFieldList";
 import CreateGroupButton from "../components/create-group/CreateGroupButton";
 import Icon from "../components/create-group/PressableIcon";
-import {useStore} from "react-redux";
-import {appendImagePrefix} from "../redux/actions/actionUtils";
+import { useStore } from "react-redux";
+import { appendImagePrefix } from "../redux/actions/actionUtils";
+
+function updateIsFilledTextState(text, setIsTextFilled) {
+  if (text.length > 0) {
+    setIsTextFilled(true);
+  } else {
+    setIsTextFilled(false);
+  }
+}
 
 export function CreateGroupScreen() {
   let [fields, setFields] = useState([]);
+  let [currentField, setCurrentField] = useState("");
   let [name, setName] = useState("");
   let [description, setDescription] = useState("");
   let [image, setImage] = useState(null);
-  let [isVisible, setIsVisible] = useState(false)
-  let state = useStore().getState()
+  let [isVisible, setIsVisible] = useState(false);
+  let [isGroupNameFilled, setIsGroupNameFilled] = useState(false);
+  let [isGroupDescFilled, setIsGroupDescFilled] = useState(false);
+  let state = useStore().getState();
 
   const imagePickerOptions = {
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -24,100 +35,123 @@ export function CreateGroupScreen() {
     allowsEditing: true,
     aspect: [4, 5],
     quality: 0.3,
-    base64: true
-  }
+    base64: true,
+  };
 
   const groupSetters = {
     setName: setName,
     setDescription: setDescription,
+    setCurrentField: setCurrentField,
     setFields: setFields,
-    setImage: setImage
-  }
+    setImage: setImage,
+    setIsGroupNameFilled: setIsGroupNameFilled,
+    setIsGroupDescFilled: setIsGroupDescFilled,
+  };
 
   const launchGallery = async () => {
-    handleImage(await ImagePicker.launchImageLibraryAsync(imagePickerOptions))
-  }
+    handleImage(await ImagePicker.launchImageLibraryAsync(imagePickerOptions));
+  };
 
   const launchCamera = async () => {
-    handleImage(await ImagePicker.launchCameraAsync(imagePickerOptions))
-  }
+    handleImage(await ImagePicker.launchCameraAsync(imagePickerOptions));
+  };
 
   const removeImage = () => {
-    setImage(null)
-    setIsVisible(false)
-  }
+    setImage(null);
+    setIsVisible(false);
+  };
 
   const handleImage = (result) => {
     if (!result.cancelled) {
-      setImage(result.base64)
-      setIsVisible(false)
+      setImage(result.base64);
+      setIsVisible(false);
     }
-  }
+  };
 
   const convertToMap = (fields) => {
-    let a = {}
+    let a = {};
     for (let i = 0; i < fields.length; i++) {
-      a[i] = fields[i]
+      a[i] = fields[i];
     }
-    return a
-  }
+    return a;
+  };
 
   return (
-    <ScrollView>
-      <View style={styles.scrollView}>
-        <TouchableOpacity onPress={() => setIsVisible(true)} style={[styles.image, {marginTop: 20}]}>
-          {image === null ? <FontAwesome name="camera" size={40} color="grey"/> :
-            <Image source={{uri: appendImagePrefix(image)}} style={styles.image}/>}
-        </TouchableOpacity>
-        <Modal isVisible={isVisible} onBackdropPress={() => setIsVisible(false)}
-               style={styles.modal}>
-          <View style={styles.modalView}>
-            <View style={{alignItems: "center"}}>
-              <Text style={{fontSize: 22}}>Upload Image</Text>
-            </View>
-            <View style={styles.icons}>
-              <Icon action={launchGallery} iconName={"images"} color={"grey"}/>
-              <Icon action={launchCamera} iconName={"camera"} color={"grey"}/>
-              {image && <Icon action={removeImage} iconName={"trash-alt"} color={"tomato"}/>}
-            </View>
+    <ScrollView contentContainerStyle={styles.contentContainerStyle}>
+      <TouchableOpacity onPress={() => setIsVisible(true)} style={[styles.image, { marginTop: 20 }]}>
+        {image === null ? (
+          <FontAwesome name="camera" size={40} color="grey" />
+        ) : (
+          <Image source={{ uri: appendImagePrefix(image) }} style={styles.image} />
+        )}
+      </TouchableOpacity>
+      <Modal isVisible={isVisible} onBackdropPress={() => setIsVisible(false)} style={styles.modal}>
+        <View style={styles.modalView}>
+          <View style={{ alignItems: "center" }}>
+            <Text style={{ fontSize: 22 }}>Upload Image</Text>
           </View>
-        </Modal>
-        <View>
-          <TextInput style={styles.groupName} textAlign={"center"}
-                     placeholder={"Group Name"} keyboardAppearance={"dark"} onChangeText={(name) => setName(name)}/>
+          <View style={styles.icons}>
+            <Icon action={launchGallery} iconName={"images"} color={"grey"} />
+            <Icon action={launchCamera} iconName={"camera"} color={"grey"} />
+            {image && <Icon action={removeImage} iconName={"trash-alt"} color={"tomato"} />}
+          </View>
         </View>
-        <View style={[styles.border, {marginTop: 20}]}/>
-        <View style={styles.descriptionView}>
-          <TextInput textAlign={"center"} style={styles.description}
-                     placeholder={"Add a brief description..."} keyboardAppearance={"dark"}
-                     onChangeText={(desc) => setDescription(desc)} multiline={true}
-          />
-        </View>
-        <View style={styles.border}/>
-        <InputFieldDynamic setListOfFields={setFields}/>
-        <InputFieldList
-          listOfFields={fields}
-          setListOfFields={setFields}
+      </Modal>
+      <View>
+        <TextInput
+          style={styles.groupName}
+          textAlign={"center"}
+          placeholder={"Group Name"}
+          value={name}
+          keyboardAppearance={"dark"}
+          onChangeText={(newName) => {
+            updateIsFilledTextState(newName, setIsGroupNameFilled);
+            setName(newName);
+          }}
+          multiline={true}
         />
-        <CreateGroupButton groupInfo={{
+      </View>
+      <View style={[styles.border, { marginTop: 20 }]} />
+      <View style={styles.descriptionView}>
+        <TextInput
+          style={styles.description}
+          textAlign={"center"}
+          placeholder={"Add a brief description..."}
+          value={description}
+          keyboardAppearance={"dark"}
+          onChangeText={(desc) => {
+            updateIsFilledTextState(desc, setIsGroupDescFilled);
+            setDescription(desc);
+          }}
+          multiline={true}
+        />
+      </View>
+      <View style={styles.border} />
+      <InputFieldDynamic currentField={currentField} setCurrentField={setCurrentField} setListOfFields={setFields} />
+      <ScrollView style={styles.dynamicField}>
+        <InputFieldList listOfFields={fields} setListOfFields={setFields} />
+      </ScrollView>
+      <CreateGroupButton
+        groupInfo={{
           auth: state.authentication.id,
           name: name,
           description: description,
           fields: convertToMap(fields),
-          avatar: image
-        }} groupSetters={groupSetters}
-        />
-      </View>
+          avatar: image,
+        }}
+        groupSetters={groupSetters}
+        disabled={!isGroupNameFilled || !isGroupDescFilled}
+      />
     </ScrollView>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
-  scrollView: {
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignContent: "center",
-    alignItems: 'center'
+  contentContainerStyle: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 400,
+    height: 700,
   },
   image: {
     height: 90,
@@ -129,7 +163,7 @@ const styles = StyleSheet.create({
   },
   modal: {
     justifyContent: "center",
-    alignItems: "center"
+    alignItems: "center",
   },
   modalView: {
     height: 200,
@@ -137,32 +171,35 @@ const styles = StyleSheet.create({
     backgroundColor: "lightgrey",
     flexDirection: "column",
     justifyContent: "center",
-    borderRadius: 10
+    borderRadius: 10,
   },
   icons: {
     flexDirection: "row",
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
   },
   groupName: {
     textDecorationColor: "blue",
     fontSize: 20,
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 10
+    marginTop: 10,
   },
   border: {
     borderWidth: 0.5,
     width: "100%",
-    borderColor: "lightgrey"
+    borderColor: "lightgrey",
   },
   description: {
     marginVertical: 4,
     marginHorizontal: 10,
     fontSize: 16,
-    flex: 1
+    flex: 1,
   },
   descriptionView: {
     width: "100%",
-    height: 80
+    height: 80,
+  },
+  dynamicField: {
+    marginTop: 40,
   },
 });

@@ -9,11 +9,10 @@ import {
   UPDATE_MATCHES,
   UPDATE_PROFILES,
   UPDATE_GROUPS,
-  RESET_SMATCH_BADGE,
   DELETE_MATCHES_BY_GROUP_ID,
   DELETE_MATCH,
+  RESET_SMATCHES_AND_MESSAGES_BADGES,
 } from "./actions";
-
 
 export function addMatch(match) {
   return {
@@ -57,7 +56,6 @@ export function deleteMatchesByGroupId(groupId) {
   };
 }
 
-
 export function updateProfiles(profiles) {
   return {
     type: UPDATE_PROFILES,
@@ -93,16 +91,16 @@ export function updateCurrentConversationId(matchedUser, groupId) {
   };
 }
 
-export function addMessage(groupId, otherUserId, msg) {
+export function addMessage(groupId, otherUserId, msg, isSend) {
   return {
     type: ADD_MESSAGE,
-    payload: { groupId: groupId, otherUserId: otherUserId, message: msg },
+    payload: { groupId: groupId, otherUserId: otherUserId, message: msg, isSend: isSend },
   };
 }
 
 export function resetSmatchBadge(matchId) {
   return {
-    type: RESET_SMATCH_BADGE,
+    type: RESET_SMATCHES_AND_MESSAGES_BADGES,
     matchId: matchId,
   };
 }

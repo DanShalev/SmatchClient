@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, TextInput, View } from "react-native";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 
 import colors from "../../config/colors";
@@ -13,18 +13,10 @@ export default function InputFieldList({ listOfFields, setListOfFields }) {
     <View>
       {listOfFields.map((field, i) => (
         <View key={i} style={styles.inputFieldView}>
-          <TextInput
-            style={styles.inputFieldText}
-            value={field}
-            editable={false}
-          />
-          <Icon
-            name="minuscircleo"
-            size={30}
-            color={colors.black}
-            style={styles.inputFieldIcon}
-            onPress={() => handleRemoveField(i)}
-          />
+          <TextInput style={styles.inputFieldText} value={field} editable={false} />
+          <TouchableOpacity onPress={() => handleRemoveField(i)}>
+            <Icon name="minuscircleo" size={30} color={colors.black} style={styles.inputFieldIcon} />
+          </TouchableOpacity>
         </View>
       ))}
     </View>
@@ -40,7 +32,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: 200,
     borderRadius: 17,
-    backgroundColor: colors.inputBox,
+    backgroundColor: colors.lightGray,
     textAlign: "center",
     fontSize: 17,
     marginTop: 12,
