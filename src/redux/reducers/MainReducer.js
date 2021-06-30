@@ -1,5 +1,7 @@
 import {
-  ADD_MATCH, DELETE_GROUP, DELETE_MATCH,
+  ADD_MATCH,
+  DELETE_GROUP,
+  DELETE_MATCH,
   DELETE_MATCHES_BY_GROUP_ID,
   REMOVE_FIRST_PROFILE,
   RESET_SMATCH_BADGE,
@@ -8,7 +10,8 @@ import {
   UPDATE_MATCHES,
   UPDATE_PROFILES,
   ADD_MESSAGE,
-  UPDATE_CURRENT_CONVERSATION_ID
+  UPDATE_CURRENT_CONVERSATION_ID,
+  RESET_SMATCHES_AND_MESSAGES_BADGES,
 } from "../actions/actions";
 import { appendImagePrefix, appendImagePrefixes } from "../actions/actionUtils";
 
@@ -19,24 +22,25 @@ const initialState = {
   matches: {},
   conversation: {
     /*
-      * This reducer will hold an hash map of groups, and for each group it will hold an hash map for each user.
-      * For each user, all messages will be saved there.
-      * Example (user id 1, group 99):
-      * groups: {
-      *         99: {
-      *             2: [{text: "hey there", sender: true}]
-      *           }
-      *       }
-      * }
-      * */
+     * This reducer will hold an hash map of groups, and for each group it will hold an hash map for each user.
+     * For each user, all messages will be saved there.
+     * Example (user id 1, group 99):
+     * groups: {
+     *         99: {
+     *             2: [{text: "hey there", sender: true}]
+     *           }
+     *       }
+     * }
+     * */
     conversationsMapByGroupAndUser: {},
-    currentConversationId: {user: null, group: null},
-  }
+    currentConversationId: { user: null, group: null },
+  },
 };
 
 const mainReducer = (state = initialState, action) => {
   let currentGroups;
   let currentMatches;
+  let matchIndex;
   switch (action.type) {
     case UPDATE_GROUPS:
       currentGroups = { ...state.groups };
@@ -71,10 +75,10 @@ const mainReducer = (state = initialState, action) => {
         currentGroupId: action.payload,
       };
     case DELETE_GROUP:
-      let {[action.groupId]: groupToDelete, ...restOfGroups} = state.groups;
+      let { [action.groupId]: groupToDelete, ...restOfGroups } = state.groups;
       return {
         ...state,
-        groups: restOfGroups
+        groups: restOfGroups,
       };
     case UPDATE_PROFILES:
       let currentProfiles = {};
@@ -140,20 +144,20 @@ const mainReducer = (state = initialState, action) => {
         matches: currentMatches,
       };
     case DELETE_MATCH:
-      let groupMatches = state.matches[state.currentGroupId]
-      groupMatches = groupMatches.filter((match) => match.id !== action.otherUserId)
+      let groupMatches = state.matches[state.currentGroupId];
+      groupMatches = groupMatches.filter((match) => match.id !== action.otherUserId);
       return {
         ...state,
         matches: {
           ...state.matches,
-          [state.currentGroupId]: groupMatches
-        }
+          [state.currentGroupId]: groupMatches,
+        },
       };
     case DELETE_MATCHES_BY_GROUP_ID:
-      let {[action.groupId]: matchesToDelete, ...restOfMatches} = state.matches;
+      let { [action.groupId]: matchesToDelete, ...restOfMatches } = state.matches;
       return {
         ...state,
-        matches: restOfMatches
+        matches: restOfMatches,
       };
     case ADD_MATCH:
       let currentGroupMatches = state.matches[state.currentGroupId] || [];
@@ -186,17 +190,24 @@ const mainReducer = (state = initialState, action) => {
           ],
         },
       };
-    case RESET_SMATCH_BADGE:
+    case RESET_SMATCHES_AND_MESSAGES_BADGES:
       currentMatches = state.matches[state.currentGroupId];
-      let matchIndex = currentMatches.findIndex((match) => match.id === action.matchId);
+      matchIndex = currentMatches.findIndex((match) => match.id === action.matchId);
+      let matchMessages = currentMatches[matchIndex].newMessages;
+      let groupNewSmatches = state.matches[state.currentGroupId][matchIndex].newSmatch
+        ? state.groups[state.currentGroupId].newSmatches - 1
+        : state.groups[state.currentGroupId].newSmatches;
+      let groupNewMessages = state.groups[state.currentGroupId].newMessages - matchMessages;
       currentMatches[matchIndex].newSmatch = false;
+      currentMatches[matchIndex].newMessages = 0;
       return {
         ...state,
         groups: {
           ...state.groups,
           [state.currentGroupId]: {
             ...state.groups[state.currentGroupId],
-            newSmatches: state.groups[state.currentGroupId].newSmatches - 1,
+            newSmatches: groupNewSmatches,
+            newMessages: groupNewMessages,
           },
         },
         matches: {
@@ -208,30 +219,54 @@ const mainReducer = (state = initialState, action) => {
       const groupId = action.payload.groupId;
       const userId = action.payload.otherUserId;
 
+      let newMessagesCount = action.payload.isSend
+        ? state.groups[state.currentGroupId].newMessages
+        : state.groups[state.currentGroupId].newMessages + 1;
+      currentMatches = state.matches[state.currentGroupId];
+      matchIndex = currentMatches.findIndex((match) => match.id === action.payload.otherUserId);
+      currentMatches[matchIndex].newMessages = action.payload.isSend
+        ? currentMatches[matchIndex].newMessages
+        : currentMatches[matchIndex].newMessages + 1;
+
       return {
         ...state,
+        groups: {
+          ...state.groups,
+          [state.currentGroupId]: {
+            ...state.groups[state.currentGroupId],
+            newMessages: newMessagesCount,
+          },
+        },
+        matches: {
+          ...state.matches,
+          [state.currentGroupId]: currentMatches,
+        },
         conversation: {
           ...state.conversation,
           conversationsMapByGroupAndUser: {
             ...state.conversation.conversationsMapByGroupAndUser,
-            [groupId]: (groupId in state.conversation.conversationsMapByGroupAndUser) ? {
-              ...state.conversation.conversationsMapByGroupAndUser[groupId],
-              [userId]: (userId in state.conversation.conversationsMapByGroupAndUser[groupId]) ?
-                        [...state.conversation.conversationsMapByGroupAndUser[groupId][userId], ...action.payload.message] :
-                        [...action.payload.message]
-            } : {
-              [userId]: [...action.payload.message]
-            },
+            [groupId]:
+              groupId in state.conversation.conversationsMapByGroupAndUser
+                ? {
+                    ...state.conversation.conversationsMapByGroupAndUser[groupId],
+                    [userId]:
+                      userId in state.conversation.conversationsMapByGroupAndUser[groupId]
+                        ? [...state.conversation.conversationsMapByGroupAndUser[groupId][userId], ...action.payload.message]
+                        : [...action.payload.message],
+                  }
+                : {
+                    [userId]: [...action.payload.message],
+                  },
           },
-        }
+        },
       };
     case UPDATE_CURRENT_CONVERSATION_ID:
       return {
         ...state,
         conversation: {
           ...state.conversation,
-          currentConversationId: action.payload
-        }
+          currentConversationId: action.payload,
+        },
       };
     default:
       return state;

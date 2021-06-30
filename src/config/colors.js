@@ -3,7 +3,7 @@ export default {
   secondary: "tomato",
   tertiary: "white",
   icon: "black",
-  inputBox: "#C4C4C4",
+  lightGray: "#C4C4C4",
   inputBoxLight: "#e0e0e0",
   textBubbleBackground: "white",
   messagesNotification: "green",
