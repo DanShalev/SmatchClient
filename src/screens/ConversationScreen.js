@@ -1,14 +1,14 @@
-import React, {useEffect, useState} from "react";
-import {GiftedChat} from "react-native-gifted-chat";
+import React, { useEffect, useState } from "react";
+import { GiftedChat } from "react-native-gifted-chat";
 import { generateQuote } from "../../mocks/ConversationMock";
-import {renderCustomBubble} from "../components/CustomBubble";
+import { renderCustomBubble } from "../components/CustomBubble";
 import { initMessages, sendMessage } from "../api/SmatchServerAPI";
-import {connect} from "react-redux";
+import { connect } from "react-redux";
 import { addMessage } from "../redux/actions/actionCreators";
 import { generateReceiverChatMessage, generateSenderChatMessage } from "../components/utils/ChatUtils";
 
 function ConversationScreen(props) {
-  const {groupId, otherUser, loggedUserId, addMessage, messagesMapping} = props;
+  const { groupId, otherUser, loggedUserId, addMessage, messagesMapping } = props;
   const [isTyping, setIsTyping] = useState(false);
 
   const messages = preprocessMessages(loggedUserId, otherUser, groupId, messagesMapping);
@@ -21,7 +21,7 @@ function ConversationScreen(props) {
     <GiftedChat
       messages={messages.slice().reverse()}
       onSend={(newMessages) => onMessageSend(newMessages, addMessage, setIsTyping, groupId, otherUser, loggedUserId)}
-      user={{_id: loggedUserId}}
+      user={{ _id: loggedUserId }}
       showAvatarForEveryMessage
       renderBubble={renderCustomBubble}
       isTyping={isTyping}
@@ -35,14 +35,14 @@ const mapStateToProps = (state) => ({
   otherUser: state.mainReducer.conversation.currentConversationId.user,
   messagesMapping: state.mainReducer.conversation.conversationsMapByGroupAndUser,
 });
-const mapDispatchToProps = {addMessage};
+const mapDispatchToProps = { addMessage };
 export default connect(mapStateToProps, mapDispatchToProps)(ConversationScreen);
 
 async function onMessageSend(newMessages, addMessage, setIsTyping, groupId, otherUser, loggedUserId) {
   // Append User Message
   const message = newMessages[0].text;
   const senderMsg = generateSenderChatMessage(loggedUserId, message);
-  addMessage(groupId, otherUser.id, [senderMsg]);
+  addMessage(groupId, otherUser.id, [senderMsg], true);
   sendMessage(groupId, otherUser.id, loggedUserId, message);
 
   // Generate Bot Response
@@ -52,7 +52,7 @@ async function onMessageSend(newMessages, addMessage, setIsTyping, groupId, othe
   await setTimeout(() => {
     setIsTyping(false);
     const receiverMsg = generateReceiverChatMessage(loggedUserId, otherUser.id, otherUser.pictures, response);
-    addMessage(groupId, otherUser.id, [receiverMsg]);
+    addMessage(groupId, otherUser.id, [receiverMsg], false);
   }, timeout);
 }
 

@@ -1,20 +1,23 @@
-import {TouchableOpacity} from "react-native-gesture-handler";
-import {StyleSheet, Text} from "react-native";
-import React, {useEffect} from "react";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import { StyleSheet, Text } from "react-native";
+import React from "react";
 import colors from "../../config/colors";
-import {createGroup} from "../../api/SmatchServerAPI";
-import {useNavigation} from "@react-navigation/native";
+import { createGroup } from "../../api/SmatchServerAPI";
+import { useNavigation } from "@react-navigation/native";
 
 function handleCreateGroup(groupInfo, navigation, groupSetters) {
   createGroup(groupInfo).then(() => alert("Group created"));
-  groupSetters.setName("")
-  groupSetters.setDescription("")
-  groupSetters.setFields([])
-  groupSetters.setImage(null)
-  navigation.navigate("Groups")
+  groupSetters.setName("");
+  groupSetters.setDescription("");
+  groupSetters.setCurrentField("");
+  groupSetters.setFields([]);
+  groupSetters.setImage(null);
+  groupSetters.setIsGroupNameFilled(false);
+  groupSetters.setIsGroupDescFilled(false);
+  navigation.navigate("Groups");
 }
 
-export default function CreateGroupButton({ groupInfo, groupSetters }) {
+export default function CreateGroupButton({ groupInfo, groupSetters, disabled }) {
   const navigation = useNavigation();
 
   return (
@@ -22,21 +25,27 @@ export default function CreateGroupButton({ groupInfo, groupSetters }) {
       onPress={() => {
         handleCreateGroup(groupInfo, navigation, groupSetters);
       }}
-      style={styles.createGroupButton}
+      style={[styles.createGroupButton, disabled ? styles.disabledColor : styles.enabledColor]}
+      disabled={disabled}
     >
-      <Text style={{fontSize: 18, color: "white"}}>Done</Text>
+      <Text style={{ fontSize: 18, color: "white" }}>Create group</Text>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   createGroupButton: {
-    width: 250,
-    marginTop: 80,
+    height: 50,
+    width: 300,
     alignItems: "center",
-    backgroundColor: colors.secondary,
+    marginTop: 30,
     padding: 10,
     borderRadius: 15,
-    margin: 15,
-  }
+  },
+  enabledColor: {
+    backgroundColor: colors.secondary,
+  },
+  disabledColor: {
+    backgroundColor: colors.lightGray,
+  },
 });

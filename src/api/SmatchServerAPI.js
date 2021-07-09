@@ -18,7 +18,7 @@ function printErrorDetails(error, url) {
 const header = (userId) => {
   return {
     headers: {
-      userId: userId,
+      auth: userId,
     },
   };
 };
@@ -72,7 +72,7 @@ export async function getAndUpdateConversations(userId, addMessage) {
       for (const [otherUserId, messageArray] of Object.entries(groupData)) {
         for (const messageData of messageArray) {
           const receiverMsg = generateReceiverChatMessage(loggedUserId, otherUser, null, message.message);
-          addMessage(groupId, otherUserId, [receiverMsg]);
+          addMessage(groupId, otherUserId, [receiverMsg], false);
         }
       }
     }

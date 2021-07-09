@@ -1,12 +1,10 @@
-import React, { useState } from "react";
-import { TextInput, View, StyleSheet } from "react-native";
+import React from "react";
+import { TextInput, View, StyleSheet, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
 
 import colors from "../../config/colors";
 
-export default function InputFieldDynamic({ setListOfFields }) {
-  let [currentField, setCurrentField] = useState("");
-
+export default function InputFieldDynamic({ currentField, setCurrentField, setListOfFields }) {
   function handleAddField(field) {
     setCurrentField("");
     setListOfFields((oldArray) => [...oldArray, field]);
@@ -19,17 +17,16 @@ export default function InputFieldDynamic({ setListOfFields }) {
         value={currentField}
         placeholder={"Add group field..."}
       />
-      <Icon
-        name="pluscircleo"
-        size={30}
-        color={colors.black}
-        style={styles.inputFieldIcon}
+      <TouchableOpacity
+        style={styles.button}
         onPress={() => {
           if (currentField) {
             handleAddField(currentField);
           }
         }}
-      />
+      >
+        <Icon name="pluscircleo" size={30} color={currentField ? colors.icon : colors.primary} style={styles.inputFieldIcon} />
+      </TouchableOpacity>
     </View>
   );
 }
@@ -38,20 +35,24 @@ const styles = StyleSheet.create({
   inputFieldView: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 50
+    marginTop: 50,
   },
   inputFieldText: {
     height: 40,
     width: 200,
     borderRadius: 15,
     backgroundColor: "lightgrey",
-    textAlign: "center",
+    textAlign: "left",
     fontSize: 17,
     marginTop: 12,
     marginRight: 20,
+    paddingLeft: 20,
   },
   inputFieldIcon: {
     alignSelf: "center",
     marginTop: 12,
+  },
+  button: {
+    marginTop: 3,
   },
 });

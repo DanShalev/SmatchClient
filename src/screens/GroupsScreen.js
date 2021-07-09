@@ -3,7 +3,7 @@ import Swipeout from "react-native-swipeout";
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
 
-import { ScrollView, StyleSheet, Text } from "react-native";
+import { RefreshControl, ScrollView, StyleSheet, Text } from "react-native";
 import { useEffect } from "react";
 import {
   registerForPushNotifications,
@@ -50,6 +50,8 @@ function GroupsScreen({
                         setLoggedOutCredentials,
                       })
 {
+  const [refreshing, setRefreshing] = React.useState(false);
+
   useEffect(() => {
     updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
     registerForPushNotification();
@@ -91,8 +93,20 @@ function GroupsScreen({
     },
   ];
 
+  const wait = (timeout) => {
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches);
+    wait(2000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
+
   return (
-    <ScrollView>
+    <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
       {!areGroupsAvailable ? (
         <ServerOfflineErrorMessage />
       ) : (

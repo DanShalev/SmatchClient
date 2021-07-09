@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     height: 40,
     width: 200,
     borderRadius: 17,
-    backgroundColor: colors.inputBox,
+    backgroundColor: colors.lightGray,
     textAlign: "left",
     fontSize: 17,
     marginTop: 12,
