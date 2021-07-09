@@ -3,7 +3,7 @@ import Swipeout from "react-native-swipeout";
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
 
-import { RefreshControl, ScrollView, StyleSheet, Text } from "react-native";
+import {Image, RefreshControl, ScrollView, StyleSheet, Text} from 'react-native';
 import { useEffect } from "react";
 import {
   registerForPushNotifications,
@@ -15,7 +15,6 @@ import {
 import { Avatar, ListItem } from "react-native-elements";
 import { SmatchesBadge, MessagesBadge } from "../components/Badges";
 import { connect } from "react-redux";
-import colors from "../config/colors";
 import {
   updateCurrentGroupId,
   updateProfiles,
@@ -99,7 +98,7 @@ function GroupsScreen({
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches);
+    updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
     wait(2000).then(() => {
       setRefreshing(false);
     });
@@ -156,14 +155,23 @@ export default connect(mapStateToProps, mapDispatchToProps)(GroupsScreen);
 function ServerOfflineErrorMessage() {
   return (
     <>
-      <Text style={styles.errTextStyle}>No groups found</Text>
+      <Image style={styles.errorImage} source={require("../../assets/emptyGroups.png")} />
+      <Text style={styles.errorText}>Currently no groups to display</Text>
+      <Text style={styles.errorText}>Pull to refresh or create group</Text>
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  errTextStyle: {
+  errorImage: {
+    marginTop: 40,
+    marginLeft: 80,
+    width: 250,
+    height: 220,
+  },
+  errorText: {
+    marginTop: 50,
+    fontSize: 15,
     textAlign: "center",
-    fontSize: 40,
-    color: "red",  },
+  },
 });

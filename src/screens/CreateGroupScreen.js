@@ -133,7 +133,7 @@ export function CreateGroupScreen() {
       </ScrollView>
       <CreateGroupButton
         groupInfo={{
-          auth: state.authentication.authCredentials.facebook_id,
+          userId: state.authentication.authCredentials.facebook_id,
           name: name,
           description: description,
           fields: convertToMap(fields),

@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {Image, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import Animated from "react-native-reanimated";
 
 import { initAnimation, initAnimationProps } from "../components/utils/SwipingAnimation";
@@ -7,13 +7,21 @@ import { BottomButtons } from "../components/swipe/profile-buttons/BottomButtons
 import { ProfileCards } from "../components/swipe/profile-utils/ProfileCards";
 import { MatchModal } from "../components/swipe/MatchModal";
 import { connect } from "react-redux";
-import { addMatch, removeFirstProfile } from "../redux/actions/actionCreators";
-import { insertDislike, insertLike } from "../api/SmatchServerAPI";
+import {
+  addMatch,
+  addMessage,
+  removeFirstProfile,
+  updateGroups,
+  updateMatches,
+  updateProfiles
+} from '../redux/actions/actionCreators';
+import {insertDislike, insertLike, updateGroupsProfilesAndMatches} from '../api/SmatchServerAPI';
 
 function ProfilesScreen(props) {
   const [modalMatchData, setModalMatchData] = useState({});
   const [modalVisible, setModalState] = useState(false);
   const [manualSwipe, setManualSwipe] = useState(null);
+  const [refreshing, setRefreshing] = React.useState(false);
   const { authId, currentGroupId, profiles, addMatch, removeFirstProfile, currentUserProfileImage } = props;
   const refProps = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
   const currentProfiles = profiles[currentGroupId];
@@ -26,8 +34,21 @@ function ProfilesScreen(props) {
 
   const nextProfileExist = currentProfiles !== undefined && currentProfiles.length !== 0 ? currentProfiles[0] : undefined;
 
+  const wait = (timeout) => {
+    return new Promise((resolve) => setTimeout(resolve, timeout));
+  };
+
+  const onRefresh = React.useCallback(() => {
+    setRefreshing(true);
+    updateGroupsProfilesAndMatches(authId, updateGroups, updateProfiles, updateMatches, addMessage);
+    wait(2000).then(() => {
+      setRefreshing(false);
+    });
+  }, []);
+
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} >
       {nextProfileExist ? (
         <>
           <ProfileCards
@@ -57,7 +78,9 @@ function ProfilesScreen(props) {
           />
         </>
       ) : (
-        <NoMoreSwipes />
+          <ScrollView style={styles.errorContainer} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh}/>}>
+            <NoMoreSwipes />
+          </ScrollView>
       )}
       <MatchModal
         isVisible={modalVisible}
@@ -76,14 +99,14 @@ const mapStateToProps = (state) => ({
   currentUserProfileImage: state.mainReducer.currentUserData.picture,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  addMatch(groupId, userProfile) {
-    dispatch(addMatch(groupId, userProfile));
-  },
-  removeFirstProfile(currentGroupId) {
-    dispatch(removeFirstProfile(currentGroupId));
-  },
-});
+const mapDispatchToProps = {
+  addMatch,
+  removeFirstProfile,
+  updateGroups,
+  updateProfiles,
+  updateMatches,
+  addMessage
+};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ProfilesScreen);
 
@@ -189,9 +212,11 @@ function sleep(ms) {
 
 function NoMoreSwipes() {
   return (
-    <View style={styles.noSwipesView}>
-      <Text style={styles.noSwipesText}>No More Swipes!</Text>
-    </View>
+      <View>
+        <Image style={styles.errorImage} source={require("../../assets/emptyProfiles.png")} />
+        <Text style={styles.errorText}>Currently no profiles to display</Text>
+        <Text style={styles.errorText}>Pull to refresh</Text>
+      </View>
   );
 }
 
@@ -200,12 +225,19 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fbfaff",
   },
-  noSwipesView: {
-    alignItems: "center",
+  errorContainer: {
+    flex: 1,
+    backgroundColor: "white",
   },
-  noSwipesText: {
-    fontSize: 40,
-    color: "red",
-    top: 200,
+  errorImage: {
+    marginTop: 30,
+    marginLeft: 60,
+    width: 300,
+    height: 300,
+  },
+  errorText: {
+    marginTop: 50,
+    fontSize: 15,
+    textAlign: "center",
   },
 });
