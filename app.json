@@ -24,6 +24,9 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "facebookAppId": "215513540382038",
+    "facebookDisplayName": "Smatch",
+    "facebookScheme": "fb215513540382038"
   }
 }

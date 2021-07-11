@@ -101,7 +101,7 @@ function MatchesScreen({
 const mapStateToProps = (state) => ({
   currentGroupId: state.mainReducer.currentGroupId,
   matches: state.mainReducer.matches,
-  loggedUserId: state.authentication.id,
+  loggedUserId: state.authentication.authCredentials.facebook_id,
 });
 
 const mapDispatchToProps = { updateCurrentConversationId, resetSmatchBadge, updateGroups, updateProfiles, updateMatches, deleteMatch, addMessage };

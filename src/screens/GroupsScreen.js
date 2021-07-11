@@ -23,7 +23,9 @@ import {
   deleteGroup,
   addMessage,
   deleteMatchesByGroupId,
+  setLoggedOutCredentials,
 } from "../redux/actions/actionCreators";
+import { validateFacebookAuthentication } from "../api/facebook-login/facebookLoginUtils";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -34,25 +36,25 @@ Notifications.setNotificationHandler({
 });
 
 function GroupsScreen({
-  navigation,
-  loggedUserId,
-  groups,
-  updateCurrentGroupId,
-  updateGroups,
-  updateProfiles,
-  updateMatches,
-  deleteGroup,
-  deleteMatchesByGroupId,
-  addMessage,
-}) {
+                        navigation,
+                        loggedUserId,
+                        groups,
+                        updateCurrentGroupId,
+                        updateGroups,
+                        updateProfiles,
+                        updateMatches,
+                        deleteGroup,
+                        deleteMatchesByGroupId,
+                        addMessage,
+                        setLoggedOutCredentials,
+                      })
+{
   const [refreshing, setRefreshing] = React.useState(false);
 
   useEffect(() => {
     updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
-  }, []);
-
-  useEffect(() => {
     registerForPushNotification();
+    validateFacebookAuthentication(setLoggedOutCredentials);
     Notifications.addNotificationReceivedListener((notification) => {
       const loggedUserId = notification.request.content.data.userId;
       const otherUserId = notification.request.content.data.otherUserId;
@@ -135,7 +137,7 @@ function GroupsScreen({
 }
 
 const mapStateToProps = (state) => ({
-  loggedUserId: state.authentication.id,
+  loggedUserId: state.authentication.authCredentials.facebook_id,
   groups: state.mainReducer.groups,
 });
 const mapDispatchToProps = {
@@ -146,6 +148,7 @@ const mapDispatchToProps = {
   updateMatches,
   updateCurrentGroupId,
   addMessage,
+  setLoggedOutCredentials,
 };
 export default connect(mapStateToProps, mapDispatchToProps)(GroupsScreen);
 

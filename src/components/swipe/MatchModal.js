@@ -2,7 +2,7 @@ import Modal from "react-native-modal";
 import {Image, ImageBackground, Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import React from "react";
 
-export function MatchModal({matchProfileImage, isVisible, onSwipeComplete}) {
+export function MatchModal({matchProfileImage, isVisible, onSwipeComplete, currentUserProfileImage}) {
     return (
       <Modal isVisible={isVisible}
              hasBackdrop={true}
@@ -21,7 +21,7 @@ export function MatchModal({matchProfileImage, isVisible, onSwipeComplete}) {
                   <View style={styles.modalImagesRow}>
                       <Image style={styles.modalImage} source={{uri: matchProfileImage}}/>
                       {/*TODO replace mock with user image*/}
-                      <Image style={styles.modalImage} source={require("../../../mocks/images/loggedInUserPhoto.png")}/>
+                      <Image style={styles.modalImage} source={{uri: currentUserProfileImage}}/>
                   </View>
                   <TouchableOpacity style={styles.messageBox}>
                       <Text style={styles.messageText}>Send a message</Text>

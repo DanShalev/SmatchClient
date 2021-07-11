@@ -22,7 +22,7 @@ function ProfilesScreen(props) {
   const [modalVisible, setModalState] = useState(false);
   const [manualSwipe, setManualSwipe] = useState(null);
   const [refreshing, setRefreshing] = React.useState(false);
-  const { authId, currentGroupId, profiles, addMatch, removeFirstProfile,  } = props;
+  const { authId, currentGroupId, profiles, addMatch, removeFirstProfile, currentUserProfileImage } = props;
   const refProps = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
   const currentProfiles = profiles[currentGroupId];
 
@@ -84,6 +84,7 @@ function ProfilesScreen(props) {
       )}
       <MatchModal
         isVisible={modalVisible}
+        currentUserProfileImage={currentUserProfileImage}
         matchProfileImage={modalMatchData.pictures ? modalMatchData.pictures[0] : null}
         onSwipeComplete={onModalSwipeCompleted(setModalState)}
       />
@@ -92,9 +93,10 @@ function ProfilesScreen(props) {
 }
 
 const mapStateToProps = (state) => ({
-  authId: state.authentication.id,
+  authId: state.authentication.authCredentials.facebook_id,
   currentGroupId: state.mainReducer.currentGroupId,
   profiles: state.mainReducer.profiles,
+  currentUserProfileImage: state.mainReducer.currentUserData.picture,
 });
 
 const mapDispatchToProps = {

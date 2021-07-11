@@ -12,11 +12,13 @@ import {
   ADD_MESSAGE,
   UPDATE_CURRENT_CONVERSATION_ID,
   RESET_SMATCHES_AND_MESSAGES_BADGES,
+  SET_CURRENT_USER_DATA
 } from "../actions/actions";
 import { appendImagePrefix, appendImagePrefixes } from "../actions/actionUtils";
 
 const initialState = {
   currentGroupId: null, // Id of group being viewed (while in match/swipe screens)
+  currentUserData: {},
   groups: {},
   profiles: {},
   matches: {},
@@ -267,6 +269,18 @@ const mainReducer = (state = initialState, action) => {
           ...state.conversation,
           currentConversationId: action.payload,
         },
+      };
+    case SET_CURRENT_USER_DATA:
+      return {
+        ...state,
+        currentUserData: {
+          fb_token: action.payload.fb_token,
+          id: action.payload.facebook_id,
+          name: action.payload.name,
+          age: action.payload.age,
+          gender: action.payload.gender,
+          picture: action.payload.picture,
+        }
       };
     default:
       return state;

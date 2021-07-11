@@ -1,6 +1,5 @@
 import {
   ADD_MATCH,
-  SET_LOGIN_TOKEN,
   UPDATE_CURRENT_GROUP_ID,
   REMOVE_FIRST_PROFILE,
   DELETE_GROUP,
@@ -11,8 +10,13 @@ import {
   UPDATE_GROUPS,
   DELETE_MATCHES_BY_GROUP_ID,
   DELETE_MATCH,
-  RESET_SMATCHES_AND_MESSAGES_BADGES,
+  LOG_IN,
+  LOG_OUT,
+  SET_CURRENT_USER_DATA,
+  RESET_SMATCHES_AND_MESSAGES_BADGES
 } from "./actions";
+
+
 
 export function addMatch(match) {
   return {
@@ -25,13 +29,6 @@ export function deleteMatch(otherUserId) {
   return {
     type: DELETE_MATCH,
     otherUserId: otherUserId,
-  };
-}
-
-export function setUserId(userId) {
-  return {
-    type: SET_LOGIN_TOKEN,
-    payload: userId,
   };
 }
 
@@ -102,5 +99,32 @@ export function resetSmatchBadge(matchId) {
   return {
     type: RESET_SMATCHES_AND_MESSAGES_BADGES,
     matchId: matchId,
+  };
+}
+
+export function setLoggedInCredentials(facebook_id) {
+  return {
+    type: LOG_IN,
+    payload: { facebook_id: facebook_id },
+  };
+}
+
+export function setLoggedOutCredentials() {
+  return {
+    type: LOG_OUT,
+  };
+}
+
+export function setCurrentUserData(fb_token, facebook_id, name, age, gender, picture) {
+  return {
+    type: SET_CURRENT_USER_DATA,
+    payload: {
+      fb_token: fb_token,
+      facebook_id: facebook_id,
+      name: name,
+      age: age,
+      gender: gender,
+      picture: picture
+    },
   };
 }
