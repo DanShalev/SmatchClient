@@ -1,5 +1,5 @@
 export function appendImagePrefix(image) {
-  return "data:image/jpeg;base64," + image
+  return image.startsWith("http") ? image : ("data:image/jpeg;base64," + image) // Add base64 prefix only for images, not urls
 }
 
 export function appendImagePrefixes(images) {
