@@ -211,3 +211,14 @@ export async function addUser(id, name, age, gender, picture) {
     printErrorDetails(error, url);
   }
 }
+
+export async function getAllGroups(setGroups, setResults) {
+  const url = `/group/get`;
+  try {
+    const results = await smatchServer.get(url);
+    setGroups(results.data);
+    setResults(results.data);
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
