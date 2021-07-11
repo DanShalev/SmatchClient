@@ -18,7 +18,7 @@ function printErrorDetails(error, url) {
 const header = (userId) => {
   return {
     headers: {
-      auth: userId,
+      userId: userId,
     },
   };
 };
@@ -31,9 +31,9 @@ export function updateGroupsProfilesAndMatches(userId, updateGroups, updateProfi
 }
 
 export function getAndUpdateGroups(userId, updateGroups) {
-  const url = `/subscription/user/${userId}`;
+  const url = `/subscription/user`;
   try {
-    smatchServer.get(url).then((result) => updateGroups(result.data));
+    smatchServer.get(url, header(userId)).then((result) => updateGroups(result.data));
   } catch (error) {
     printErrorDetails(error, url);
     return null;
@@ -41,9 +41,9 @@ export function getAndUpdateGroups(userId, updateGroups) {
 }
 
 export function getAndUpdateProfiles(userId, updateProfiles) {
-  const url = `/group/profiles/${userId}`;
+  const url = `/group/profiles`;
   try {
-    smatchServer.get(url).then((result) => {
+    smatchServer.get(url, header(userId)).then((result) => {
       updateProfiles(result.data);
     });
   } catch (error) {
@@ -53,9 +53,9 @@ export function getAndUpdateProfiles(userId, updateProfiles) {
 }
 
 export function getAndUpdateMatches(userId, updateMatches) {
-  const url = `/group/matches/${userId}`;
+  const url = `/group/matches`;
   try {
-    smatchServer.get(url).then((result) => {
+    smatchServer.get(url, header(userId)).then((result) => {
       updateMatches(result.data);
     });
   } catch (error) {
@@ -65,9 +65,9 @@ export function getAndUpdateMatches(userId, updateMatches) {
 }
 
 export async function getAndUpdateConversations(userId, addMessage) {
-  const url = `/chat/get/${userId}`;
+  const url = `/chat/get`;
   try {
-    const response = await smatchServer.get(url);
+    const response = await smatchServer.get(url, header(userId));
     for (const [groupId, groupData] of Object.entries(response.data)) {
       for (const [otherUserId, messageArray] of Object.entries(groupData)) {
         for (const messageData of messageArray) {
@@ -85,34 +85,34 @@ export async function getAndUpdateConversations(userId, addMessage) {
 export async function createGroup(group) {
   const url = `/group/create`;
   try {
-    return await smatchServer.post(url, group, header(group.auth));
+    return await smatchServer.post(url, group, header(group.userId));
   } catch (error) {
     printErrorDetails(error, url);
   }
 }
 
 export async function removeFromGroup(groupId, userId) {
-  const url = `/subscription/delete/${groupId}/${userId}`;
+  const url = `/subscription/delete/${groupId}`;
   try {
-    return await smatchServer.delete(url);
+    return await smatchServer.delete(url, header(userId));
   } catch (error) {
     printErrorDetails(error, url);
   }
 }
 
 export async function insertLike(groupId, userId, otherUserId) {
-  const url = `/match/like/${groupId}/${userId}/${otherUserId}`;
+  const url = `/match/like/${groupId}/${otherUserId}`;
   try {
-    return await smatchServer.post(url);
+    return await smatchServer.post(url, null, header(userId));
   } catch (error) {
     printErrorDetails(error, url);
   }
 }
 
 export async function insertDislike(groupId, userId, otherUserId) {
-  const url = `/match/dislike/${groupId}/${userId}/${otherUserId}`;
+  const url = `/match/dislike/${groupId}/${otherUserId}`;
   try {
-    return await smatchServer.post(url);
+    return await smatchServer.post(url, null, header(userId));
   } catch (error) {
     printErrorDetails(error, url);
   }
@@ -136,14 +136,14 @@ export async function unmatchAllGroupUsers(groupId, userId) {
   }
 }
 
-export async function initMessages(loggedUserId, groupId, otherUserId, addMessage) {
-  const url = `/chat/get/${groupId}/${loggedUserId}/${otherUserId}`;
+export async function initMessages(userId, groupId, otherUserId, addMessage) {
+  const url = `/chat/get/${groupId}/${otherUserId}`;
   try {
-    await smatchServer.get(url).then((result) => {
+    await smatchServer.get(url, header(userId)).then((result) => {
       const messages = result.data;
 
       for (let message of messages) {
-        const msg = generateReceiverChatMessage(loggedUserId, otherUserId, null, message.message);
+        const msg = generateReceiverChatMessage(userId, otherUserId, null, message.message);
         addMessage(groupId, otherUserId, [msg]);
       }
     });
@@ -167,27 +167,27 @@ export async function sendMessage(groupId, otherUser, loggedUserId, message) {
 }
 
 export async function registerForPushNotifications(userId, token) {
-  const url = `/user/registerUserForPushNotifications/${userId}`;
+  const url = `/user/registerUserForPushNotifications`;
   try {
-    return await smatchServer.post(url, { token: token.data });
+    return await smatchServer.post(url, { token: token.data }, header(userId));
   } catch (error) {
     printErrorDetails(error, url);
   }
 }
 
 export async function sendPushNotifications(userId) {
-  const url = `/user/push/${userId}`;
+  const url = `/user/push`;
   try {
-    return await smatchServer.post(url);
+    return await smatchServer.post(url, null, header(userId));
   } catch (error) {
     printErrorDetails(error, url);
   }
 }
 
 export async function getUserFieldsFromBE(userId, groupId, setFields) {
-  const url = `/group/fields/${groupId}/${userId}`;
+  const url = `/group/fields/${groupId}`;
   try {
-    let result = await smatchServer.get(url);
+    let result = await smatchServer.get(url, header(userId));
     setFields(result.data);
   } catch (error) {
     printErrorDetails(error, url);
