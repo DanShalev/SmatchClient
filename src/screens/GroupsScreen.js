@@ -7,7 +7,7 @@ import {Image, RefreshControl, ScrollView, StyleSheet, Text} from 'react-native'
 import { useEffect } from "react";
 import {
   registerForPushNotifications,
-  removeFromGroup,
+  removeUserFromGroup,
   updateGroupsProfilesAndMatches,
   unmatchAllGroupUsers,
   initMessages,
@@ -86,7 +86,7 @@ function GroupsScreen({
         deleteMatchesByGroupId(groupKey);
         updateCurrentGroupId(null);
         unmatchAllGroupUsers(groupKey, loggedUserId);
-        removeFromGroup(groupKey, loggedUserId);
+        removeUserFromGroup(groupKey, loggedUserId);
         //TODO add delete messagesByGroupId (BE)
       },
     },
@@ -117,16 +117,19 @@ function GroupsScreen({
                 bottomDivider
                 onPress={() => {
                   updateCurrentGroupId(groupKey);
-                  navigation.navigate("Home", { screen: "SwipeScreen", params: { screen: "Swipe" } });
+                  navigation.navigate("Home", {screen: "SwipeScreen", params: {screen: "Swipe"}});
                 }}
               >
-                <Avatar source={{ uri: group.avatar }} size="large" rounded />
+                <Avatar source={{uri: group.avatar}} size="large" rounded onPress={() => {
+                  navigation.navigate("GroupDetails", {groupId: groupKey})
+                }}/>
                 <ListItem.Content>
                   <ListItem.Title>{group.name}</ListItem.Title>
                   <ListItem.Subtitle>{group.numberOfMembers}</ListItem.Subtitle>
                 </ListItem.Content>
-                {group.newSmatches !== 0 ? <SmatchesBadge newMessages={group.newMessages} newSmatches={group.newSmatches} /> : null}
-                {group.newMessages !== 0 ? <MessagesBadge newMessages={group.newMessages} /> : null}
+                {group.newSmatches !== 0 ?
+                  <SmatchesBadge newMessages={group.newMessages} newSmatches={group.newSmatches}/> : null}
+                {group.newMessages !== 0 ? <MessagesBadge newMessages={group.newMessages}/> : null}
               </ListItem>
             </Swipeout>
           );
