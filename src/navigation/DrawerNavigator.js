@@ -19,7 +19,8 @@ import AboutScreen from "../screens/AboutScreen";
 import PersonalAccountScreen from "../screens/PersonalAccountScreen";
 import { setLoggedOutCredentials } from "../redux/actions/actionCreators";
 import { connect } from "react-redux";
-import { logoutUsingFacebookApi } from "../api/facebook-login/facebookLoginUtils";
+import {logoutUsingFacebookApi} from "../api/facebook-login/facebookLoginUtils";
+import JoinGroupScreen from "../screens/JoinGroupScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -31,6 +32,7 @@ export function DrawerNavigator({ setLoggedOutCredentials }) {
         <Drawer.Screen name="Settings" component={SettingsScreen} {...setSettingsScreenHeaders()} />
         <Drawer.Screen name="About" component={AboutScreen} {...setAboutScreenHeaders()} />
         <Drawer.Screen name="Account" component={PersonalAccountScreen} {...setAccountScreenHeaders()} />
+        <Drawer.Screen name="GroupDetails" component={JoinGroupScreen} {...setSettingsScreenHeaders()} />
       </Drawer.Navigator>
   );
 }
@@ -41,13 +43,25 @@ const mapDispatchToProps = {
 export default connect(null, mapDispatchToProps)(DrawerNavigator);
 
 function CustomDrawerContent(props) {
+  const screenName = "GroupDetails"
+  const filteredProps = {
+    ...props,
+    state: {
+      ...props.state,
+      routeNames: props.state.routeNames.filter(routeName => {
+        routeName !== screenName;
+      }),
+      routes: props.state.routes.filter(route => route.name !== screenName),
+    },
+  };
+
   return (
-    <DrawerContentScrollView {...props}>
-      <DrawerItemList {...props} />
+    <DrawerContentScrollView {...filteredProps}>
+      <DrawerItemList {...filteredProps} />
       <DrawerItem label="Log Out" onPress={() => {
-        props.logout();
+        filteredProps.logout();
         logoutUsingFacebookApi();
-      }} />
+      }}/>
     </DrawerContentScrollView>
   );
 }

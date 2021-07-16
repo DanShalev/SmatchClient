@@ -1,5 +1,6 @@
 {
   "expo": {
+    "scheme": "smatch",
     "name": "Smatch",
     "slug": "Smatch",
     "privacy": "public",

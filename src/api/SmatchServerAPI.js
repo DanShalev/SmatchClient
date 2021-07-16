@@ -40,6 +40,16 @@ export function getAndUpdateGroups(userId, updateGroups) {
   }
 }
 
+export async function getGroupById(groupId, userId) {
+  const url = `/group/${groupId}`;
+  try {
+    return await smatchServer.get(url, header(userId))
+  } catch (error) {
+    printErrorDetails(error, url);
+    return null;
+  }
+}
+
 export function getAndUpdateProfiles(userId, updateProfiles) {
   const url = `/group/profiles`;
   try {
@@ -91,10 +101,19 @@ export async function createGroup(group) {
   }
 }
 
-export async function removeFromGroup(groupId, userId) {
+export async function removeUserFromGroup(groupId, userId) {
   const url = `/subscription/delete/${groupId}`;
   try {
     return await smatchServer.delete(url, header(userId));
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
+
+export async function addUserToGroup(groupId, userId) {
+  const url = `/subscription/add/${groupId}`;
+  try {
+    return await smatchServer.post(url, null, header(userId));
   } catch (error) {
     printErrorDetails(error, url);
   }
