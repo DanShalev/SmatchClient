@@ -14,7 +14,7 @@ function ConversationScreen(props) {
   const messages = preprocessMessages(loggedUserId, otherUser, groupId, messagesMapping);
 
   useEffect(() => {
-    initMessages(loggedUserId, groupId, otherUser, addMessage);
+    initMessages(loggedUserId, groupId, otherUser.id, addMessage);
   }, []);
 
   return (
@@ -38,14 +38,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = { addMessage };
 export default connect(mapStateToProps, mapDispatchToProps)(ConversationScreen);
 
-async function onMessageSend(newMessages, addMessage, setIsTyping, groupId, otherUser, loggedUserId) {
-  // Append User Message
-  const message = newMessages[0].text;
-  const senderMsg = generateSenderChatMessage(loggedUserId, message);
-  addMessage(groupId, otherUser.id, [senderMsg], true);
-  sendMessage(groupId, otherUser.id, loggedUserId, message);
-
-  // Generate Bot Response
+async function generateBotResponse(setIsTyping, loggedUserId, otherUser, addMessage, groupId) {
   setIsTyping(true);
   const response = generateQuote();
   const timeout = response.length * 25; // Calculates time a person would take to type: #letter * 20 MiliSec per one letter typing
@@ -54,6 +47,18 @@ async function onMessageSend(newMessages, addMessage, setIsTyping, groupId, othe
     const receiverMsg = generateReceiverChatMessage(loggedUserId, otherUser.id, otherUser.pictures, response);
     addMessage(groupId, otherUser.id, [receiverMsg], false);
   }, timeout);
+}
+
+function appendUserMessage(newMessages, loggedUserId, addMessage, groupId, otherUser) {
+  const message = newMessages[0].text;
+  const senderMsg = generateSenderChatMessage(loggedUserId, message);
+  addMessage(groupId, otherUser.id, [senderMsg], true);
+  sendMessage(groupId, otherUser.id, loggedUserId, message);
+}
+
+async function onMessageSend(newMessages, addMessage, setIsTyping, groupId, otherUser, loggedUserId) {
+  appendUserMessage(newMessages, loggedUserId, addMessage, groupId, otherUser);
+  await generateBotResponse(setIsTyping, loggedUserId, otherUser, addMessage, groupId);
 }
 
 function preprocessMessages(loggedUserId, otherUser, groupId, messagesMapping) {
