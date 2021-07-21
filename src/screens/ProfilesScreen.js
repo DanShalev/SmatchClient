@@ -96,7 +96,7 @@ const mapStateToProps = (state) => ({
   authId: state.authentication.authCredentials.facebook_id,
   currentGroupId: state.mainReducer.currentGroupId,
   profiles: state.mainReducer.profiles,
-  currentUserProfileImage: state.mainReducer.currentUserData.picture,
+  currentUserProfileImage: state.mainReducer.currentUserData.pictures[0],
 });
 
 const mapDispatchToProps = {

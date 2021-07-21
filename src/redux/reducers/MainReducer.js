@@ -12,9 +12,9 @@ import {
   ADD_MESSAGE,
   UPDATE_CURRENT_CONVERSATION_ID,
   RESET_SMATCHES_AND_MESSAGES_BADGES,
-  SET_CURRENT_USER_DATA
+  SET_CURRENT_USER_DATA, SET_CURRENT_USER_PICTURES
 } from "../actions/actions";
-import { appendImagePrefix, appendImagePrefixes } from "../actions/actionUtils";
+import { appendImagePrefix } from "../actions/actionUtils";
 
 const initialState = {
   currentGroupId: null, // Id of group being viewed (while in match/swipe screens)
@@ -93,7 +93,7 @@ const mainReducer = (state = initialState, action) => {
             sex: profile.sex,
             age: profile.age,
             pushNotificationToken: profile.pushNotificationToken,
-            pictures: appendImagePrefixes([profile.image1, profile.image2, profile.image3]),
+            pictures: appendImagePrefix([profile.image1, profile.image2, profile.image3]),
           });
         }
       }
@@ -124,7 +124,7 @@ const mainReducer = (state = initialState, action) => {
               sex: match.sex,
               age: match.age,
               pushNotificationToken: match.pushNotificationToken,
-              pictures: appendImagePrefixes([match.image1, match.image2, match.image3]),
+              pictures: appendImagePrefix([match.image1, match.image2, match.image3]),
               newSmatch: true,
               newMessages: 0,
             });
@@ -279,7 +279,15 @@ const mainReducer = (state = initialState, action) => {
           name: action.payload.name,
           age: action.payload.age,
           gender: action.payload.gender,
-          picture: action.payload.picture,
+          pictures: appendImagePrefix(action.payload.pictures),
+        }
+      };
+    case SET_CURRENT_USER_PICTURES:
+      return {
+        ...state,
+        currentUserData: {
+          ...state.currentUserData,
+          pictures: appendImagePrefix(action.payload.pictures),
         }
       };
     default:

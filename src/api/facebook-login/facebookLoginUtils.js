@@ -1,7 +1,7 @@
 import * as Facebook from "expo-facebook";
 import { Alert } from "react-native";
 import Constants from "expo-constants";
-import { addUser } from "../SmatchServerAPI";
+import { addUser, getUserMetdata } from "../SmatchServerAPI";
 
 async function initializeFacebookApi() {
   await Facebook.initializeAsync({
@@ -33,10 +33,18 @@ export async function runLoginScheme(updateAuthLogIn, setCurrentUserData) {
   const { id, name, gender, birthday, picture } = res
 
   // 2. SmatchServer: check if user is registered, register it if not
-  await addUser(id, name, calculateAge(birthday), gender, picture.data.url);
+  let newUser = await addUser(id, name, calculateAge(birthday), gender, picture.data.url);
 
   // 3.1 Update current user account data in redux store
-  setCurrentUserData(token, id, name, calculateAge(birthday), gender, picture.data.url);
+  if (newUser) {
+    let pictures = [picture.data.url, null, null]
+    setCurrentUserData(token, id, name, calculateAge(birthday), gender, pictures);
+  } else {
+    let userData = await getUserMetdata(id);
+
+    let pictures = [userData.image1, userData.image2, userData.image3]
+    setCurrentUserData(token, id, userData.name, userData.age, userData.sex, pictures);
+  }
 
   // 3.2 Update redux auth, and rerender main screen
   updateAuthLogIn(id);

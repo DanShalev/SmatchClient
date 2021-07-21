@@ -1,7 +1,7 @@
 import smatchServer from "./SmatchServer";
 import { generateReceiverChatMessage } from "../components/utils/ChatUtils";
 
-function printErrorDetails(error, url) {
+export function printErrorDetails(error, url) {
   if (error.response) {
     // Request made and server responded
     console.log("Server responded with error while calling: ", url);
@@ -19,6 +19,7 @@ const header = (userId) => {
   return {
     headers: {
       userId: userId,
+      "Content-Type": "application/json",
     },
   };
 };
@@ -216,7 +217,7 @@ export async function getUserFieldsFromBE(userId, groupId, setFields) {
 export async function addUser(id, name, age, gender, picture) {
   const url = `/user/add`;
   try {
-    return await smatchServer.post(url, {
+    let res = await smatchServer.post(url, {
       age: age,
       id: id,
       image1: picture,
@@ -226,6 +227,7 @@ export async function addUser(id, name, age, gender, picture) {
       pushNotificationToken: null,
       sex: gender
     });
+    return res.data;
   } catch (error) {
     printErrorDetails(error, url);
   }
@@ -237,6 +239,34 @@ export async function getAllGroups(setGroups, setResults) {
     const results = await smatchServer.get(url);
     setGroups(results.data);
     setResults(results.data);
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
+
+export async function setUserImage(userId, imageNum, image) {
+  const url = `/user/setUserImage/${imageNum}`;
+  try {
+    return await smatchServer.post(url, image, header(userId));
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
+
+export async function removeUserImage(userId, imageNum) {
+  const url = `/user/removeUserImage/${imageNum}`;
+  try {
+    return await smatchServer.get(url, header(userId));
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
+
+export async function getUserMetdata(userId) {
+  const url = `/user/getUser`;
+  try {
+    let res =  await smatchServer.get(url, header(userId));
+    return res.data;
   } catch (error) {
     printErrorDetails(error, url);
   }
