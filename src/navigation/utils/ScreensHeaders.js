@@ -48,15 +48,6 @@ export function setCreateGroupScreenHeaders() {
   };
 }
 
-export function setSettingsScreenHeaders() {
-  return {
-    options: {
-      headerLeft: () => <SmatchLogoHeader />,
-      headerRight: () => <BackArrowHeader navigateLocation={"Groups"} />,
-    },
-  };
-}
-
 export function setAccountScreenHeaders() {
   return {
     options: {

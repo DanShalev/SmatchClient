@@ -3,6 +3,7 @@ import {Provider} from "react-redux";
 import {PersistGate} from 'redux-persist/integration/react'
 import {store, persistor} from "./src/redux/store/Store";
 import AuthNavigator from "./src/navigation/AuthNavigator";
+import "./src/config/disableWarnings";
 
 const ReactNative = require("react-native");
 try {

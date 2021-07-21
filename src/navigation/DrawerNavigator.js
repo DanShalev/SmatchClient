@@ -10,11 +10,9 @@ import { CreateGroupScreen } from "../screens/CreateGroupScreen";
 import { HomeScreenStackNavigator } from "./StackNavigator";
 import {
   setCreateGroupScreenHeaders,
-  setSettingsScreenHeaders,
   setAccountScreenHeaders,
   setAboutScreenHeaders,
 } from "./utils/ScreensHeaders";
-import SettingsScreen from "../screens/SettingsScreen";
 import AboutScreen from "../screens/AboutScreen";
 import PersonalAccountScreen from "../screens/PersonalAccountScreen";
 import { setLoggedOutCredentials } from "../redux/actions/actionCreators";
@@ -28,11 +26,10 @@ export function DrawerNavigator({ setLoggedOutCredentials }) {
   return (
       <Drawer.Navigator {...setDrawerNavBarProperties()} drawerContent={props => <CustomDrawerContent {...props} logout={setLoggedOutCredentials} />}>
         <Drawer.Screen name="Home" component={HomeScreenStackNavigator} {...disableDrawerNavBar()} />
-        <Drawer.Screen name="Create Group" component={CreateGroupScreen} {...setCreateGroupScreenHeaders()} />
-        <Drawer.Screen name="Settings" component={SettingsScreen} {...setSettingsScreenHeaders()} />
-        <Drawer.Screen name="About" component={AboutScreen} {...setAboutScreenHeaders()} />
         <Drawer.Screen name="Account" component={PersonalAccountScreen} {...setAccountScreenHeaders()} />
-        <Drawer.Screen name="GroupDetails" component={JoinGroupScreen} {...setSettingsScreenHeaders()} />
+        <Drawer.Screen name="Create Group" component={CreateGroupScreen} {...setCreateGroupScreenHeaders()} />
+        <Drawer.Screen name="About" component={AboutScreen} {...setAboutScreenHeaders()} />
+        <Drawer.Screen name="GroupDetails" component={JoinGroupScreen} {...setAboutScreenHeaders()} />
       </Drawer.Navigator>
   );
 }

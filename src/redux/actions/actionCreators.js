@@ -13,7 +13,8 @@ import {
   LOG_IN,
   LOG_OUT,
   SET_CURRENT_USER_DATA,
-  RESET_SMATCHES_AND_MESSAGES_BADGES
+  RESET_SMATCHES_AND_MESSAGES_BADGES,
+  SET_CURRENT_USER_PICTURES
 } from "./actions";
 
 
@@ -115,7 +116,7 @@ export function setLoggedOutCredentials() {
   };
 }
 
-export function setCurrentUserData(fb_token, facebook_id, name, age, gender, picture) {
+export function setCurrentUserData(fb_token, facebook_id, name, age, gender, pictures) {
   return {
     type: SET_CURRENT_USER_DATA,
     payload: {
@@ -124,7 +125,16 @@ export function setCurrentUserData(fb_token, facebook_id, name, age, gender, pic
       name: name,
       age: age,
       gender: gender,
-      picture: picture
+      pictures: pictures
+    },
+  };
+}
+
+export function setCurrentUserPictures(pictures) {
+  return {
+    type: SET_CURRENT_USER_PICTURES,
+    payload: {
+      pictures: pictures
     },
   };
 }

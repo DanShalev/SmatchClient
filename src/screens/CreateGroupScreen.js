@@ -1,14 +1,12 @@
 import React, { useState } from "react";
 import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import Modal from "react-native-modal";
-import * as ImagePicker from "expo-image-picker";
 import InputFieldDynamic from "../components/create-group/InputFieldDynamic";
 import InputFieldList from "../components/create-group/InputFieldList";
 import CreateGroupButton from "../components/create-group/CreateGroupButton";
-import Icon from "../components/create-group/PressableIcon";
 import { useStore } from "react-redux";
 import { appendImagePrefix } from "../redux/actions/actionUtils";
+import UploadImageModal from "../components/create-group/UploadImageModal";
 
 function updateIsFilledTextState(text, setIsTextFilled) {
   if (text.length > 0) {
@@ -29,15 +27,6 @@ export function CreateGroupScreen() {
   let [isGroupDescFilled, setIsGroupDescFilled] = useState(false);
   let state = useStore().getState();
 
-  const imagePickerOptions = {
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
-    allowsMultipleSelection: false,
-    allowsEditing: true,
-    aspect: [4, 5],
-    quality: 0.3,
-    base64: true,
-  };
-
   const groupSetters = {
     setName: setName,
     setDescription: setDescription,
@@ -46,14 +35,6 @@ export function CreateGroupScreen() {
     setImage: setImage,
     setIsGroupNameFilled: setIsGroupNameFilled,
     setIsGroupDescFilled: setIsGroupDescFilled,
-  };
-
-  const launchGallery = async () => {
-    handleImage(await ImagePicker.launchImageLibraryAsync(imagePickerOptions));
-  };
-
-  const launchCamera = async () => {
-    handleImage(await ImagePicker.launchCameraAsync(imagePickerOptions));
   };
 
   const removeImage = () => {
@@ -85,18 +66,13 @@ export function CreateGroupScreen() {
           <Image source={{ uri: appendImagePrefix(image) }} style={styles.image} />
         )}
       </TouchableOpacity>
-      <Modal isVisible={isVisible} onBackdropPress={() => setIsVisible(false)} style={styles.modal}>
-        <View style={styles.modalView}>
-          <View style={{ alignItems: "center" }}>
-            <Text style={{ fontSize: 22 }}>Upload Image</Text>
-          </View>
-          <View style={styles.icons}>
-            <Icon action={launchGallery} iconName={"images"} color={"grey"} />
-            <Icon action={launchCamera} iconName={"camera"} color={"grey"} />
-            {image && <Icon action={removeImage} iconName={"trash-alt"} color={"tomato"} />}
-          </View>
-        </View>
-      </Modal>
+      <UploadImageModal
+        isVisible={isVisible}
+        setIsVisible={setIsVisible}
+        imageExist={image}
+        setImage={handleImage}
+        removeImage={removeImage}
+      />
       <View>
         <TextInput
           style={styles.groupName}
@@ -160,22 +136,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 90,
-  },
-  modal: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalView: {
-    height: 200,
-    width: 300,
-    backgroundColor: "lightgrey",
-    flexDirection: "column",
-    justifyContent: "center",
-    borderRadius: 10,
-  },
-  icons: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
   },
   groupName: {
     textDecorationColor: "blue",
