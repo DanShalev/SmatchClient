@@ -11,7 +11,7 @@ function appendSingleImagePrefix(image) {
 }
 
 function appendMultiImagePrefixes(images) {
-  return images.filter((image) => image !== null).map((image) => appendImagePrefix(image))
+  return images.filter((image) => image !== null).map((image) => appendSingleImagePrefix(image))
 }
 
 export function appendImagePrefix(images) {
