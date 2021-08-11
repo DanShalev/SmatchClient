@@ -82,7 +82,7 @@ export async function getAndUpdateConversations(userId, addMessage) {
     for (const [groupId, groupData] of Object.entries(response.data)) {
       for (const [otherUserId, messageArray] of Object.entries(groupData)) {
         for (const messageData of messageArray) {
-          const receiverMsg = generateReceiverChatMessage(loggedUserId, otherUser, null, message.message);
+          const receiverMsg = generateReceiverChatMessage(userId, messageArray, null, messageData.message);
           addMessage(groupId, otherUserId, [receiverMsg], false);
         }
       }
@@ -266,6 +266,26 @@ export async function getUserMetdata(userId) {
   const url = `/user/getUser`;
   try {
     let res =  await smatchServer.get(url, header(userId));
+    return res.data;
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
+
+export async function getTypingStatus(groupId, userId, otherUserId) {
+  const url = `/chat/getTypingStatus/${groupId}/${otherUserId}`;
+  try {
+    let res =  await smatchServer.get(url, header(userId));
+    return res.data;
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
+
+export async function setTypingStatus(groupId, userId, otherUserId, typingStatus) {
+  const url = `/chat/setTypingStatus/${groupId}/${otherUserId}`;
+  try {
+    let res =  await smatchServer.post(url, typingStatus ? "true" : "false", header(userId));
     return res.data;
   } catch (error) {
     printErrorDetails(error, url);
