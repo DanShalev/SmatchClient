@@ -4,7 +4,6 @@ import {
   DELETE_MATCH,
   DELETE_MATCHES_BY_GROUP_ID,
   REMOVE_FIRST_PROFILE,
-  RESET_SMATCH_BADGE,
   UPDATE_CURRENT_GROUP_ID,
   UPDATE_GROUPS,
   UPDATE_MATCHES,
@@ -12,7 +11,7 @@ import {
   ADD_MESSAGE,
   UPDATE_CURRENT_CONVERSATION_ID,
   RESET_SMATCHES_AND_MESSAGES_BADGES,
-  SET_CURRENT_USER_DATA, SET_CURRENT_USER_PICTURES
+  SET_CURRENT_USER_DATA, SET_CURRENT_USER_PICTURES, SET_CURRENT_CONVERSATION_IS_TYPING
 } from "../actions/actions";
 import { appendImagePrefix } from "../actions/actionUtils";
 
@@ -35,7 +34,7 @@ const initialState = {
      * }
      * */
     conversationsMapByGroupAndUser: {},
-    currentConversationId: { user: null, group: null },
+    currentConversation: { user: null, group: null, isTyping: false },
   },
 };
 
@@ -267,7 +266,22 @@ const mainReducer = (state = initialState, action) => {
         ...state,
         conversation: {
           ...state.conversation,
-          currentConversationId: action.payload,
+          currentConversation: {
+            user: action.payload.user,
+            group: action.payload.group,
+            isTyping: false,
+          },
+        }
+      };
+    case SET_CURRENT_CONVERSATION_IS_TYPING:
+      return {
+        ...state,
+        conversation: {
+          ...state.conversation,
+          currentConversation: {
+            ...state.conversation.currentConversation,
+            isTyping: action.payload.isTyping
+          },
         },
       };
     case SET_CURRENT_USER_DATA:

@@ -14,7 +14,7 @@ import {
   LOG_OUT,
   SET_CURRENT_USER_DATA,
   RESET_SMATCHES_AND_MESSAGES_BADGES,
-  SET_CURRENT_USER_PICTURES
+  SET_CURRENT_USER_PICTURES, SET_CURRENT_CONVERSATION_IS_TYPING
 } from "./actions";
 
 
@@ -86,6 +86,13 @@ export function updateCurrentConversationId(matchedUser, groupId) {
   return {
     type: UPDATE_CURRENT_CONVERSATION_ID,
     payload: { user: matchedUser, group: groupId },
+  };
+}
+
+export function updateCurrentConversationIsTyping(isTyping) {
+  return {
+    type: SET_CURRENT_CONVERSATION_IS_TYPING,
+    payload: { isTyping: isTyping },
   };
 }
 
