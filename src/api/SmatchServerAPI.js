@@ -1,5 +1,6 @@
 import smatchServer from "./SmatchServer";
-import { generateReceiverChatMessage } from "../components/utils/ChatUtils";
+import {generateReceiverChatMessage} from "../components/utils/ChatUtils";
+import {cacheGroupsImages, cacheProfilesImages, cacheUserImages} from "./utils/Utils";
 
 export function printErrorDetails(error, url) {
   if (error.response) {
@@ -34,7 +35,8 @@ export function updateGroupsProfilesAndMatches(userId, updateGroups, updateProfi
 export function getAndUpdateGroups(userId, updateGroups) {
   const url = `/subscription/user`;
   try {
-    smatchServer.get(url, header(userId)).then((result) => updateGroups(result.data));
+    smatchServer.get(url, header(userId)).then((result) => cacheGroupsImages(result.data))
+      .then((result) => updateGroups(result));
   } catch (error) {
     printErrorDetails(error, url);
     return null;
@@ -54,9 +56,8 @@ export async function getGroupById(groupId, userId) {
 export function getAndUpdateProfiles(userId, updateProfiles) {
   const url = `/group/profiles`;
   try {
-    smatchServer.get(url, header(userId)).then((result) => {
-      updateProfiles(result.data);
-    });
+    smatchServer.get(url, header(userId)).then((result) => cacheProfilesImages(result.data))
+      .then((result) => updateProfiles(result));
   } catch (error) {
     printErrorDetails(error, url);
     return null;
@@ -66,9 +67,8 @@ export function getAndUpdateProfiles(userId, updateProfiles) {
 export function getAndUpdateMatches(userId, updateMatches) {
   const url = `/group/matches`;
   try {
-    smatchServer.get(url, header(userId)).then((result) => {
-      updateMatches(result.data);
-    });
+    smatchServer.get(url, header(userId)).then((result) => cacheProfilesImages(result.data))
+      .then((result) => updateMatches(result));
   } catch (error) {
     printErrorDetails(error, url);
     return null;
@@ -244,7 +244,7 @@ export async function getAllGroups(setGroups, setResults) {
   }
 }
 
-export async function setUserImage(userId, imageNum, image) {
+export async function updateUserImage(userId, imageNum, image) {
   const url = `/user/setUserImage/${imageNum}`;
   try {
     return await smatchServer.post(url, image, header(userId));
@@ -262,11 +262,11 @@ export async function removeUserImage(userId, imageNum) {
   }
 }
 
-export async function getUserMetdata(userId) {
+export async function getUserMetadata(userId) {
   const url = `/user/getUser`;
   try {
-    let res =  await smatchServer.get(url, header(userId));
-    return res.data;
+    let res = await smatchServer.get(url, header(userId));
+    return await cacheUserImages(res.data)
   } catch (error) {
     printErrorDetails(error, url);
   }

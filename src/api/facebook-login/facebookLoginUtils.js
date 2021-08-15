@@ -1,7 +1,7 @@
 import * as Facebook from "expo-facebook";
 import { Alert } from "react-native";
 import Constants from "expo-constants";
-import { addUser, getUserMetdata } from "../SmatchServerAPI";
+import {addUser, getUserMetadata} from "../SmatchServerAPI";
 
 async function initializeFacebookApi() {
   await Facebook.initializeAsync({
@@ -40,7 +40,7 @@ export async function runLoginScheme(updateAuthLogIn, setCurrentUserData) {
     let pictures = [picture.data.url, null, null]
     setCurrentUserData(token, id, name, calculateAge(birthday), gender, pictures);
   } else {
-    let userData = await getUserMetdata(id);
+    let userData = await getUserMetadata(id);
 
     let pictures = [userData.image1, userData.image2, userData.image3]
     setCurrentUserData(token, id, userData.name, userData.age, userData.sex, pictures);

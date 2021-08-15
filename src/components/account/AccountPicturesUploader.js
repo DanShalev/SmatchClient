@@ -1,12 +1,13 @@
-import React, { useState } from "react";
-import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, {useState} from "react";
+import {FlatList, StyleSheet, Image as RNImage, Text, TouchableOpacity, View} from "react-native";
 import colors from "../../config/colors";
-import { appendImagePrefix } from "../../redux/actions/actionUtils";
 import UploadImageModal from "../create-group/UploadImageModal";
-import { connect } from "react-redux";
-import { removeUserImage, setUserImage } from "../../api/SmatchServerAPI";
-import { setCurrentUserPictures } from "../../redux/actions/actionCreators";
-import { reloadUserPictures } from "../../redux/utils/utils";
+import {connect} from "react-redux";
+import {removeUserImage, updateUserImage} from "../../api/SmatchServerAPI";
+import {setCurrentUserPictures} from "../../redux/actions/actionCreators";
+import {reloadUserPictures} from "../../redux/utils/utils";
+import {Image} from "react-native-expo-image-cache";
+import {appendImagePrefix} from "../../redux/actions/actionUtils";
 
 function AccountPicturesUploader({disablePictures, pictures, userId, setCurrentUserPictures}) {
   if (disablePictures) {
@@ -27,8 +28,7 @@ function AccountPicturesUploader({disablePictures, pictures, userId, setCurrentU
     if (result.cancelled) {
       return;
     }
-
-    await setUserImage(userId, imageNum, result.base64);
+    await updateUserImage(userId, imageNum, result.base64);
     setIsVisible(false);
     await reloadUserPictures(userId, setCurrentUserPictures);
   };
@@ -50,16 +50,20 @@ function AccountPicturesUploader({disablePictures, pictures, userId, setCurrentU
         keyExtractor={result => result.id.toString()}
         renderItem={({item, index}) => {
           return !item.image ? null : (
-              <TouchableOpacity
-                style={styles.imageField}
-                onPress={() => {
-                  setIsImage(!item.isAddImageButton);
-                  setImageNum(index+1);
-                  setIsVisible(true);
-                }}
-              >
-                <Image style={styles.imageScroll} source={{ uri: appendImagePrefix(item.image) }} />
-              </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.imageField}
+              onPress={() => {
+                setIsImage(!item.isAddImageButton);
+                setImageNum(index + 1);
+                setIsVisible(true);
+              }}
+            >
+              {item.image.startsWith("http") ? (
+                <Image style={styles.imageScroll} uri={appendImagePrefix(item.image)}/>
+              ) : (
+                <RNImage style={styles.imageScroll} source={{uri: appendImagePrefix(item.image)}}/>
+              )}
+            </TouchableOpacity>
           );
         }}
       />

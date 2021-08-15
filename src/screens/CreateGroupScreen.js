@@ -4,8 +4,8 @@ import { FontAwesome } from "@expo/vector-icons";
 import InputFieldDynamic from "../components/create-group/InputFieldDynamic";
 import InputFieldList from "../components/create-group/InputFieldList";
 import CreateGroupButton from "../components/create-group/CreateGroupButton";
-import { useStore } from "react-redux";
-import { appendImagePrefix } from "../redux/actions/actionUtils";
+import {connect} from "react-redux";
+import {appendImagePrefix} from "../redux/actions/actionUtils";
 import UploadImageModal from "../components/create-group/UploadImageModal";
 
 function updateIsFilledTextState(text, setIsTextFilled) {
@@ -16,7 +16,7 @@ function updateIsFilledTextState(text, setIsTextFilled) {
   }
 }
 
-export function CreateGroupScreen() {
+function CreateGroupScreen({userId}) {
   let [fields, setFields] = useState([]);
   let [currentField, setCurrentField] = useState("");
   let [name, setName] = useState("");
@@ -25,7 +25,6 @@ export function CreateGroupScreen() {
   let [isVisible, setIsVisible] = useState(false);
   let [isGroupNameFilled, setIsGroupNameFilled] = useState(false);
   let [isGroupDescFilled, setIsGroupDescFilled] = useState(false);
-  let state = useStore().getState();
 
   const groupSetters = {
     setName: setName,
@@ -109,7 +108,7 @@ export function CreateGroupScreen() {
       </ScrollView>
       <CreateGroupButton
         groupInfo={{
-          userId: state.authentication.authCredentials.facebook_id,
+          userId: userId,
           name: name,
           description: description,
           fields: convertToMap(fields),
@@ -121,6 +120,12 @@ export function CreateGroupScreen() {
     </ScrollView>
   );
 }
+
+const mapStateToProps = (state) => ({
+  userId: state.authentication.authCredentials.facebook_id,
+});
+
+export default connect(mapStateToProps)(CreateGroupScreen);
 
 const styles = StyleSheet.create({
   contentContainerStyle: {
