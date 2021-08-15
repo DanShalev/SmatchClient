@@ -1,22 +1,28 @@
-import React from "react";
-import { ImageBackground, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
+import React, {useEffect, useState} from "react";
+import {ScrollView, Image as RNImage, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {LinearGradient} from "expo-linear-gradient";
 import colors from "../../config/colors";
-import { appendImagePrefix } from "../../redux/actions/actionUtils";
 import AccountPicturesUploader from "./AccountPicturesUploader";
+import {Image} from "react-native-expo-image-cache";
+import {convertToBase64} from "../cache/CacheUtil";
 
 export function Account({pictures, name, fields, disablePictures}) {
+  const [images, setImages] = useState([])
+  useEffect(() => {
+    convertToBase64(pictures).then((result) => setImages(result))
+  }, [pictures])
+
   return (
     <ScrollView style={styles.background}>
-      <ImageBackground
-        style={styles.image}
-        source={{
-          uri: appendImagePrefix(pictures[0]),
-        }}
-      >
-        <LinearGradient colors={["transparent", "black"]} style={styles.gradient} />
+      {images && <View>
+        {images[0] !== undefined && images[0].startsWith("http") ? (
+          <Image style={styles.image} preview={{uri: images[0]}} uri={images[0]}/>
+        ) : (
+          <RNImage style={styles.image} source={{uri: images[0]}}/>
+        )}
+        <LinearGradient colors={["transparent", "black"]} style={styles.gradient}/>
         <Text style={styles.name}> {name} </Text>
-      </ImageBackground>
+      </View>}
       <View style={styles.titleView}>
         <Text style={styles.titleText}> Info </Text>
       </View>
@@ -26,11 +32,7 @@ export function Account({pictures, name, fields, disablePictures}) {
           <Text style={styles.fieldName}> {l.data} </Text>
         </TouchableOpacity>
       ))}
-
-      <AccountPicturesUploader
-        disablePictures={disablePictures}
-        pictures={pictures}
-      />
+      {images && <AccountPicturesUploader disablePictures={disablePictures} pictures={images}/>}
     </ScrollView>
   );
 }
@@ -58,6 +60,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: colors.accountTitle,
     fontSize: 25,
+    bottom: 40,
   },
   lastSeen: {
     marginLeft: 10,
@@ -106,7 +109,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: 0,
+    bottom: 40,
     height: "40%",
   },
 });

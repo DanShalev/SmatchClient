@@ -5,9 +5,9 @@ import {
   DrawerItemList,
   DrawerItem,
 } from '@react-navigation/drawer';
-import { setDrawerNavBarProperties } from "./utils/NavBarProperties";
-import { CreateGroupScreen } from "../screens/CreateGroupScreen";
-import { HomeScreenStackNavigator } from "./StackNavigator";
+import {setDrawerNavBarProperties} from "./utils/NavBarProperties";
+import CreateGroupScreen from "../screens/CreateGroupScreen";
+import {HomeScreenStackNavigator} from "./StackNavigator";
 import {
   setCreateGroupScreenHeaders,
   setAccountScreenHeaders,

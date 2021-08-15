@@ -1,61 +1,70 @@
 import React, {useEffect, useState} from "react";
-import {ActivityIndicator, ImageBackground, StyleSheet, Text, View} from "react-native";
+import {ActivityIndicator, Image as RNImage, StyleSheet, Text, View} from "react-native";
 import {connect} from "react-redux";
 import {useNavigation} from "@react-navigation/native";
 import colors from "../config/colors";
 import {InviteButton, JoinGroupButton} from "../components/utils/JoinGroupUtils";
 import {getGroupById} from "../api/SmatchServerAPI";
 import {updateGroups} from "../redux/actions/actionCreators";
-import {appendImagePrefix} from "../redux/actions/actionUtils";
+import {Image} from "react-native-expo-image-cache";
+import {LinearGradient} from "expo-linear-gradient";
+import * as FileSystem from "expo-file-system";
 
-
-function validatePrefix(avatar) {
-  return avatar.startsWith("data:image") ? avatar : appendImagePrefix(avatar);
-}
 
 function JoinGroupScreen({route, loggedUserId, groups, updateGroups}) {
   let [groupDetails, setGroupDetails] = useState(null);
+  const [avatar, setAvatar] = useState(null)
+  const [isJoin, setIsJoin] = useState(false)
   const [loader, setLoader] = useState(false);
   const navigation = useNavigation();
   const groupId = route.params.groupId;
-  let join = false;
+
 
   useEffect(() => {
     if (groups[groupId] === undefined) {
       setLoader(true)
+      setIsJoin(true)
       getGroupById(groupId, loggedUserId).then((response) => {
-        setGroupDetails(response.data)
-        setLoader(false)
-      }).catch((e) => console.log(e))
+        setGroupDetails(response.data);
+        setLoader(false);
+      })
+    } else {
+      setGroupDetails(groups[groupId])
+      updateGroupAvatar(groups[groupId].avatar).then((res) => setAvatar(res))
     }
   }, [route])
 
-  if (groups[groupId] === undefined) {
-    join = true;
-  } else {
-    groupDetails = groups[groupId];
+
+  const updateGroupAvatar = async (avatar) => {
+    if (avatar.startsWith("file")) {
+      return await FileSystem.readAsStringAsync(avatar);
+    }
+    return avatar
   }
 
   return (
-
-    <View style={styles.container}>
-      {groupDetails && <ImageBackground source={{uri: validatePrefix(groupDetails.avatar)}} style={styles.image}>
+    groupDetails !== null && avatar !== null ? (
+      <View style={styles.container}>
+        {avatar.startsWith("http") ? (<Image uri={avatar} style={styles.image} preview={{uri: avatar}}/>
+        ) : (
+          <RNImage style={styles.image} source={{uri: avatar}}/>
+        )}
         <Text style={styles.name}>{groupDetails.name}</Text>
-      </ImageBackground>}
-      <View style={{flex: 0.4}}>
-        {groupDetails && <Text style={styles.members}>{groupDetails.numberOfMembers}</Text>}
-        {groupDetails && <Text style={styles.description}>{groupDetails.description}</Text>}
-        <ActivityIndicator animating={loader} size="large" color={colors.secondary}/>
-      </View>
-      <View style={styles.button}>
-        {join ?
-          (groupDetails && <JoinGroupButton groupId={groupId} updateGroups={updateGroups} loggedUserId={loggedUserId}
-                                            navigation={navigation}/>)
-          : (
-            <InviteButton groupId={groupId}/>
-          )}
-      </View>
-    </View>
+        <LinearGradient colors={["transparent", "black"]} style={styles.gradient}/>
+        <View style={{flex: 0.4}}>
+          {groupDetails && <Text style={styles.members}>{groupDetails.numberOfMembers}</Text>}
+          {groupDetails && <Text style={styles.description}>{groupDetails.description}</Text>}
+          <ActivityIndicator animating={loader} size="large" color={colors.secondary}/>
+        </View>
+        <View style={styles.button}>
+          {isJoin ?
+            (groupDetails && <JoinGroupButton groupId={groupId} updateGroups={updateGroups} loggedUserId={loggedUserId}
+                                              navigation={navigation}/>)
+            : (
+              <InviteButton groupId={groupId}/>
+            )}
+        </View>
+      </View>) : null
   );
 }
 
@@ -78,7 +87,6 @@ const styles = StyleSheet.create({
   },
   image: {
     flex: 0.4,
-    justifyContent: "flex-end"
   },
   name: {
     fontWeight: "bold",
@@ -86,6 +94,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: colors.accountTitle,
     fontSize: 25,
+    bottom: 40,
   },
   members: {
     marginTop: 5,
@@ -102,7 +111,15 @@ const styles = StyleSheet.create({
     flex: 0.2,
     justifyContent: "center",
     alignSelf: "center",
-  }
+  },
+  gradient: {
+    opacity: 0.2,
+    position: "absolute",
+    left: 0,
+    right: 0,
+    bottom: 355,
+    height: "40%",
+  },
 });
 
 

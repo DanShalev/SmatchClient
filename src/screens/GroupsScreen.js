@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Swipeout from "react-native-swipeout";
 import * as Notifications from "expo-notifications";
 import * as Permissions from "expo-permissions";
@@ -25,7 +25,8 @@ import {
   deleteMatchesByGroupId,
   setLoggedOutCredentials,
 } from "../redux/actions/actionCreators";
-import { validateFacebookAuthentication } from "../api/facebook-login/facebookLoginUtils";
+import {validateFacebookAuthentication} from "../api/facebook-login/facebookLoginUtils";
+import * as FileSystem from "expo-file-system";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -47,9 +48,9 @@ function GroupsScreen({
                         deleteMatchesByGroupId,
                         addMessage,
                         setLoggedOutCredentials,
-                      })
-{
-  const [refreshing, setRefreshing] = React.useState(false);
+                      }) {
+  const [refreshing, setRefreshing] = useState(false);
+  const [convertedAvatars, setConvertedAvatar] = useState({});
 
   useEffect(() => {
     updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
@@ -62,6 +63,22 @@ function GroupsScreen({
       initMessages(loggedUserId, groupId, otherUserId, addMessage);
     });
   }, []);
+
+  useEffect(() => {
+    convertAvatars(groups).then((res) => setConvertedAvatar(res))
+  }, [groups])
+
+  async function convertAvatars(groups) {
+    let updatedAvatars = {}
+    for (const [i, group] of Object.entries(groups)) {
+      if (group.avatar.startsWith("file")) {
+        updatedAvatars[i] = await FileSystem.readAsStringAsync(group.avatar);
+      } else {
+        updatedAvatars[i] = group.avatar
+      }
+    }
+    return updatedAvatars
+  }
 
   const registerForPushNotification = async () => {
     try {
@@ -120,7 +137,7 @@ function GroupsScreen({
                   navigation.navigate("Home", {screen: "SwipeScreen", params: {screen: "Swipe"}});
                 }}
               >
-                <Avatar source={{uri: group.avatar}} size="large" rounded onPress={() => {
+                <Avatar source={{uri: convertedAvatars[groupKey]}} size="large" rounded onPress={() => {
                   navigation.navigate("GroupDetails", {groupId: groupKey})
                 }}/>
                 <ListItem.Content>

@@ -11,7 +11,7 @@ function SmatchAccountScreen({ route, currentGroupId }) {
   }, [route]);
 
   return (
-    <Account image1={route.params.image} name={route.params.name} fields={fields} disablePictures />
+    <Account pictures={[route.params.image]} name={route.params.name} fields={fields} disablePictures/>
   );
 }
 

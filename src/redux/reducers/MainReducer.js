@@ -13,7 +13,6 @@ import {
   RESET_SMATCHES_AND_MESSAGES_BADGES,
   SET_CURRENT_USER_DATA, SET_CURRENT_USER_PICTURES, SET_CURRENT_CONVERSATION_IS_TYPING
 } from "../actions/actions";
-import { appendImagePrefix } from "../actions/actionUtils";
 
 const initialState = {
   currentGroupId: null, // Id of group being viewed (while in match/swipe screens)
@@ -53,7 +52,7 @@ const mainReducer = (state = initialState, action) => {
             name: group.name,
             description: group.description,
             numberOfMembers: group.numberOfMembers,
-            avatar: appendImagePrefix(group.avatar),
+            avatar: group.avatar,
             fields: group.fields,
             newSmatches: 0,
             newMessages: 0,
@@ -92,7 +91,7 @@ const mainReducer = (state = initialState, action) => {
             sex: profile.sex,
             age: profile.age,
             pushNotificationToken: profile.pushNotificationToken,
-            pictures: appendImagePrefix([profile.image1, profile.image2, profile.image3]),
+            pictures: [profile.image1, profile.image2, profile.image3],
           });
         }
       }
@@ -123,7 +122,7 @@ const mainReducer = (state = initialState, action) => {
               sex: match.sex,
               age: match.age,
               pushNotificationToken: match.pushNotificationToken,
-              pictures: appendImagePrefix([match.image1, match.image2, match.image3]),
+              pictures: [match.image1, match.image2, match.image3],
               newSmatch: true,
               newMessages: 0,
             });
@@ -293,7 +292,7 @@ const mainReducer = (state = initialState, action) => {
           name: action.payload.name,
           age: action.payload.age,
           gender: action.payload.gender,
-          pictures: appendImagePrefix(action.payload.pictures),
+          pictures: action.payload.pictures,
         }
       };
     case SET_CURRENT_USER_PICTURES:
@@ -301,7 +300,7 @@ const mainReducer = (state = initialState, action) => {
         ...state,
         currentUserData: {
           ...state.currentUserData,
-          pictures: appendImagePrefix(action.payload.pictures),
+          pictures: action.payload.pictures,
         }
       };
     default:
