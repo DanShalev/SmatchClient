@@ -14,6 +14,7 @@ function handleCreateGroup(groupInfo, navigation, groupSetters) {
   groupSetters.setImage(null);
   groupSetters.setIsGroupNameFilled(false);
   groupSetters.setIsGroupDescFilled(false);
+  groupSetters.dropdownRef.current.reset()
   navigation.navigate("Groups");
 }
 

@@ -233,16 +233,26 @@ export async function addUser(id, name, age, gender, picture) {
   }
 }
 
-export async function getAllGroups(setGroups, setResults) {
+export async function getAndUpdateBrowseGroups(updateBrowseGroups) {
   const url = `/group/get`;
   try {
     const results = await smatchServer.get(url);
-    setGroups(results.data);
-    setResults(results.data);
+    updateBrowseGroups(results.data)
   } catch (error) {
     printErrorDetails(error, url);
   }
 }
+
+export async function getAndUpdateCategories(updateCategories) {
+  const url = `/group/categories`;
+  try {
+    const results = await smatchServer.get(url);
+    updateCategories(results.data)
+  } catch (error) {
+    printErrorDetails(error, url);
+  }
+}
+
 
 export async function updateUserImage(userId, imageNum, image) {
   const url = `/user/setUserImage/${imageNum}`;
@@ -291,3 +301,4 @@ export async function setTypingStatus(groupId, userId, otherUserId, typingStatus
     printErrorDetails(error, url);
   }
 }
+

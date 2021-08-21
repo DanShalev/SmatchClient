@@ -44,13 +44,11 @@ const styles = StyleSheet.create({
     backgroundColor: "lightgrey",
     textAlign: "left",
     fontSize: 17,
-    marginTop: 12,
     marginRight: 20,
     paddingLeft: 20,
   },
   inputFieldIcon: {
     alignSelf: "center",
-    marginTop: 12,
   },
   button: {
     marginTop: 3,

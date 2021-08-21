@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, TextInput, StyleSheet } from 'react-native';
 import { Feather } from '@expo/vector-icons';
+import colors from '../../config/colors';
 
 const SearchBar = ({ term, onTermChange, onTermSubmit }) => {
   return (
@@ -22,7 +23,7 @@ const SearchBar = ({ term, onTermChange, onTermSubmit }) => {
 const styles = StyleSheet.create({
   backgroundStyle: {
     marginTop: 10,
-    backgroundColor: "white",
+    backgroundColor: colors.lightGray,
     height: 50,
     borderRadius: 5,
     marginHorizontal: 15,
