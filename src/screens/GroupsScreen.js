@@ -10,8 +10,8 @@ import {
   removeUserFromGroup,
   updateGroupsProfilesAndMatches,
   unmatchAllGroupUsers,
-  initMessages,
-} from "../api/SmatchServerAPI";
+  initMessages, getAndUpdateBrowseGroups, getAndUpdateCategories,
+} from '../api/SmatchServerAPI';
 import { Avatar, ListItem } from "react-native-elements";
 import { SmatchesBadge, MessagesBadge } from "../components/Badges";
 import { connect } from "react-redux";
@@ -23,9 +23,9 @@ import {
   deleteGroup,
   addMessage,
   deleteMatchesByGroupId,
-  setLoggedOutCredentials,
-} from "../redux/actions/actionCreators";
-import {validateFacebookAuthentication} from "../api/facebook-login/facebookLoginUtils";
+  setLoggedOutCredentials, updateBrowseGroups, updateCategories,
+} from '../redux/actions/actionCreators';
+import { validateFacebookAuthentication } from "../api/facebook-login/facebookLoginUtils";
 import * as FileSystem from "expo-file-system";
 
 Notifications.setNotificationHandler({
@@ -48,14 +48,19 @@ function GroupsScreen({
                         deleteMatchesByGroupId,
                         addMessage,
                         setLoggedOutCredentials,
-                      }) {
-  const [refreshing, setRefreshing] = useState(false);
+                        updateBrowseGroups,
+                        updateCategories
+                      })
+{
+  const [refreshing, setRefreshing] = React.useState(false);
   const [convertedAvatars, setConvertedAvatar] = useState({});
 
   useEffect(() => {
     updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
     registerForPushNotification();
     validateFacebookAuthentication(setLoggedOutCredentials);
+    getAndUpdateBrowseGroups(updateBrowseGroups);
+    getAndUpdateCategories(updateCategories);
     Notifications.addNotificationReceivedListener((notification) => {
       const loggedUserId = notification.request.content.data.userId;
       const otherUserId = notification.request.content.data.otherUserId;
@@ -169,6 +174,8 @@ const mapDispatchToProps = {
   updateCurrentGroupId,
   addMessage,
   setLoggedOutCredentials,
+  updateBrowseGroups,
+  updateCategories
 };
 export default connect(mapStateToProps, mapDispatchToProps)(GroupsScreen);
 

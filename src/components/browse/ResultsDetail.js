@@ -16,12 +16,13 @@ const ResultsDetail = ({ result }) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginRight: 15
+    marginRight: 15,
+      marginBottom: 30
   },
   image: {
-    width: 200,
+    width: 180,
     height: 120,
-    borderRadius: 4,
+    borderRadius: 7,
     marginBottom: 5
   },
   name: {

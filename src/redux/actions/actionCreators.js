@@ -14,8 +14,9 @@ import {
   LOG_OUT,
   SET_CURRENT_USER_DATA,
   RESET_SMATCHES_AND_MESSAGES_BADGES,
-  SET_CURRENT_USER_PICTURES, SET_CURRENT_CONVERSATION_IS_TYPING
-} from "./actions";
+  SET_CURRENT_USER_PICTURES, SET_CURRENT_CONVERSATION_IS_TYPING,
+  UPDATE_BROWSE_GROUPS, UPDATE_CATEGORIES
+} from './actions';
 
 
 
@@ -72,6 +73,20 @@ export function updateCurrentGroupId(groupId) {
   return {
     type: UPDATE_CURRENT_GROUP_ID,
     payload: groupId,
+  };
+}
+
+export function updateBrowseGroups(browseGroups) {
+  return {
+    type: UPDATE_BROWSE_GROUPS,
+    payload: browseGroups,
+  };
+}
+
+export function updateCategories(updateCategories) {
+  return {
+    type: UPDATE_CATEGORIES,
+    payload: updateCategories,
   };
 }
 

@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import React, {useRef, useState} from 'react';
+import { Image, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 import InputFieldDynamic from "../components/create-group/InputFieldDynamic";
 import InputFieldList from "../components/create-group/InputFieldList";
@@ -7,6 +7,8 @@ import CreateGroupButton from "../components/create-group/CreateGroupButton";
 import {connect} from "react-redux";
 import {appendImagePrefix} from "../redux/actions/actionUtils";
 import UploadImageModal from "../components/create-group/UploadImageModal";
+import SelectDropdown from 'react-native-select-dropdown'
+import colors from '../config/colors';
 
 function updateIsFilledTextState(text, setIsTextFilled) {
   if (text.length > 0) {
@@ -22,11 +24,13 @@ function CreateGroupScreen({userId}) {
   let [name, setName] = useState("");
   let [description, setDescription] = useState("");
   let [image, setImage] = useState(null);
+  let [category, setCategory] = useState("");
   let [isVisible, setIsVisible] = useState(false);
   let [isGroupNameFilled, setIsGroupNameFilled] = useState(false);
   let [isGroupDescFilled, setIsGroupDescFilled] = useState(false);
+  const dropdownRef = useRef({});
 
-  const groupSetters = {
+    const groupSetters = {
     setName: setName,
     setDescription: setDescription,
     setCurrentField: setCurrentField,
@@ -34,6 +38,7 @@ function CreateGroupScreen({userId}) {
     setImage: setImage,
     setIsGroupNameFilled: setIsGroupNameFilled,
     setIsGroupDescFilled: setIsGroupDescFilled,
+    dropdownRef: dropdownRef
   };
 
   const removeImage = () => {
@@ -101,8 +106,18 @@ function CreateGroupScreen({userId}) {
           multiline={true}
         />
       </View>
-      <View style={styles.border} />
-      <InputFieldDynamic currentField={currentField} setCurrentField={setCurrentField} setListOfFields={setFields} />
+        <View style={styles.border} />
+        <SelectDropdown
+            data={categories}
+            defaultButtonText="Select a category"
+            onSelect={(selectedItem) => {
+                setCategory(selectedItem)
+            }}
+            ref={dropdownRef}
+            dropdownStyle={styles.dropdownOptions}
+            buttonStyle={styles.dropdownButton}
+        />
+        <InputFieldDynamic currentField={currentField} setCurrentField={setCurrentField} setListOfFields={setFields} />
       <ScrollView style={styles.dynamicField}>
         <InputFieldList listOfFields={fields} setListOfFields={setFields} />
       </ScrollView>
@@ -113,6 +128,7 @@ function CreateGroupScreen({userId}) {
           description: description,
           fields: convertToMap(fields),
           avatar: image,
+          category: category
         }}
         groupSetters={groupSetters}
         disabled={!isGroupNameFilled || !isGroupDescFilled}
@@ -120,6 +136,9 @@ function CreateGroupScreen({userId}) {
     </ScrollView>
   );
 }
+
+const categories = ["Travel", "Sport", "Dating", "Games", "Education", "Other"]
+
 
 const mapStateToProps = (state) => ({
   userId: state.authentication.authCredentials.facebook_id,
@@ -167,4 +186,14 @@ const styles = StyleSheet.create({
   dynamicField: {
     marginTop: 40,
   },
+  dropdownButton: {
+      marginTop: 40,
+      backgroundColor: colors.lightGray,
+      borderRadius: 17,
+      width: 270
+  },
+  dropdownOptions: {
+      backgroundColor: colors.tertiary,
+      borderRadius: 17
+  }
 });

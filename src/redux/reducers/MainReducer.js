@@ -11,8 +11,9 @@ import {
   ADD_MESSAGE,
   UPDATE_CURRENT_CONVERSATION_ID,
   RESET_SMATCHES_AND_MESSAGES_BADGES,
-  SET_CURRENT_USER_DATA, SET_CURRENT_USER_PICTURES, SET_CURRENT_CONVERSATION_IS_TYPING
-} from "../actions/actions";
+  SET_CURRENT_USER_DATA, SET_CURRENT_USER_PICTURES, UPDATE_BROWSE_GROUPS,
+  SET_CURRENT_CONVERSATION_IS_TYPING, UPDATE_CATEGORIES
+} from '../actions/actions';
 
 const initialState = {
   currentGroupId: null, // Id of group being viewed (while in match/swipe screens)
@@ -35,6 +36,8 @@ const initialState = {
     conversationsMapByGroupAndUser: {},
     currentConversation: { user: null, group: null, isTyping: false },
   },
+  browseGroups: {},
+  categories: {}
 };
 
 const mainReducer = (state = initialState, action) => {
@@ -53,6 +56,7 @@ const mainReducer = (state = initialState, action) => {
             description: group.description,
             numberOfMembers: group.numberOfMembers,
             avatar: group.avatar,
+            category: group.category,
             fields: group.fields,
             newSmatches: 0,
             newMessages: 0,
@@ -302,6 +306,16 @@ const mainReducer = (state = initialState, action) => {
           ...state.currentUserData,
           pictures: action.payload.pictures,
         }
+      };
+    case UPDATE_BROWSE_GROUPS:
+      return {
+        ...state,
+        browseGroups: action.payload
+      };
+    case UPDATE_CATEGORIES:
+      return {
+        ...state,
+        categories: action.payload
       };
     default:
       return state;
