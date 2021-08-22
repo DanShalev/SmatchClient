@@ -18,7 +18,7 @@ function updateIsFilledTextState(text, setIsTextFilled) {
   }
 }
 
-function CreateGroupScreen({userId}) {
+function CreateGroupScreen({userId, categories}) {
   let [fields, setFields] = useState([]);
   let [currentField, setCurrentField] = useState("");
   let [name, setName] = useState("");
@@ -137,11 +137,10 @@ function CreateGroupScreen({userId}) {
   );
 }
 
-const categories = ["Travel", "Sport", "Dating", "Games", "Education", "Other"]
-
 
 const mapStateToProps = (state) => ({
-  userId: state.authentication.authCredentials.facebook_id,
+    userId: state.authentication.authCredentials.facebook_id,
+    categories: state.mainReducer.categories,
 });
 
 export default connect(mapStateToProps)(CreateGroupScreen);
