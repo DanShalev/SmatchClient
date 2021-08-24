@@ -2,12 +2,16 @@ import {ScrollView, StyleSheet, View} from 'react-native';
 import React, { useEffect, useState } from "react";
 import ResultsList from "../components/browse/ResultsList";
 import SearchBar from "../components/browse/SearchBar";
-import {connect} from 'react-redux';
+import { useSelector } from "react-redux";
+import { selectBrowseGroups, selectCategories } from "../redux/slices/browseSlice";
 
-function BrowseScreen({ browseGroups, categoriesList }) {
+export default function BrowseScreen() {
   const [results, setResults] = useState([]);
   const [term, setTerm] = useState('');
   const [categories, setCategories] = useState([]);
+
+  const browseGroups = useSelector(selectBrowseGroups);
+  const categoriesList = useSelector(selectCategories);
 
   useEffect(() => {
     setCategories(categoriesList);
@@ -27,14 +31,6 @@ function BrowseScreen({ browseGroups, categoriesList }) {
     </View>
   );
 }
-
-const mapStateToProps = (state) => ({
-  browseGroups: state.mainReducer.browseGroups,
-  categoriesList: state.mainReducer.categories,
-});
-const mapDispatchToProps = {};
-export default connect(mapStateToProps, mapDispatchToProps)(BrowseScreen);
-
 
 function searchGroups(term, groups, setResults) {
   const results = groups.filter((item) => {

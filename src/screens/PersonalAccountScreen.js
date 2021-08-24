@@ -1,8 +1,10 @@
 import React from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { Account } from "../components/account/Account";
+import { selectCurrentUserData } from "../redux/slices/authSlice";
 
-function PersonalAccountScreen({ currentUserData }) {
+export default function PersonalAccountScreen() {
+  const currentUserData = useSelector(selectCurrentUserData);
   const { name, age, gender, pictures } = currentUserData;
 
   const fields = [{
@@ -18,8 +20,3 @@ function PersonalAccountScreen({ currentUserData }) {
     <Account pictures={pictures} name={name} fields={fields} />
   );
 }
-
-const mapStateToProps = (state) => ({
-  currentUserData: state.mainReducer.currentUserData,
-});
-export default connect(mapStateToProps, null)(PersonalAccountScreen);

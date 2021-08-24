@@ -1,17 +1,18 @@
 import React, {useEffect, useState} from "react";
 import {ActivityIndicator, Image as RNImage, StyleSheet, Text, View} from "react-native";
-import {connect} from "react-redux";
+import { useSelector } from "react-redux";
 import {useNavigation} from "@react-navigation/native";
 import colors from "../config/colors";
 import {InviteButton, JoinGroupButton} from "../components/utils/JoinGroupUtils";
 import {getGroupById} from "../api/SmatchServerAPI";
-import {updateGroups} from "../redux/actions/actionCreators";
 import {Image} from "react-native-expo-image-cache";
 import {LinearGradient} from "expo-linear-gradient";
 import * as FileSystem from "expo-file-system";
+import { selectGroups } from "../redux/slices/groupsSlice";
+import { selectUserFacebookId } from "../redux/slices/authSlice";
 
 
-function JoinGroupScreen({route, loggedUserId, groups, updateGroups}) {
+export default function JoinGroupScreen({route}) {
   let [groupDetails, setGroupDetails] = useState(null);
   const [avatar, setAvatar] = useState(null)
   const [isJoin, setIsJoin] = useState(false)
@@ -19,6 +20,8 @@ function JoinGroupScreen({route, loggedUserId, groups, updateGroups}) {
   const navigation = useNavigation();
   const groupId = route.params.groupId;
 
+  const groups = useSelector(selectGroups);
+  const loggedUserId = useSelector(selectUserFacebookId);
 
   useEffect(() => {
     if (groups[groupId] === undefined) {
@@ -58,8 +61,7 @@ function JoinGroupScreen({route, loggedUserId, groups, updateGroups}) {
         </View>
         <View style={styles.button}>
           {isJoin ?
-            (groupDetails && <JoinGroupButton groupId={groupId} updateGroups={updateGroups} loggedUserId={loggedUserId}
-                                              navigation={navigation}/>)
+            (groupDetails && <JoinGroupButton groupId={groupId} loggedUserId={loggedUserId} navigation={navigation}/>)
             : (
               <InviteButton groupId={groupId}/>
             )}
@@ -67,16 +69,6 @@ function JoinGroupScreen({route, loggedUserId, groups, updateGroups}) {
       </View>) : null
   );
 }
-
-
-const mapStateToProps = (state) => ({
-  loggedUserId: state.mainReducer.currentUserData.id,
-  groups: state.mainReducer.groups
-});
-
-const mapDispatchToProps = {updateGroups};
-
-export default connect(mapStateToProps, mapDispatchToProps)(JoinGroupScreen);
 
 const styles = StyleSheet.create({
   container: {

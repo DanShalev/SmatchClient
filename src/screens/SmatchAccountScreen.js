@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { connect } from "react-redux";
+import { useSelector } from "react-redux";
 import { getUserFieldsFromBE } from "../api/SmatchServerAPI";
 import { Account } from "../components/account/Account";
+import { selectCurrentGroupId } from "../redux/slices/groupsSlice";
 
-function SmatchAccountScreen({ route, currentGroupId }) {
+export default function SmatchAccountScreen({ route }) {
   const [fields, setFields] = useState([]);
+
+  const currentGroupId = useSelector(selectCurrentGroupId);
 
   useEffect(() => {
     getUserFieldsFromBE(route.params.id, currentGroupId, setFields);
@@ -14,8 +17,3 @@ function SmatchAccountScreen({ route, currentGroupId }) {
     <Account pictures={[route.params.image]} name={route.params.name} fields={fields} disablePictures/>
   );
 }
-
-const mapStateToProps = (state) => ({
-  currentGroupId: state.mainReducer.currentGroupId,
-});
-export default connect(mapStateToProps, null)(SmatchAccountScreen);

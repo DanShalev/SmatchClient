@@ -4,11 +4,13 @@ import { FontAwesome } from "@expo/vector-icons";
 import InputFieldDynamic from "../components/create-group/InputFieldDynamic";
 import InputFieldList from "../components/create-group/InputFieldList";
 import CreateGroupButton from "../components/create-group/CreateGroupButton";
-import {connect} from "react-redux";
-import {appendImagePrefix} from "../redux/actions/actionUtils";
+import { useSelector } from "react-redux";
 import UploadImageModal from "../components/create-group/UploadImageModal";
+import { selectUserFacebookId } from "../redux/slices/authSlice";
 import SelectDropdown from 'react-native-select-dropdown'
 import colors from '../config/colors';
+import { selectCategories } from "../redux/slices/browseSlice";
+import { appendImagePrefix } from "../redux/utils/utils";
 
 function updateIsFilledTextState(text, setIsTextFilled) {
   if (text.length > 0) {
@@ -18,7 +20,7 @@ function updateIsFilledTextState(text, setIsTextFilled) {
   }
 }
 
-function CreateGroupScreen({userId, categories}) {
+export default function CreateGroupScreen() {
   let [fields, setFields] = useState([]);
   let [currentField, setCurrentField] = useState("");
   let [name, setName] = useState("");
@@ -30,7 +32,10 @@ function CreateGroupScreen({userId, categories}) {
   let [isGroupDescFilled, setIsGroupDescFilled] = useState(false);
   const dropdownRef = useRef({});
 
-    const groupSetters = {
+  const userId = useSelector(selectUserFacebookId);
+  const categories = useSelector(selectCategories);
+
+  const groupSetters = {
     setName: setName,
     setDescription: setDescription,
     setCurrentField: setCurrentField,
@@ -136,14 +141,6 @@ function CreateGroupScreen({userId, categories}) {
     </ScrollView>
   );
 }
-
-
-const mapStateToProps = (state) => ({
-    userId: state.authentication.authCredentials.facebook_id,
-    categories: state.mainReducer.categories,
-});
-
-export default connect(mapStateToProps)(CreateGroupScreen);
 
 const styles = StyleSheet.create({
   contentContainerStyle: {

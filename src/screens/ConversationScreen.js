@@ -3,26 +3,35 @@ import { GiftedChat } from "react-native-gifted-chat";
 import { generateQuote } from "../../mocks/ConversationMock";
 import { renderCustomBubble } from "../components/CustomBubble";
 import { getTypingStatus, initMessages, sendMessage, setTypingStatus } from "../api/SmatchServerAPI";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { generateReceiverChatMessage, generateSenderChatMessage } from "../components/utils/ChatUtils";
+import { selectUserFacebookId } from "../redux/slices/authSlice";
+import { selectCurrentGroupId } from "../redux/slices/groupsSlice";
 import {
   addMessage,
+  selectConversationMapping,
+  selectCurrentConversation,
   updateCurrentConversationIsTyping
-} from "../redux/actions/actionCreators";
-import { generateReceiverChatMessage, generateSenderChatMessage } from "../components/utils/ChatUtils";
+} from "../redux/slices/conversationSlice";
 
-function ConversationScreen(props) {
-  const { groupId, otherUser, loggedUserId, addMessage, messagesMapping, isTyping, updateCurrentConversationIsTyping } = props;
+export default function ConversationScreen() {
+  const loggedUserId = useSelector(selectUserFacebookId);
+  const messagesMapping = useSelector(selectConversationMapping);
+  const {group: groupId, user: otherUser, isTyping } = useSelector(selectCurrentConversation);
+  const dispatch = useDispatch();
 
   const messages = preprocessMessages(loggedUserId, otherUser, groupId, messagesMapping);
   const [prevText, setPrevText] = useState("");
 
+  const currentGroupId = useSelector(selectCurrentGroupId);
+
   useEffect(() => {
-    initMessages(loggedUserId, groupId, otherUser.id, addMessage);
+    initMessages(loggedUserId, groupId, otherUser.id, dispatch);
   }, []);
 
   const updateTypingStatus = async () => {
     let isTyping = await getTypingStatus(groupId, loggedUserId, otherUser.id);
-    updateCurrentConversationIsTyping(isTyping);
+    dispatch(updateCurrentConversationIsTyping({isTyping}));
   };
 
   useEffect(() => {
@@ -34,7 +43,7 @@ function ConversationScreen(props) {
   return (
     <GiftedChat
       messages={messages.slice().reverse()}
-      onSend={(newMessages) => onMessageSend(newMessages, addMessage, groupId, otherUser, loggedUserId)}
+      onSend={(newMessages) => onMessageSend(newMessages, dispatch, groupId, otherUser, loggedUserId, currentGroupId)}
       user={{ _id: loggedUserId }}
       showAvatarForEveryMessage
       renderBubble={renderCustomBubble}
@@ -53,35 +62,33 @@ function ConversationScreen(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  loggedUserId: state.authentication.authCredentials.facebook_id,
-  groupId: state.mainReducer.conversation.currentConversation.group,
-  otherUser: state.mainReducer.conversation.currentConversation.user,
-  messagesMapping: state.mainReducer.conversation.conversationsMapByGroupAndUser,
-  isTyping: state.mainReducer.conversation.currentConversation.isTyping,
-});
-const mapDispatchToProps = { addMessage, updateCurrentConversationIsTyping };
-export default connect(mapStateToProps, mapDispatchToProps)(ConversationScreen);
-
-async function generateBotResponse(loggedUserId, otherUser, addMessage, groupId) {
+async function generateBotResponse(loggedUserId, otherUser, dispatch, groupId) {
   const response = generateQuote();
   const timeout = response.length * 25; // Calculates time a person would take to type: #letter * 20 MiliSec per one letter typing
   await setTimeout(() => {
     const receiverMsg = generateReceiverChatMessage(loggedUserId, otherUser.id, otherUser.pictures, response);
-    addMessage(groupId, otherUser.id, [receiverMsg], false);
+    dispatch(addMessage({
+      groupId: groupId,
+      otherUserId: otherUser.id,
+      message: [receiverMsg]
+    }));
   }, timeout);
 }
 
-function appendUserMessage(newMessages, loggedUserId, addMessage, groupId, otherUser) {
+function appendUserMessage(newMessages, loggedUserId, dispatch, groupId, otherUser) {
   const message = newMessages[0].text;
   const senderMsg = generateSenderChatMessage(loggedUserId, message);
-  addMessage(groupId, otherUser.id, [senderMsg], true);
+  dispatch(addMessage({
+    groupId: groupId,
+    otherUserId: otherUser.id,
+    message: [senderMsg]
+  }));
   sendMessage(groupId, otherUser.id, loggedUserId, message);
 }
 
-async function onMessageSend(newMessages, addMessage, groupId, otherUser, loggedUserId) {
-  appendUserMessage(newMessages, loggedUserId, addMessage, groupId, otherUser);
-  // await generateBotResponse(loggedUserId, otherUser, addMessage, groupId);
+async function onMessageSend(newMessages, dispatch, groupId, otherUser, loggedUserId, currentGroupId) {
+  appendUserMessage(newMessages, loggedUserId, dispatch, groupId, otherUser, currentGroupId);
+  // await generateBotResponse(loggedUserId, otherUser, dispatch, groupId);
 }
 
 function preprocessMessages(loggedUserId, otherUser, groupId, messagesMapping) {

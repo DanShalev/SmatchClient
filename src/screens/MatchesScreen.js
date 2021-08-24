@@ -1,38 +1,25 @@
 import {Image, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
 import { Avatar, ListItem } from "react-native-elements";
 import React from "react";
-
 import { MessagesBadge, SingleSmatchBadge } from "../components/Badges";
-import {
-  addMessage,
-  deleteMatch,
-  resetSmatchBadge,
-  updateCurrentConversationId,
-  updateGroups,
-  updateMatches,
-  updateProfiles,
-} from '../redux/actions/actionCreators';
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Swipeout from "react-native-swipeout";
 import { unmatch } from "../api/SmatchServerAPI";
 import { updateGroupsProfilesAndMatches } from "../api/SmatchServerAPI";
+import { selectUserFacebookId } from "../redux/slices/authSlice";
+import { reduceGroupBadges, selectCurrentGroupId } from "../redux/slices/groupsSlice";
+import { deleteMatch, resetMatchBadges, selectMatches } from "../redux/slices/matchesSlice";
+import { updateCurrentConversationId } from "../redux/slices/conversationSlice";
 
-function MatchesScreen({
-  loggedUserId,
-  navigation,
-  currentGroupId,
-  matches,
-  updateCurrentConversationId,
-  resetSmatchBadge,
-  deleteMatch,
-  updateGroups,
-  updateProfiles,
-  updateMatches,
-  addMessage
-}) {
+export default function MatchesScreen({navigation}) {
+  const currentGroupId = useSelector(selectCurrentGroupId);
+  const matches = useSelector(selectMatches);
   const profiles = matches[currentGroupId];
   const matchesExist = profiles !== undefined && profiles.length !== 0 ? true : undefined;
   const [refreshing, setRefreshing] = React.useState(false);
+
+  const loggedUserId = useSelector(selectUserFacebookId);
+  const dispatch = useDispatch();
 
   const unmatchButtons = (otherUserId) => [
     {
@@ -41,7 +28,7 @@ function MatchesScreen({
       underlayColor: "rgba(0, 0, 0, 1, 0.5)",
       onPress: () => {
         unmatch(currentGroupId, loggedUserId, otherUserId)
-          .then(deleteMatch(otherUserId))
+          .then(() => dispatch(deleteMatch({otherUserId, currentGroupId})))
           .catch((err) => console.error(err));
         //TODO delete messages
       },
@@ -54,7 +41,7 @@ function MatchesScreen({
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
+    updateGroupsProfilesAndMatches(loggedUserId, dispatch, currentGroupId, matches);
     wait(2000).then(() => {
       setRefreshing(false);
     });
@@ -69,8 +56,13 @@ function MatchesScreen({
                 <ListItem
                   bottomDivider
                   onPress={() => {
-                    updateCurrentConversationId(profile, currentGroupId);
-                    resetSmatchBadge(profile.id);
+                    dispatch(updateCurrentConversationId({user: profile, group: currentGroupId}));
+                    dispatch(resetMatchBadges({matchId: profile.id, groupId: currentGroupId}));
+                    dispatch(reduceGroupBadges({
+                      matchId: profile.id,
+                      groupId: currentGroupId,
+                      oldMatches: matches
+                    }));
                     navigation.navigate("ConversationScreen");
                   }}
                 >
@@ -97,16 +89,6 @@ function MatchesScreen({
       </SafeAreaView>
   );
 }
-
-const mapStateToProps = (state) => ({
-  currentGroupId: state.mainReducer.currentGroupId,
-  matches: state.mainReducer.matches,
-  loggedUserId: state.authentication.authCredentials.facebook_id,
-});
-
-const mapDispatchToProps = { updateCurrentConversationId, resetSmatchBadge, updateGroups, updateProfiles, updateMatches, deleteMatch, addMessage };
-
-export default connect(mapStateToProps, mapDispatchToProps)(MatchesScreen);
 
 export function navigateToSmatchAccountScreen(navigation, profile) {
   navigation.navigate("SmatchAccountScreen", {

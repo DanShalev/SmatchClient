@@ -1,17 +1,18 @@
 import React from "react";
 import {createStackNavigator} from "@react-navigation/stack";
 import {setHomeScreenHeaders} from "./utils/ScreensHeaders";
-import {connect} from "react-redux";
+import { useSelector } from "react-redux";
 import DrawerNavigator from "./DrawerNavigator";
 import WelcomeScreen from "../screens/WelcomeScreen";
 import {NavigationContainer} from "@react-navigation/native";
 import * as Linking from 'expo-linking';
-import {Alert} from "react-native";
+import { selectIsAuthenticated } from "../redux/slices/authSlice";
 
 const StackNavigator = createStackNavigator();
 const prefix = Linking.createURL('/')
 
-function AuthStackNavigator({loggedIn}) {
+export default function AuthStackNavigator() {
+  const loggedIn = useSelector(selectIsAuthenticated);
 
   const config = {
     screens: {
@@ -42,8 +43,3 @@ function AuthStackNavigator({loggedIn}) {
     </NavigationContainer>
   );
 }
-
-const mapStateToProps = (state) => ({
-  loggedIn: state.authentication.authCredentials.isCurrentlyAuthenticated,
-});
-export default connect(mapStateToProps, {})(AuthStackNavigator);

@@ -2,6 +2,7 @@ import * as Facebook from "expo-facebook";
 import { Alert } from "react-native";
 import Constants from "expo-constants";
 import {addUser, getUserMetadata} from "../SmatchServerAPI";
+import { logIn, logOut, setCurrentUserData } from "../../redux/slices/authSlice";
 
 async function initializeFacebookApi() {
   await Facebook.initializeAsync({
@@ -9,7 +10,7 @@ async function initializeFacebookApi() {
   });
 }
 
-export async function runLoginScheme(updateAuthLogIn, setCurrentUserData) {
+export async function runLoginScheme(dispatch) {
   /* This function will run the following login scheme:
    * 1. Authenticate using facebook-login
    * 2. Send request to SmatchServer API to check if user exist, if not - register it.
@@ -38,16 +39,34 @@ export async function runLoginScheme(updateAuthLogIn, setCurrentUserData) {
   // 3.1 Update current user account data in redux store
   if (newUser) {
     let pictures = [picture.data.url, null, null]
-    setCurrentUserData(token, id, name, calculateAge(birthday), gender, pictures);
+    dispatch(setCurrentUserData({
+      fb_token: token,
+      id: id,
+      name: name,
+      age: calculateAge(birthday),
+      gender: gender,
+      pictures: pictures
+    }));
   } else {
     let userData = await getUserMetadata(id);
 
     let pictures = [userData.image1, userData.image2, userData.image3]
-    setCurrentUserData(token, id, userData.name, userData.age, userData.sex, pictures);
+    dispatch(setCurrentUserData({
+      fb_token: token,
+      id: id,
+      name: userData.name,
+      age: userData.age,
+      gender: userData.sex,
+      pictures: pictures
+    }));
   }
 
   // 3.2 Update redux auth, and rerender main screen
-  updateAuthLogIn(id);
+  dispatch(
+    logIn({
+      facebook_id: id,
+    })
+  );
 }
 
 function calculateAge(birthday) {
@@ -88,11 +107,11 @@ async function isUserAuthenticated() {
 }
 
 
-export async function validateFacebookAuthentication(logout) {
+export async function validateFacebookAuthentication(dispatch) {
   // This function will logout if user is not authenticate. It is used to verify stored login token is up to date
   let auth = await isUserAuthenticated();
 
   if (!auth) {
-    logout();
+    dispatch(logOut());
   }
 }

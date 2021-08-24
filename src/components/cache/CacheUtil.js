@@ -1,5 +1,5 @@
 import * as FileSystem from "expo-file-system";
-import {appendImagePrefix} from "../../redux/actions/actionUtils";
+import {appendImagePrefix} from "../../redux/utils/utils";
 
 
 export function buildFilePath() {
