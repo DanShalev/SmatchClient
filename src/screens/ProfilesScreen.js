@@ -6,30 +6,33 @@ import { initAnimation, initAnimationProps } from "../components/utils/SwipingAn
 import { BottomButtons } from "../components/swipe/profile-buttons/BottomButtons";
 import { ProfileCards } from "../components/swipe/profile-utils/ProfileCards";
 import { MatchModal } from "../components/swipe/MatchModal";
-import { connect } from "react-redux";
-import {
-  addMatch,
-  addMessage,
-  removeFirstProfile,
-  updateGroups,
-  updateMatches,
-  updateProfiles
-} from '../redux/actions/actionCreators';
+import { useDispatch, useSelector } from "react-redux";
 import {insertDislike, insertLike, updateGroupsProfilesAndMatches} from '../api/SmatchServerAPI';
+import { selectCurrentUserData, selectUserFacebookId } from "../redux/slices/authSlice";
+import { addToGroupSmatchBadge, selectCurrentGroupId } from "../redux/slices/groupsSlice";
+import { removeFirstProfile, selectProfiles } from "../redux/slices/profilesSlice";
+import { addMatch, selectMatches } from "../redux/slices/matchesSlice";
 
-function ProfilesScreen(props) {
+export default function ProfilesScreen() {
   const [modalMatchData, setModalMatchData] = useState({});
   const [modalVisible, setModalState] = useState(false);
   const [manualSwipe, setManualSwipe] = useState(null);
   const [refreshing, setRefreshing] = React.useState(false);
-  const { authId, currentGroupId, profiles, addMatch, removeFirstProfile, currentUserProfileImage } = props;
   const refProps = useRef(); // Saves props once for all the times we re-render Profiles class (while using useState)
+  const authId = useSelector(selectUserFacebookId);
+  const currentGroupId = useSelector(selectCurrentGroupId);
+  const currentUserData = useSelector(selectCurrentUserData);
+  const profiles = useSelector(selectProfiles);
+  const currentUserProfileImage = currentUserData.pictures[0];
+
   const currentProfiles = profiles[currentGroupId];
+  const dispatch = useDispatch();
+  const matches = useSelector(selectMatches);
 
   initProps(refProps);
   refProps.current = initAnimation(
     refProps.current,
-    swipingEventTrigger(currentProfiles, removeFirstProfile, setModalMatchData, addMatch, authId, currentGroupId, setModalState)
+    swipingEventTrigger(currentProfiles, dispatch, setModalMatchData, authId, currentGroupId, setModalState)
   );
 
   const nextProfileExist = currentProfiles !== undefined && currentProfiles.length !== 0 ? currentProfiles[0] : undefined;
@@ -40,7 +43,7 @@ function ProfilesScreen(props) {
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    updateGroupsProfilesAndMatches(authId, updateGroups, updateProfiles, updateMatches, addMessage);
+    updateGroupsProfilesAndMatches(authId, dispatch, currentGroupId, matches);
     wait(2000).then(() => {
       setRefreshing(false);
     });
@@ -61,7 +64,7 @@ function ProfilesScreen(props) {
             onLikePressed={onLikeButtonPressed(
               currentProfiles,
               setModalMatchData,
-              removeFirstProfile,
+              dispatch,
               setModalState,
               addMatch,
               authId,
@@ -69,7 +72,7 @@ function ProfilesScreen(props) {
               initManualSwipe(setManualSwipe)
             )}
             onNopePressed={onNopeButtonPressed(
-              removeFirstProfile,
+              dispatch,
               currentProfiles,
               currentGroupId,
               authId,
@@ -92,24 +95,6 @@ function ProfilesScreen(props) {
   );
 }
 
-const mapStateToProps = (state) => ({
-  authId: state.authentication.authCredentials.facebook_id,
-  currentGroupId: state.mainReducer.currentGroupId,
-  profiles: state.mainReducer.profiles,
-  currentUserProfileImage: state.mainReducer.currentUserData.pictures[0],
-});
-
-const mapDispatchToProps = {
-  addMatch,
-  removeFirstProfile,
-  updateGroups,
-  updateProfiles,
-  updateMatches,
-  addMessage
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(ProfilesScreen);
-
 function initProps(props) {
   if (!props.current) {
     props.current = initAnimationProps();
@@ -129,12 +114,12 @@ function initProps(props) {
   }
 }
 
-function swipingEventTrigger(profiles, removeFirstProfile, setModalMatchData, addMatch, authId, currentGroupId, setModalState) {
+function swipingEventTrigger(profiles, dispatch, setModalMatchData, authId, currentGroupId, setModalState) {
   return ([translationX]) => {
     let liked = translationX > 0; // Check user action (likes/noped profile card)
     liked
-      ? likeEventPostProcess(removeFirstProfile, profiles, setModalMatchData, addMatch, authId, currentGroupId, setModalState)
-      : nopeEventPostProcess(removeFirstProfile, profiles, currentGroupId, authId);
+      ? likeEventPostProcess(dispatch, profiles, setModalMatchData, authId, currentGroupId, setModalState)
+      : nopeEventPostProcess(dispatch, profiles, currentGroupId, authId);
   };
 }
 
@@ -167,7 +152,7 @@ function onModalSwipeCompleted(setModalState) {
 function onLikeButtonPressed(
   profiles,
   setModalMatchData,
-  removeFirstProfile,
+  dispatch,
   setModalState,
   addMatch,
   authId,
@@ -176,34 +161,35 @@ function onLikeButtonPressed(
 ) {
   return async () => {
     await initManualSwipe(true);
-    await likeEventPostProcess(removeFirstProfile, profiles, setModalMatchData, addMatch, authId, currentGroupId, setModalState);
+    await likeEventPostProcess(dispatch, profiles, setModalMatchData, addMatch, authId, currentGroupId, setModalState);
   };
 }
 
-function onNopeButtonPressed(removeFirstProfile, profiles, currentGroupId, authId, initManualSwipe) {
+function onNopeButtonPressed(dispatch, profiles, currentGroupId, authId, initManualSwipe) {
   return async () => {
     await initManualSwipe(false);
-    await nopeEventPostProcess(removeFirstProfile, profiles, currentGroupId, authId);
+    await nopeEventPostProcess(dispatch, profiles, currentGroupId, authId);
   };
 }
 
-async function likeEventPostProcess(removeFirstProfile, profiles, setModalMatchData, addMatch, authId, currentGroupId, setModalState) {
+async function likeEventPostProcess(dispatch, profiles, setModalMatchData, authId, currentGroupId, setModalState) {
   const [lastProfile] = profiles;
 
   let res = await insertLike(currentGroupId, authId, lastProfile.id);
   if (res.data) {
-    addMatch(lastProfile);
+    dispatch(addMatch({match: lastProfile, currentGroupId: currentGroupId}));
+    dispatch(addToGroupSmatchBadge({groupId: currentGroupId}));
     setModalState(true);
     setModalMatchData(lastProfile);
   }
-  removeFirstProfile(currentGroupId);
+  dispatch(removeFirstProfile({currentGroupId: currentGroupId}));
 }
 
-async function nopeEventPostProcess(removeFirstProfile, profiles, currentGroupId, authId) {
+async function nopeEventPostProcess(dispatch, profiles, currentGroupId, authId) {
   const [lastProfile] = profiles;
 
   insertDislike(currentGroupId, authId, lastProfile.id).catch((error) => console.log("Backend Error: " + error));
-  removeFirstProfile(currentGroupId);
+  dispatch(removeFirstProfile({currentGroupId: currentGroupId}));
 }
 
 function sleep(ms) {

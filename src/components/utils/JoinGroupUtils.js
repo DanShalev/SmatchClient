@@ -4,15 +4,18 @@ import { addUserToGroup, getAndUpdateGroups } from "../../api/SmatchServerAPI";
 import { Share, StyleSheet, Text } from "react-native";
 import * as Linking from "expo-linking";
 import React from "react";
+import { useDispatch } from "react-redux";
 
-export function JoinGroupButton({ groupId, updateGroups, loggedUserId, navigation }) {
+export function JoinGroupButton({ groupId, loggedUserId, navigation }) {
+  const dispatch = useDispatch();
+
   return (
     <TouchableOpacity
       style={styles.joinContainer}
       onPress={() => {
         addUserToGroup(groupId, loggedUserId)
           .then(() => navigation.navigate("Home"))
-          .then(() => getAndUpdateGroups(loggedUserId, updateGroups));
+          .then(() => getAndUpdateGroups(loggedUserId, dispatch));
       }}
     >
       <Text style={styles.text}>Join Group</Text>

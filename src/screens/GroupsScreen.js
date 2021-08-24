@@ -14,19 +14,12 @@ import {
 } from '../api/SmatchServerAPI';
 import { Avatar, ListItem } from "react-native-elements";
 import { SmatchesBadge, MessagesBadge } from "../components/Badges";
-import { connect } from "react-redux";
-import {
-  updateCurrentGroupId,
-  updateProfiles,
-  updateMatches,
-  updateGroups,
-  deleteGroup,
-  addMessage,
-  deleteMatchesByGroupId,
-  setLoggedOutCredentials, updateBrowseGroups, updateCategories,
-} from '../redux/actions/actionCreators';
-import { validateFacebookAuthentication } from "../api/facebook-login/facebookLoginUtils";
+import { useDispatch, useSelector } from "react-redux";
+import {validateFacebookAuthentication} from "../api/facebook-login/facebookLoginUtils";
 import * as FileSystem from "expo-file-system";
+import { selectUserFacebookId } from "../redux/slices/authSlice";
+import { deleteGroup, selectCurrentGroupId, selectGroups, updateCurrentGroupId } from "../redux/slices/groupsSlice";
+import { deleteMatchesByGroupId, selectMatches } from "../redux/slices/matchesSlice";
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -36,36 +29,27 @@ Notifications.setNotificationHandler({
   }),
 });
 
-function GroupsScreen({
-                        navigation,
-                        loggedUserId,
-                        groups,
-                        updateCurrentGroupId,
-                        updateGroups,
-                        updateProfiles,
-                        updateMatches,
-                        deleteGroup,
-                        deleteMatchesByGroupId,
-                        addMessage,
-                        setLoggedOutCredentials,
-                        updateBrowseGroups,
-                        updateCategories
-                      })
-{
-  const [refreshing, setRefreshing] = React.useState(false);
+export default function GroupsScreen({navigation}) {
+  const [refreshing, setRefreshing] = useState(false);
   const [convertedAvatars, setConvertedAvatar] = useState({});
 
+  const dispatch = useDispatch();
+  const groups = useSelector(selectGroups);
+  const loggedUserId = useSelector(selectUserFacebookId);
+  const currentGroupId = useSelector(selectCurrentGroupId);
+  const matches = useSelector(selectMatches);
+
   useEffect(() => {
-    updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
+    updateGroupsProfilesAndMatches(loggedUserId, dispatch, currentGroupId, matches);
     registerForPushNotification();
-    validateFacebookAuthentication(setLoggedOutCredentials);
-    getAndUpdateBrowseGroups(updateBrowseGroups);
-    getAndUpdateCategories(updateCategories);
+    validateFacebookAuthentication(dispatch);
+    getAndUpdateBrowseGroups(dispatch);
+    getAndUpdateCategories(dispatch);
     Notifications.addNotificationReceivedListener((notification) => {
       const loggedUserId = notification.request.content.data.userId;
       const otherUserId = notification.request.content.data.otherUserId;
       const groupId = notification.request.content.data.groupId;
-      initMessages(loggedUserId, groupId, otherUserId, addMessage);
+      initMessages(loggedUserId, groupId, otherUserId, dispatch);
     });
   }, []);
 
@@ -104,9 +88,9 @@ function GroupsScreen({
       backgroundColor: "red",
       underlayColor: "rgba(0, 0, 0, 1, 0.5)",
       onPress: () => {
-        deleteGroup(groupKey);
-        deleteMatchesByGroupId(groupKey);
-        updateCurrentGroupId(null);
+        dispatch(deleteGroup({groupId: groupKey}));
+        dispatch(deleteMatchesByGroupId({groupId: groupKey}));
+        dispatch(updateCurrentGroupId(null));
         unmatchAllGroupUsers(groupKey, loggedUserId);
         removeUserFromGroup(groupKey, loggedUserId);
         //TODO add delete messagesByGroupId (BE)
@@ -120,11 +104,11 @@ function GroupsScreen({
 
   const onRefresh = React.useCallback(() => {
     setRefreshing(true);
-    updateGroupsProfilesAndMatches(loggedUserId, updateGroups, updateProfiles, updateMatches, addMessage);
+    updateGroupsProfilesAndMatches(loggedUserId, dispatch, currentGroupId, matches);
     wait(2000).then(() => {
       setRefreshing(false);
     });
-  }, []);
+  }, [matches]);
 
   return (
     <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
@@ -138,7 +122,7 @@ function GroupsScreen({
               <ListItem
                 bottomDivider
                 onPress={() => {
-                  updateCurrentGroupId(groupKey);
+                  dispatch(updateCurrentGroupId(groupKey));
                   navigation.navigate("Home", {screen: "SwipeScreen", params: {screen: "Swipe"}});
                 }}
               >
@@ -160,24 +144,6 @@ function GroupsScreen({
     </ScrollView>
   );
 }
-
-const mapStateToProps = (state) => ({
-  loggedUserId: state.authentication.authCredentials.facebook_id,
-  groups: state.mainReducer.groups,
-});
-const mapDispatchToProps = {
-  deleteMatchesByGroupId,
-  deleteGroup,
-  updateGroups,
-  updateProfiles,
-  updateMatches,
-  updateCurrentGroupId,
-  addMessage,
-  setLoggedOutCredentials,
-  updateBrowseGroups,
-  updateCategories
-};
-export default connect(mapStateToProps, mapDispatchToProps)(GroupsScreen);
 
 function ServerOfflineErrorMessage() {
   return (

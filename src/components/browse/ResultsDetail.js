@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Image, Text, StyleSheet } from 'react-native';
-import { appendImagePrefix } from "../../redux/actions/actionUtils";
+import { appendImagePrefix } from "../../redux/utils/utils";
 
 const ResultsDetail = ({ result }) => {
   return (

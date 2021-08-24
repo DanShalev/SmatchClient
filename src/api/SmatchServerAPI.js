@@ -1,6 +1,19 @@
 import smatchServer from "./SmatchServer";
 import {generateReceiverChatMessage} from "../components/utils/ChatUtils";
 import {cacheGroupsImages, cacheProfilesImages, cacheUserImages} from "./utils/Utils";
+import {
+  addToGroupMessageBadge,
+  updateGroups,
+} from "../redux/slices/groupsSlice";
+import { setCurrentUserPictures } from "../redux/slices/authSlice";
+import { updateProfiles } from "../redux/slices/profilesSlice";
+import {
+  addToMatchMessageBadge,
+  updateMatches,
+} from "../redux/slices/matchesSlice";
+import { addMessage } from "../redux/slices/conversationSlice";
+import { updateBrowseGroups, updateCategories } from "../redux/slices/browseSlice";
+import { updateGroupSmatchBadgeBasedOnMatches } from "../redux/utils/utils";
 
 export function printErrorDetails(error, url) {
   if (error.response) {
@@ -25,18 +38,20 @@ const header = (userId) => {
   };
 };
 
-export function updateGroupsProfilesAndMatches(userId, updateGroups, updateProfiles, updateMatches, addMessage) {
-  getAndUpdateGroups(userId, updateGroups);
-  getAndUpdateProfiles(userId, updateProfiles);
-  getAndUpdateMatches(userId, updateMatches);
-  getAndUpdateConversations(userId, addMessage);
+export function updateGroupsProfilesAndMatches(userId, dispatch, currentGroupId, oldMatches) {
+  getAndUpdateGroups(userId, dispatch);
+  getAndUpdateProfiles(userId, dispatch);
+  getAndUpdateMatches(userId, dispatch, oldMatches);
+  getAndUpdateConversations(userId, dispatch);
 }
 
-export function getAndUpdateGroups(userId, updateGroups) {
+export function getAndUpdateGroups(userId, dispatch) {
   const url = `/subscription/user`;
   try {
     smatchServer.get(url, header(userId)).then((result) => cacheGroupsImages(result.data))
-      .then((result) => updateGroups(result));
+      .then((result) => {
+        dispatch(updateGroups({groups: result}))
+      });
   } catch (error) {
     printErrorDetails(error, url);
     return null;
@@ -53,29 +68,32 @@ export async function getGroupById(groupId, userId) {
   }
 }
 
-export function getAndUpdateProfiles(userId, updateProfiles) {
+export function getAndUpdateProfiles(userId, dispatch) {
   const url = `/group/profiles`;
   try {
     smatchServer.get(url, header(userId)).then((result) => cacheProfilesImages(result.data))
-      .then((result) => updateProfiles(result));
+      .then((result) => dispatch(updateProfiles({profiles: result})));
   } catch (error) {
     printErrorDetails(error, url);
     return null;
   }
 }
 
-export function getAndUpdateMatches(userId, updateMatches) {
+export function getAndUpdateMatches(userId, dispatch, oldMatches) {
   const url = `/group/matches`;
   try {
     smatchServer.get(url, header(userId)).then((result) => cacheProfilesImages(result.data))
-      .then((result) => updateMatches(result));
+      .then((result) => {
+        dispatch(updateMatches({matches: result}));
+        updateGroupSmatchBadgeBasedOnMatches(dispatch, oldMatches, result);
+      });
   } catch (error) {
     printErrorDetails(error, url);
     return null;
   }
 }
 
-export async function getAndUpdateConversations(userId, addMessage) {
+export async function getAndUpdateConversations(userId, dispatch) {
   const url = `/chat/get`;
   try {
     const response = await smatchServer.get(url, header(userId));
@@ -83,7 +101,13 @@ export async function getAndUpdateConversations(userId, addMessage) {
       for (const [otherUserId, messageArray] of Object.entries(groupData)) {
         for (const messageData of messageArray) {
           const receiverMsg = generateReceiverChatMessage(userId, messageArray, null, messageData.message);
-          addMessage(groupId, otherUserId, [receiverMsg], false);
+          dispatch(addMessage({
+            groupId: groupId,
+            otherUserId: otherUserId,
+            message: [receiverMsg],
+          }));
+          dispatch(addToGroupMessageBadge({groupId}));
+          dispatch(addToMatchMessageBadge({groupId, otherUserId}));
         }
       }
     }
@@ -156,7 +180,7 @@ export async function unmatchAllGroupUsers(groupId, userId) {
   }
 }
 
-export async function initMessages(userId, groupId, otherUserId, addMessage) {
+export async function initMessages(userId, groupId, otherUserId, dispatch) {
   const url = `/chat/get/${groupId}/${otherUserId}`;
   try {
     await smatchServer.get(url, header(userId)).then((result) => {
@@ -164,10 +188,16 @@ export async function initMessages(userId, groupId, otherUserId, addMessage) {
 
       for (let message of messages) {
         const msg = generateReceiverChatMessage(userId, otherUserId, null, message.message);
-        addMessage(groupId, otherUserId, [msg]);
+        dispatch(addMessage({
+          groupId: groupId,
+          otherUserId: otherUserId,
+          message: [msg]
+        }));
+        dispatch(addToGroupMessageBadge({groupId}));
+        dispatch(addToMatchMessageBadge({otherUserId, groupId}));
       }
     });
-  } catch (err) {
+  } catch (error) {
     printErrorDetails(error, url);
   }
 }
@@ -233,26 +263,25 @@ export async function addUser(id, name, age, gender, picture) {
   }
 }
 
-export async function getAndUpdateBrowseGroups(updateBrowseGroups) {
+export async function getAndUpdateBrowseGroups(dispatch) {
   const url = `/group/get`;
   try {
     const results = await smatchServer.get(url);
-    updateBrowseGroups(results.data)
+    dispatch(updateBrowseGroups({browseGroups: results.data}));
   } catch (error) {
     printErrorDetails(error, url);
   }
 }
 
-export async function getAndUpdateCategories(updateCategories) {
+export async function getAndUpdateCategories(dispatch) {
   const url = `/group/categories`;
   try {
     const results = await smatchServer.get(url);
-    updateCategories(results.data)
+    dispatch(updateCategories({categories: results.data}));
   } catch (error) {
     printErrorDetails(error, url);
   }
 }
-
 
 export async function updateUserImage(userId, imageNum, image) {
   const url = `/user/setUserImage/${imageNum}`;
@@ -302,3 +331,8 @@ export async function setTypingStatus(groupId, userId, otherUserId, typingStatus
   }
 }
 
+export async function reloadUserPictures(loggedUserId, dispatch) {
+  let userData = await getUserMetadata(loggedUserId);
+  let pictures = [userData.image1, userData.image2, userData.image3]
+  dispatch(setCurrentUserPictures({pictures: pictures}));
+}

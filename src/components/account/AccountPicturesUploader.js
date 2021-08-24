@@ -2,14 +2,14 @@ import React, {useState} from "react";
 import {FlatList, StyleSheet, Image as RNImage, Text, TouchableOpacity, View} from "react-native";
 import colors from "../../config/colors";
 import UploadImageModal from "../create-group/UploadImageModal";
-import {connect} from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {removeUserImage, updateUserImage} from "../../api/SmatchServerAPI";
-import {setCurrentUserPictures} from "../../redux/actions/actionCreators";
-import {reloadUserPictures} from "../../redux/utils/utils";
+import {reloadUserPictures} from "../../api/SmatchServerAPI";
 import {Image} from "react-native-expo-image-cache";
-import {appendImagePrefix} from "../../redux/actions/actionUtils";
+import {appendImagePrefix} from "../../redux/utils/utils";
+import { selectUserFacebookId } from "../../redux/slices/authSlice";
 
-function AccountPicturesUploader({disablePictures, pictures, userId, setCurrentUserPictures}) {
+export default function AccountPicturesUploader({disablePictures, pictures}) {
   if (disablePictures) {
     return null;
   }
@@ -18,10 +18,13 @@ function AccountPicturesUploader({disablePictures, pictures, userId, setCurrentU
   let [imageNum, setImageNum] = useState(null);
   let [isVisible, setIsVisible] = useState(false);
 
+  const dispatch = useDispatch();
+  const userId = useSelector(selectUserFacebookId);
+
   const removeImage = async () => {
     await removeUserImage(userId, imageNum);
     setIsVisible(false);
-    await reloadUserPictures(userId, setCurrentUserPictures);
+    await reloadUserPictures(userId, dispatch);
   };
 
   const handleImage = async (result) => {
@@ -30,7 +33,7 @@ function AccountPicturesUploader({disablePictures, pictures, userId, setCurrentU
     }
     await updateUserImage(userId, imageNum, result.base64);
     setIsVisible(false);
-    await reloadUserPictures(userId, setCurrentUserPictures);
+    await reloadUserPictures(userId, dispatch);
   };
 
   return (
@@ -70,13 +73,6 @@ function AccountPicturesUploader({disablePictures, pictures, userId, setCurrentU
     </View>
   );
 }
-const mapStateToProps = (state) => ({
-  userId: state.mainReducer.currentUserData.id,
-});
-const mapDispatchToProps = {
-  setCurrentUserPictures,
-};
-export default connect(mapStateToProps, mapDispatchToProps)(AccountPicturesUploader);
 
 function generateImageArrayWithAddButton(image1, image2, image3) {
   const images = [image1, image2, image3];
