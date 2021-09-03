@@ -180,37 +180,24 @@ export async function unmatchAllGroupUsers(groupId, userId) {
   }
 }
 
-export async function initMessages(userId, groupId, otherUserId, dispatch) {
-  const url = `/chat/get/${groupId}/${otherUserId}`;
+export async function sendMessage(groupId, otherUserId, loggedUserId, message) {
+  const url = `/chat/send`;
   try {
-    await smatchServer.get(url, header(userId)).then((result) => {
-      const messages = result.data;
-
-      for (let message of messages) {
-        const msg = generateReceiverChatMessage(userId, otherUserId, null, message.message);
-        dispatch(addMessage({
-          groupId: groupId,
-          otherUserId: otherUserId,
-          message: [msg]
-        }));
-        dispatch(addToGroupMessageBadge({groupId}));
-        dispatch(addToMatchMessageBadge({otherUserId, groupId}));
-      }
+    await smatchServer.post(url, {
+      content: message,
+      groupId: groupId,
+      receiverId: otherUserId,
+      senderId: loggedUserId,
     });
   } catch (error) {
     printErrorDetails(error, url);
   }
 }
 
-export async function sendMessage(groupId, otherUser, loggedUserId, message) {
-  const url = `/chat/send`;
+export async function deleteMessageInServer(userId, messageId) {
+  const url = `/chat/delete/${messageId}`;
   try {
-    return await smatchServer.post(url, {
-      content: message,
-      groupId: groupId,
-      receiverId: otherUser,
-      senderId: loggedUserId,
-    });
+    await smatchServer.delete(url, header(userId));
   } catch (error) {
     printErrorDetails(error, url);
   }
@@ -225,14 +212,6 @@ export async function registerForPushNotifications(userId, token) {
   }
 }
 
-export async function sendPushNotifications(userId) {
-  const url = `/user/push`;
-  try {
-    return await smatchServer.post(url, null, header(userId));
-  } catch (error) {
-    printErrorDetails(error, url);
-  }
-}
 
 export async function getUserFieldsFromBE(userId, groupId, setFields) {
   const url = `/group/fields/${groupId}`;

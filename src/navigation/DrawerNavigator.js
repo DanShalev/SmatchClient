@@ -19,10 +19,13 @@ import {logoutUsingFacebookApi} from "../api/facebook-login/facebookLoginUtils";
 import JoinGroupScreen from "../screens/JoinGroupScreen";
 import { useDispatch } from "react-redux";
 import { logOut } from "../redux/slices/authSlice";
+import useNotifications from "../Notification/UseNotification";
 
 const Drawer = createDrawerNavigator();
 
 export default function DrawerNavigator() {
+  useNotifications()
+
   return (
       <Drawer.Navigator {...setDrawerNavBarProperties()} drawerContent={props => <CustomDrawerContent {...props} />}>
         <Drawer.Screen name="Home" component={HomeScreenStackNavigator} {...disableDrawerNavBar()} />
