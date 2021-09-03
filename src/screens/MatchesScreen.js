@@ -7,9 +7,10 @@ import Swipeout from "react-native-swipeout";
 import { unmatch } from "../api/SmatchServerAPI";
 import { updateGroupsProfilesAndMatches } from "../api/SmatchServerAPI";
 import { selectUserFacebookId } from "../redux/slices/authSlice";
-import { reduceGroupBadges, selectCurrentGroupId } from "../redux/slices/groupsSlice";
-import { deleteMatch, resetMatchBadges, selectMatches } from "../redux/slices/matchesSlice";
+import { selectCurrentGroupId } from "../redux/slices/groupsSlice";
+import { deleteMatch, selectMatches } from "../redux/slices/matchesSlice";
 import { updateCurrentConversationId } from "../redux/slices/conversationSlice";
+import { updateMatchAndGroupBadges } from "./utils/ScreenUtils";
 
 export default function MatchesScreen({navigation}) {
   const currentGroupId = useSelector(selectCurrentGroupId);
@@ -57,12 +58,7 @@ export default function MatchesScreen({navigation}) {
                   bottomDivider
                   onPress={() => {
                     dispatch(updateCurrentConversationId({user: profile, group: currentGroupId}));
-                    dispatch(resetMatchBadges({matchId: profile.id, groupId: currentGroupId}));
-                    dispatch(reduceGroupBadges({
-                      matchId: profile.id,
-                      groupId: currentGroupId,
-                      oldMatches: matches
-                    }));
+                    updateMatchAndGroupBadges(profile.id,currentGroupId,matches,dispatch)
                     navigation.navigate("ConversationScreen");
                   }}
                 >

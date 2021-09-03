@@ -1,7 +1,7 @@
-function generateGiftedChatMessage(loggedUserId, otherUserId, otherUserPic, text, sender, date) {
+function generateGiftedChatMessage(loggedUserId, otherUserId, otherUserPic, message, sender, messageId) {
   return {
-    _id: date ? date : Math.random() * 1000000000,
-    text: text,
+    _id: messageId ? messageId : Math.floor(Math.random() * 100000000000),
+    text: message,
     createdAt: new Date(),
     user: {
       _id: sender ? loggedUserId : otherUserId,
@@ -10,10 +10,10 @@ function generateGiftedChatMessage(loggedUserId, otherUserId, otherUserPic, text
   };
 }
 
-export function generateSenderChatMessage(loggedUserId, text, date=null) {
-  return generateGiftedChatMessage(loggedUserId, null, null, text, true, date);
+export function generateSenderChatMessage(loggedUserId, message) {
+  return generateGiftedChatMessage(loggedUserId, null, null, message, true, null);
 }
 
-export function generateReceiverChatMessage(loggedUserId, otherUserId, otherUserPic, text, date=null) {
-  return generateGiftedChatMessage(loggedUserId, otherUserId, otherUserPic, text, false, date);
+export function generateReceiverChatMessage(loggedUserId, otherUserId, otherUserPic, message, messageId) {
+  return generateGiftedChatMessage(loggedUserId, otherUserId, otherUserPic, message, false, messageId);
 }

@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { GiftedChat } from "react-native-gifted-chat";
-import { generateQuote } from "../../mocks/ConversationMock";
 import { renderCustomBubble } from "../components/CustomBubble";
-import { getTypingStatus, initMessages, sendMessage, setTypingStatus } from "../api/SmatchServerAPI";
+import { getTypingStatus, sendMessage, setTypingStatus } from "../api/SmatchServerAPI";
 import { useDispatch, useSelector } from "react-redux";
-import { generateReceiverChatMessage, generateSenderChatMessage } from "../components/utils/ChatUtils";
+import { generateSenderChatMessage } from "../components/utils/ChatUtils";
 import { selectUserFacebookId } from "../redux/slices/authSlice";
-import { selectCurrentGroupId } from "../redux/slices/groupsSlice";
 import {
   addMessage,
   selectConversationMapping,
@@ -17,17 +15,11 @@ import {
 export default function ConversationScreen() {
   const loggedUserId = useSelector(selectUserFacebookId);
   const messagesMapping = useSelector(selectConversationMapping);
-  const {group: groupId, user: otherUser, isTyping } = useSelector(selectCurrentConversation);
+  const {group: groupId, user: otherUser, isTyping: isTyping } = useSelector(selectCurrentConversation);
   const dispatch = useDispatch();
 
   const messages = preprocessMessages(loggedUserId, otherUser, groupId, messagesMapping);
   const [prevText, setPrevText] = useState("");
-
-  const currentGroupId = useSelector(selectCurrentGroupId);
-
-  useEffect(() => {
-    initMessages(loggedUserId, groupId, otherUser.id, dispatch);
-  }, []);
 
   const updateTypingStatus = async () => {
     let isTyping = await getTypingStatus(groupId, loggedUserId, otherUser.id);
@@ -43,7 +35,7 @@ export default function ConversationScreen() {
   return (
     <GiftedChat
       messages={messages.slice().reverse()}
-      onSend={(newMessages) => onMessageSend(newMessages, dispatch, groupId, otherUser, loggedUserId, currentGroupId)}
+      onSend={(newMessages) => appendMessage(newMessages, loggedUserId, dispatch, groupId, otherUser.id)}
       user={{ _id: loggedUserId }}
       showAvatarForEveryMessage
       renderBubble={renderCustomBubble}
@@ -62,33 +54,28 @@ export default function ConversationScreen() {
   );
 }
 
-async function generateBotResponse(loggedUserId, otherUser, dispatch, groupId) {
-  const response = generateQuote();
-  const timeout = response.length * 25; // Calculates time a person would take to type: #letter * 20 MiliSec per one letter typing
-  await setTimeout(() => {
-    const receiverMsg = generateReceiverChatMessage(loggedUserId, otherUser.id, otherUser.pictures, response);
-    dispatch(addMessage({
-      groupId: groupId,
-      otherUserId: otherUser.id,
-      message: [receiverMsg]
-    }));
-  }, timeout);
-}
+// async function generateBotResponse(loggedUserId, otherUser, dispatch, groupId) {
+//   const response = generateQuote();
+//   const timeout = response.length * 25; // Calculates time a person would take to type: #letter * 20 MiliSec per one letter typing
+//   await setTimeout(() => {
+//     const receiverMsg = generateReceiverChatMessage(loggedUserId, otherUser.id, otherUser.pictures, response);
+//     dispatch(addMessage({
+//       groupId: groupId,
+//       otherUserId: otherUser.id,
+//       message: [receiverMsg]
+//     }));
+//   }, timeout);
+// }
 
-function appendUserMessage(newMessages, loggedUserId, dispatch, groupId, otherUser) {
+function appendMessage(newMessages, loggedUserId, dispatch, groupId, otherUserId) {
   const message = newMessages[0].text;
   const senderMsg = generateSenderChatMessage(loggedUserId, message);
   dispatch(addMessage({
     groupId: groupId,
-    otherUserId: otherUser.id,
+    otherUserId: otherUserId,
     message: [senderMsg]
   }));
-  sendMessage(groupId, otherUser.id, loggedUserId, message);
-}
-
-async function onMessageSend(newMessages, dispatch, groupId, otherUser, loggedUserId, currentGroupId) {
-  appendUserMessage(newMessages, loggedUserId, dispatch, groupId, otherUser, currentGroupId);
-  // await generateBotResponse(loggedUserId, otherUser, dispatch, groupId);
+  sendMessage(groupId, otherUserId, loggedUserId, message)
 }
 
 function preprocessMessages(loggedUserId, otherUser, groupId, messagesMapping) {
@@ -96,17 +83,14 @@ function preprocessMessages(loggedUserId, otherUser, groupId, messagesMapping) {
   if (!messagesExist) {
     return [];
   }
-
-  let messages = messagesMapping[groupId][otherUser.id];
-
+  let deepCopyMessages = JSON.parse(JSON.stringify(messagesMapping)); //deep copy is required because messageMapping is immutable
+  let messages = deepCopyMessages[groupId][otherUser.id];
   // Iterate messages and add matches user photo to each message
   for (let message of messages) {
     if (message.user._id === loggedUserId) {
       continue;
     }
-
     message.user.avatar = otherUser.pictures.length > 0 ? otherUser.pictures[0] : null;
   }
-
   return messages;
 }

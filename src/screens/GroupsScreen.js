@@ -1,33 +1,23 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import Swipeout from "react-native-swipeout";
-import * as Notifications from "expo-notifications";
-import * as Permissions from "expo-permissions";
 
-import {Image, RefreshControl, ScrollView, StyleSheet, Text} from 'react-native';
+import { Image, RefreshControl, ScrollView, StyleSheet, Text } from "react-native";
 import { useEffect } from "react";
 import {
-  registerForPushNotifications,
   removeUserFromGroup,
   updateGroupsProfilesAndMatches,
   unmatchAllGroupUsers,
-  initMessages, getAndUpdateBrowseGroups, getAndUpdateCategories,
-} from '../api/SmatchServerAPI';
+  getAndUpdateBrowseGroups, getAndUpdateCategories
+} from "../api/SmatchServerAPI";
 import { Avatar, ListItem } from "react-native-elements";
 import { SmatchesBadge, MessagesBadge } from "../components/Badges";
 import { useDispatch, useSelector } from "react-redux";
-import {validateFacebookAuthentication} from "../api/facebook-login/facebookLoginUtils";
+import { validateFacebookAuthentication } from "../api/facebook-login/facebookLoginUtils";
 import * as FileSystem from "expo-file-system";
 import { selectUserFacebookId } from "../redux/slices/authSlice";
 import { deleteGroup, selectCurrentGroupId, selectGroups, updateCurrentGroupId } from "../redux/slices/groupsSlice";
 import { deleteMatchesByGroupId, selectMatches } from "../redux/slices/matchesSlice";
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
 
 export default function GroupsScreen({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
@@ -41,16 +31,9 @@ export default function GroupsScreen({navigation}) {
 
   useEffect(() => {
     updateGroupsProfilesAndMatches(loggedUserId, dispatch, currentGroupId, matches);
-    registerForPushNotification();
     validateFacebookAuthentication(dispatch);
     getAndUpdateBrowseGroups(dispatch);
     getAndUpdateCategories(dispatch);
-    Notifications.addNotificationReceivedListener((notification) => {
-      const loggedUserId = notification.request.content.data.userId;
-      const otherUserId = notification.request.content.data.otherUserId;
-      const groupId = notification.request.content.data.groupId;
-      initMessages(loggedUserId, groupId, otherUserId, dispatch);
-    });
   }, []);
 
   useEffect(() => {
@@ -68,17 +51,6 @@ export default function GroupsScreen({navigation}) {
     }
     return updatedAvatars
   }
-
-  const registerForPushNotification = async () => {
-    try {
-      const permission = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-      if (!permission.granted) return;
-      const token = await Notifications.getExpoPushTokenAsync();
-      registerForPushNotifications(loggedUserId, token);
-    } catch (error) {
-      console.log("Error getting a push token", error);
-    }
-  };
 
   const areGroupsAvailable = Object.keys(groups).length > 0;
 
