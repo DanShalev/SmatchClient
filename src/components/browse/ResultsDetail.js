@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Image, Text, StyleSheet } from 'react-native';
+import { View, Image, Text } from 'react-native';
+import styles from "./style/ResultsDetailStyle"
 import { appendImagePrefix } from "../../redux/utils/utils";
 
 const ResultsDetail = ({ result }) => {
@@ -13,21 +14,5 @@ const ResultsDetail = ({ result }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginRight: 15,
-      marginBottom: 30
-  },
-  image: {
-    width: 180,
-    height: 120,
-    borderRadius: 7,
-    marginBottom: 5
-  },
-  name: {
-    fontWeight: 'bold'
-  }
-});
 
 export default ResultsDetail;

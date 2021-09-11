@@ -1,6 +1,6 @@
 import * as React from "react";
-import { Platform, StyleSheet, SafeAreaView, Image, Text } from "react-native";
-import colors from "../../config/colors";
+import { SafeAreaView, Image, Text } from "react-native";
+import styles from "./style/SmatchLogoHeaderStyle"
 
 export default function SmatchLogoHeader({ title = "Smatch" }) {
   return (
@@ -10,21 +10,3 @@ export default function SmatchLogoHeader({ title = "Smatch" }) {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  logoContainer: {
-    alignItems: "center",
-    flexDirection: "row",
-    paddingTop: Platform === "android" ? 0 : -5,
-    paddingLeft: 15,
-  },
-  logoText: {
-    marginLeft: 15,
-    fontSize: 28,
-    color: colors.tertiary,
-    fontWeight: "bold",
-  },
-  logoImage: {
-    tintColor: colors.secondary,
-  },
-});

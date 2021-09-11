@@ -1,10 +1,10 @@
 import { TouchableOpacity } from "react-native-gesture-handler";
-import colors from "../../config/colors";
 import { addUserToGroup, getAndUpdateGroups } from "../../api/SmatchServerAPI";
-import { Share, StyleSheet, Text } from "react-native";
+import { Share, Text } from "react-native";
 import * as Linking from "expo-linking";
 import React from "react";
 import { useDispatch } from "react-redux";
+import styles from "./JoinGroupUtilsStyle"
 
 export function JoinGroupButton({ groupId, loggedUserId, navigation }) {
   const dispatch = useDispatch();
@@ -40,26 +40,3 @@ export function InviteButton({ groupId }) {
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  inviteContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 23,
-    width: 200,
-    height: 50,
-    backgroundColor: colors.secondary,
-  },
-  text: {
-    fontSize: 20,
-    color: colors.tertiary,
-  },
-  joinContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 23,
-    width: 200,
-    height: 50,
-    backgroundColor: colors.secondary,
-  },
-});

@@ -15,6 +15,4 @@ export default function Icon({action, iconName, color}) {
       <FontAwesome5 name={iconName} size={45} color={color}/>
     </TouchableOpacity>
   )
-
-
 }

@@ -1,7 +1,8 @@
-import {Image, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, RefreshControl, SafeAreaView, ScrollView, Text, View} from 'react-native';
 import { Avatar, ListItem } from "react-native-elements";
+import styles from "./style/MatchScreenStyle"
 import React from "react";
-import { MessagesBadge, SingleSmatchBadge } from "../components/Badges";
+import { MessagesBadge, SingleSmatchBadge } from "../components/badge/Badges";
 import { useDispatch, useSelector } from "react-redux";
 import Swipeout from "react-native-swipeout";
 import { unmatch } from "../api/SmatchServerAPI";
@@ -104,25 +105,3 @@ function NoMatches() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  errorContainer: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-  errorImage: {
-    marginTop: 70,
-    marginLeft: 80,
-    width: 250,
-    height: 250,
-  },
-  errorText: {
-    marginTop: 50,
-    fontSize: 15,
-    textAlign: "center",
-  },
-
-});

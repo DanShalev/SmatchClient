@@ -1,11 +1,12 @@
 import * as React from "react";
-import { Platform, StyleSheet, SafeAreaView, TouchableOpacity } from "react-native";
+import { Platform, SafeAreaView, TouchableOpacity } from "react-native";
 import colors from "../../config/colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import {  updateCurrentConversationId } from "../../redux/slices/conversationSlice";
 import { selectCurrentGroupId } from "../../redux/slices/groupsSlice";
+import styles from "./style/BackArrowHeaderStyle"
 
 export default function BackArrowHeader({ navigateLocation }) {
   const navigation = useNavigation();
@@ -31,11 +32,3 @@ export default function BackArrowHeader({ navigateLocation }) {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  backArrow: {
-    alignItems: "center",
-    paddingTop: Platform === "android" ? 0 : -5,
-    paddingRight: 15,
-  },
-});

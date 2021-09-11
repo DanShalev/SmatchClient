@@ -1,9 +1,10 @@
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {ScrollView, View} from 'react-native';
 import React, { useEffect, useState } from "react";
 import ResultsList from "../components/browse/ResultsList";
 import SearchBar from "../components/browse/SearchBar";
 import { useSelector } from "react-redux";
 import { selectBrowseGroups, selectCategories } from "../redux/slices/browseSlice";
+import styles from "./style/BrowseScreenStyle"
 
 export default function BrowseScreen() {
   const [results, setResults] = useState([]);
@@ -38,11 +39,4 @@ function searchGroups(term, groups, setResults) {
   });
   setResults(results);
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-  }
-});
 

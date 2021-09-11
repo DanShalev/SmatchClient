@@ -1,6 +1,7 @@
 import React from "react";
-import { TextInput, View, StyleSheet, TouchableOpacity } from "react-native";
+import { TextInput, View, TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
+import styles from "./style/InputFieldDynamicStyle"
 
 import colors from "../../config/colors";
 
@@ -30,27 +31,3 @@ export default function InputFieldDynamic({ currentField, setCurrentField, setLi
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  inputFieldView: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 50,
-  },
-  inputFieldText: {
-    height: 40,
-    width: 200,
-    borderRadius: 15,
-    backgroundColor: "lightgrey",
-    textAlign: "left",
-    fontSize: 17,
-    marginRight: 20,
-    paddingLeft: 20,
-  },
-  inputFieldIcon: {
-    alignSelf: "center",
-  },
-  button: {
-    marginTop: 3,
-  },
-});

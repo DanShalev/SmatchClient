@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Swipeout from "react-native-swipeout";
-
-import { Image, RefreshControl, ScrollView, StyleSheet, Text } from "react-native";
+import styles from "./style/GroupScreenStyle"
+import { Image, RefreshControl, ScrollView, Text } from "react-native";
 import { useEffect } from "react";
 import {
   removeUserFromGroup,
@@ -10,7 +10,7 @@ import {
   getAndUpdateBrowseGroups, getAndUpdateCategories
 } from "../api/SmatchServerAPI";
 import { Avatar, ListItem } from "react-native-elements";
-import { SmatchesBadge, MessagesBadge } from "../components/Badges";
+import { SmatchesBadge, MessagesBadge } from "../components/badge/Badges";
 import { useDispatch, useSelector } from "react-redux";
 import { validateFacebookAuthentication } from "../api/facebook-login/facebookLoginUtils";
 import * as FileSystem from "expo-file-system";
@@ -127,16 +127,3 @@ function ServerOfflineErrorMessage() {
   );
 }
 
-const styles = StyleSheet.create({
-  errorImage: {
-    marginTop: 40,
-    marginLeft: 80,
-    width: 250,
-    height: 220,
-  },
-  errorText: {
-    marginTop: 50,
-    fontSize: 15,
-    textAlign: "center",
-  },
-});

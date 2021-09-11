@@ -1,7 +1,7 @@
 import React from "react";
-import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { TextInput, TouchableOpacity, View } from "react-native";
 import Icon from "react-native-vector-icons/AntDesign";
-
+import styles from "./style/InputFieldListStyle"
 import colors from "../../config/colors";
 
 export default function InputFieldList({ listOfFields, setListOfFields }) {
@@ -22,24 +22,3 @@ export default function InputFieldList({ listOfFields, setListOfFields }) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  inputFieldView: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  inputFieldText: {
-    height: 40,
-    width: 200,
-    borderRadius: 17,
-    backgroundColor: colors.lightGray,
-    textAlign: "center",
-    fontSize: 17,
-    marginTop: 12,
-    marginRight: 20,
-  },
-  inputFieldIcon: {
-    alignSelf: "center",
-    marginTop: 12,
-  },
-});

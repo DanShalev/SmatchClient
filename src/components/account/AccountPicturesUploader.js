@@ -1,6 +1,6 @@
 import React, {useState} from "react";
-import {FlatList, StyleSheet, Image as RNImage, Text, TouchableOpacity, View} from "react-native";
-import colors from "../../config/colors";
+import {FlatList, Image as RNImage, Text, TouchableOpacity, View} from "react-native";
+import styles from "./style/AccountPicturesUploaderStyle"
 import UploadImageModal from "../create-group/UploadImageModal";
 import { useDispatch, useSelector } from "react-redux";
 import {removeUserImage, updateUserImage} from "../../api/SmatchServerAPI";
@@ -93,35 +93,3 @@ function generateImageArrayWithAddButton(image1, image2, image3) {
 
   return filteredImages;
 }
-
-const styles = StyleSheet.create({
-  imageScroll: {
-    flex: 1,
-    height: 250,
-    width: 150,
-    borderRadius: 15,
-    margin: 5,
-    justifyContent: "flex-end",
-    borderWidth: 1,
-    borderColor: "black",
-  },
-  name: {
-    fontWeight: "bold",
-    marginLeft: 3,
-    marginBottom: 5,
-    color: colors.accountTitle,
-    fontSize: 25,
-  },
-  imageField: {
-    justifyContent: "center",
-    backgroundColor: colors.tertiary,
-    height: 230,
-  },
-  picTitle: {
-    paddingTop: 5,
-  },
-  picturesContainer: {
-    marginLeft: 15,
-    backgroundColor: colors.tertiary,
-  },
-});

@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { TextInput, View, StyleSheet } from "react-native";
-
-import colors from "../../config/colors";
+import React from "react";
+import { TextInput, View } from "react-native";
+import styles from "./style/InputFieldStyle"
 
 export default function InputField({ style, fieldValue, setFieldValue }) {
   return (
@@ -17,20 +16,3 @@ export default function InputField({ style, fieldValue, setFieldValue }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  inputFieldText: {
-    height: 40,
-    width: 200,
-    borderRadius: 17,
-    backgroundColor: colors.lightGray,
-    textAlign: "left",
-    fontSize: 17,
-    marginTop: 12,
-    marginRight: 20,
-    padding: 5,
-  },
-});

@@ -1,8 +1,9 @@
 import * as React from "react";
-import { Platform, StyleSheet, SafeAreaView, TouchableOpacity } from "react-native";
+import { Platform, SafeAreaView, TouchableOpacity } from "react-native";
 import colors from "../../config/colors";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
+import styles from "./style/SideMenuHeaderStyle"
 
 export default function SideMenuHeader() {
   const navigation = useNavigation();
@@ -15,11 +16,3 @@ export default function SideMenuHeader() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  sideMenu: {
-    alignItems: "center",
-    paddingTop: Platform === "android" ? 0 : -5,
-    paddingRight: 15,
-  },
-});

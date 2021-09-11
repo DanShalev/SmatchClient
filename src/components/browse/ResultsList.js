@@ -1,11 +1,6 @@
 import React from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity
-} from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import styles from "./style/ResultsListStyle"
 import ResultsDetail from './ResultsDetail';
 
 const ResultsList = ({ title, results }) => {
@@ -32,18 +27,5 @@ const ResultsList = ({ title, results }) => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    marginBottom: 5
-  },
-  container: {
-    marginBottom: 10,
-    marginLeft: 15,
-    marginTop: 5,
-  }
-});
 
 export default ResultsList;

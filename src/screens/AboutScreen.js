@@ -1,5 +1,6 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
+import styles from "./style/AboutScreenStyle"
 
 export default function AboutScreen() {
   const B = (props) => (
@@ -40,21 +41,3 @@ export default function AboutScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    fontSize: 25,
-    fontWeight: "bold",
-    marginVertical: 10,
-  },
-  description: {
-    fontSize: 20,
-    marginVertical: 15,
-  },
-  gide: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    marginTop: 10,
-  },
-});

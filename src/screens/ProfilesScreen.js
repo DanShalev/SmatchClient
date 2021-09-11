@@ -1,7 +1,7 @@
 import React, { useRef, useState } from "react";
-import {Image, RefreshControl, SafeAreaView, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {Image, RefreshControl, SafeAreaView, ScrollView, Text, View} from 'react-native';
 import Animated from "react-native-reanimated";
-
+import styles from "./style/ProfileScreenStyle"
 import { initAnimation, initAnimationProps } from "../components/utils/SwipingAnimation";
 import { BottomButtons } from "../components/swipe/profile-buttons/BottomButtons";
 import { ProfileCards } from "../components/swipe/profile-utils/ProfileCards";
@@ -205,25 +205,3 @@ function NoMoreSwipes() {
       </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fbfaff",
-  },
-  errorContainer: {
-    flex: 1,
-    backgroundColor: "white",
-  },
-  errorImage: {
-    marginTop: 30,
-    marginLeft: 60,
-    width: 300,
-    height: 300,
-  },
-  errorText: {
-    marginTop: 50,
-    fontSize: 15,
-    textAlign: "center",
-  },
-});

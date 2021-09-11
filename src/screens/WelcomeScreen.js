@@ -1,9 +1,10 @@
 import React from "react";
-import {Image, StyleSheet, Text, View} from "react-native";
+import {Image, Text, View} from "react-native";
 import { runLoginScheme } from "../api/facebook-login/facebookLoginUtils";
 import { useDispatch } from "react-redux";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { Button } from 'react-native-elements';
+import styles from "./style/WelcomeScreenStyle"
 
 export default function LoginScreen() {
     const dispatch = useDispatch();
@@ -27,37 +28,5 @@ export default function LoginScreen() {
     );
 }
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "white",
-        alignItems: "center",
-        justifyContent: "space-between"
-    },
-    logo: {
-        flex: 3,
-        width: "100%",
-        resizeMode: "contain",
-        alignSelf: "center"
-    },
-    form: {
-        flex: 1,
-        justifyContent: "center",
-        width: "80%",
-    },
-    button: {
-        backgroundColor: '#68a0cf',
-        overflow: 'hidden',
-    },
-    textContainer: {
-        alignItems: "center",
-    },
-    titleText: {
-        fontSize: 30
-    },
-    introText: {
-        fontSize: 12
-    }
-});
 
 

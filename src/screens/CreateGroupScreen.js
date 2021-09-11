@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
-import { Image, ScrollView, StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import { Image, ScrollView, TextInput, TouchableOpacity, View } from "react-native";
+import styles from "./style/CreateGroupStyle"
 import { FontAwesome } from "@expo/vector-icons";
 import InputFieldDynamic from "../components/create-group/InputFieldDynamic";
 import InputFieldList from "../components/create-group/InputFieldList";
@@ -8,7 +9,6 @@ import { useSelector } from "react-redux";
 import UploadImageModal from "../components/create-group/UploadImageModal";
 import { selectUserFacebookId } from "../redux/slices/authSlice";
 import SelectDropdown from 'react-native-select-dropdown'
-import colors from '../config/colors';
 import { selectCategories } from "../redux/slices/browseSlice";
 import { appendImagePrefix } from "../redux/utils/utils";
 
@@ -141,55 +141,3 @@ export default function CreateGroupScreen() {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  contentContainerStyle: {
-    justifyContent: "center",
-    alignItems: "center",
-    width: 400,
-    height: 700,
-  },
-  image: {
-    height: 90,
-    width: 90,
-    backgroundColor: "lightgrey",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 90,
-  },
-  groupName: {
-    textDecorationColor: "blue",
-    fontSize: 20,
-    flexDirection: "row",
-    justifyContent: "center",
-    marginTop: 10,
-  },
-  border: {
-    borderWidth: 0.5,
-    width: "100%",
-    borderColor: "lightgrey",
-  },
-  description: {
-    marginVertical: 4,
-    marginHorizontal: 10,
-    fontSize: 16,
-    flex: 1,
-  },
-  descriptionView: {
-    width: "100%",
-    height: 80,
-  },
-  dynamicField: {
-    marginTop: 40,
-  },
-  dropdownButton: {
-      marginTop: 40,
-      backgroundColor: colors.lightGray,
-      borderRadius: 17,
-      width: 270
-  },
-  dropdownOptions: {
-      backgroundColor: colors.tertiary,
-      borderRadius: 17
-  }
-});

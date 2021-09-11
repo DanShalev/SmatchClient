@@ -1,9 +1,10 @@
 import {generateAnimationParams} from "../../utils/SwipingAnimation";
-import {StyleSheet, View} from "react-native";
+import {View} from "react-native";
 import Card from "../Card";
 import {PanGestureHandler} from "react-native-gesture-handler";
 import Animated from "react-native-reanimated";
 import React from "react";
+import styles from "./ProfileCardsStyle"
 
 export function ProfileCards({profiles, onGestureEvent, translateX, translateY}) {
   const [lastProfile, ...restOfProfiles] = profiles;
@@ -22,20 +23,3 @@ export function ProfileCards({profiles, onGestureEvent, translateX, translateY})
       </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fbfaff",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    padding: 16,
-  },
-  cards: {
-    flex: 1,
-    margin: 8,
-    zIndex: 100,
-  }
-});

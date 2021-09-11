@@ -1,7 +1,7 @@
 import { TouchableOpacity } from "react-native-gesture-handler";
-import { StyleSheet, Text } from "react-native";
+import { Text } from "react-native";
 import React from "react";
-import colors from "../../config/colors";
+import styles from "./style/CreateGroupButtonStyle"
 import { createGroup } from "../../api/SmatchServerAPI";
 import { useNavigation } from "@react-navigation/native";
 
@@ -33,20 +33,3 @@ export default function CreateGroupButton({ groupInfo, groupSetters, disabled })
     </TouchableOpacity>
   );
 }
-
-const styles = StyleSheet.create({
-  createGroupButton: {
-    height: 50,
-    width: 300,
-    alignItems: "center",
-    marginTop: 30,
-    padding: 10,
-    borderRadius: 15,
-  },
-  enabledColor: {
-    backgroundColor: colors.secondary,
-  },
-  disabledColor: {
-    backgroundColor: colors.lightGray,
-  },
-});

@@ -1,8 +1,9 @@
-import { StyleSheet, Text, View } from "react-native";
+import { Text, View } from "react-native";
 import React from "react";
 import Modal from "react-native-modal";
 import Icon from "./PressableIcon";
 import * as ImagePicker from "expo-image-picker";
+import styles from "./style/UploadImageModalStyle"
 
 export default function UploadImageModal({isVisible, setIsVisible, imageExist, setImage, removeImage}) {
   const imagePickerOptions = {
@@ -37,22 +38,3 @@ export default function UploadImageModal({isVisible, setIsVisible, imageExist, s
     </Modal>
   )
 }
-
-const styles = StyleSheet.create({
-  modal: {
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  modalView: {
-    height: 200,
-    width: 300,
-    backgroundColor: "lightgrey",
-    flexDirection: "column",
-    justifyContent: "center",
-    borderRadius: 10,
-  },
-  icons: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-  }
-});
