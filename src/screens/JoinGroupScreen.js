@@ -40,6 +40,10 @@ export default function JoinGroupScreen({route}) {
 
 
   const updateGroupAvatar = async (avatar) => {
+    if (avatar === null){
+      // null avatar fails in avatar.startsWidth
+      return ""
+    }
     if (avatar.startsWith("file")) {
       return await FileSystem.readAsStringAsync(avatar);
     }
@@ -51,7 +55,7 @@ export default function JoinGroupScreen({route}) {
       <View style={styles.container}>
         {avatar.startsWith("http") ? (<Image uri={avatar} style={styles.image} preview={{uri: avatar}}/>
         ) : (
-          <RNImage style={styles.image} source={{uri: avatar}}/>
+          <RNImage style={styles.image} source={ avatar !== "" ? {uri: avatar} : require("../../assets/emptyGroup.png")}/>
         )}
         <Text style={styles.name}>{groupDetails.name}</Text>
         <LinearGradient colors={["transparent", "black"]} style={styles.gradient}/>

@@ -43,7 +43,7 @@ export default function GroupsScreen({navigation}) {
   async function convertAvatars(groups) {
     let updatedAvatars = {}
     for (const [i, group] of Object.entries(groups)) {
-      if (group.avatar.startsWith("file")) {
+      if (group.avatar !== null && group.avatar.startsWith("file")) {
         updatedAvatars[i] = await FileSystem.readAsStringAsync(group.avatar);
       } else {
         updatedAvatars[i] = group.avatar
@@ -98,9 +98,10 @@ export default function GroupsScreen({navigation}) {
                   navigation.navigate("Home", {screen: "SwipeScreen", params: {screen: "Swipe"}});
                 }}
               >
-                <Avatar source={{uri: convertedAvatars[groupKey]}} size="large" rounded onPress={() => {
-                  navigation.navigate("GroupDetails", {groupId: groupKey})
-                }}/>
+                <Avatar source={convertedAvatars[groupKey] ?
+                  {uri: convertedAvatars[groupKey]} : require("../../assets/emptyGroup.png")}
+                        size="large" rounded onPress={() => {navigation.navigate("GroupDetails", {groupId: groupKey})}}
+                />
                 <ListItem.Content>
                   <ListItem.Title>{group.name}</ListItem.Title>
                   <ListItem.Subtitle>{group.numberOfMembers}</ListItem.Subtitle>
