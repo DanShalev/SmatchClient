@@ -10,6 +10,7 @@ export default StyleSheet.create({
   },
   image: {
     flex: 0.4,
+    width: "100%"
   },
   name: {
     fontWeight: "bold",
