@@ -21,7 +21,7 @@ const {
   Clock,
   Value,
   concat,
-  interpolate,
+  interpolateNode,
   Extrapolate,
 } = Animated;
 
@@ -114,7 +114,7 @@ export function initAnimation(props, swipingEventTrigger) {
 
 export function generateAnimationParams({translateX, translateY}) {
   const rotateZ = concat(
-    interpolate(translateX, {
+    interpolateNode(translateX, {
       inputRange: [-width / 2, width / 2],
       outputRange: [15, -15],
       extrapolate: Extrapolate.CLAMP,
@@ -123,11 +123,11 @@ export function generateAnimationParams({translateX, translateY}) {
   );
 
   return {
-    likeOpacity: interpolate(translateX, {
+    likeOpacity: interpolateNode(translateX, {
       inputRange: [0, width / 4],
       outputRange: [0, 1],
     }),
-    nopeOpacity: interpolate(translateX, {
+    nopeOpacity: interpolateNode(translateX, {
       inputRange: [-width / 4, 0],
       outputRange: [1, 0],
     }),
