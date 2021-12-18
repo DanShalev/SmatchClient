@@ -60,7 +60,7 @@ export function setAboutScreenHeaders() {
   return {
     options: {
       headerLeft: () => <SmatchLogoHeader title="About" />,
-      headerRight: () => <BackArrowHeader navigateLocation={"Groups"} />,
+      headerRight: () => <BackArrowHeader navigateLocation={"Home"} />,
     },
   };
 }

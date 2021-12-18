@@ -18,7 +18,7 @@ export default function AuthStackNavigator() {
     screens: {
       DrawerHomeScreen: {
         screens: {
-          GroupDetails: {
+          JoinGroup: {
             path: 'join/:groupId',
           }
         }

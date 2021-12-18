@@ -1,77 +1,67 @@
-import React, {useEffect, useState} from "react";
-import {ActivityIndicator, Image as RNImage, Text, View} from "react-native";
-import styles from "./style/JoinGroupScreenStyle"
-import { useSelector } from "react-redux";
-import {useNavigation} from "@react-navigation/native";
+import React, { useEffect, useState } from "react";
+import { ActivityIndicator, ImageBackground, ScrollView, Text } from "react-native";
+import styles from "./style/JoinGroupScreenStyle";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigation } from "@react-navigation/native";
 import colors from "../config/colors";
-import {InviteButton, JoinGroupButton} from "../components/utils/JoinGroupUtils";
-import {getGroupById} from "../api/SmatchServerAPI";
-import {Image} from "react-native-expo-image-cache";
-import {LinearGradient} from "expo-linear-gradient";
-import * as FileSystem from "expo-file-system";
-import { selectGroups } from "../redux/slices/groupsSlice";
+import { addUserToGroup, getAndUpdateGroups, getGroupById } from "../api/SmatchServerAPI";
+import { Image } from "react-native-expo-image-cache";
 import { selectUserFacebookId } from "../redux/slices/authSlice";
+import { TouchableOpacity } from "react-native-gesture-handler";
 
 
-export default function JoinGroupScreen({route}) {
+export default function JoinGroupScreen({ route }) {
   let [groupDetails, setGroupDetails] = useState(null);
-  const [avatar, setAvatar] = useState(null)
-  const [isJoin, setIsJoin] = useState(false)
+  const [avatar, setAvatar] = useState(null);
   const [loader, setLoader] = useState(false);
   const navigation = useNavigation();
   const groupId = route.params.groupId;
 
-  const groups = useSelector(selectGroups);
   const loggedUserId = useSelector(selectUserFacebookId);
 
   useEffect(() => {
-    if (groups[groupId] === undefined) {
-      setLoader(true)
-      setIsJoin(true)
-      getGroupById(groupId, loggedUserId).then((response) => {
-        setGroupDetails(response.data);
-        setLoader(false);
-      })
-    } else {
-      setGroupDetails(groups[groupId])
-      updateGroupAvatar(groups[groupId].avatar).then((res) => setAvatar(res))
-    }
-  }, [route])
+    setLoader(true);
+    getGroupById(groupId, loggedUserId).then((response) => {
+      setGroupDetails(response.data);
+      setLoader(false);
+      setAvatar(groupDetails.avatar);
+    });
+  }, [route]);
 
-
-  const updateGroupAvatar = async (avatar) => {
-    if (avatar === null){
-      // null avatar fails in avatar.startsWidth
-      return ""
-    }
-    if (avatar.startsWith("file")) {
-      return await FileSystem.readAsStringAsync(avatar);
-    }
-    return avatar
-  }
+  useEffect(() => {
+    if (!!groupDetails && !!groupDetails.avatar)
+      setAvatar(groupDetails.avatar);
+  }, [groupDetails]);
 
   return (
     groupDetails !== null && avatar !== null ? (
-      <View style={styles.container}>
-        {avatar.startsWith("http") ? (<Image uri={avatar} style={styles.image} preview={{uri: avatar}}/>
-        ) : (
-          <RNImage style={styles.image} source={ avatar !== "" ? {uri: avatar} : require("../../assets/emptyGroup.png")}/>
-        )}
-        <Text style={styles.name}>{groupDetails.name}</Text>
-        <LinearGradient colors={["transparent", "black"]} style={styles.gradient}/>
-        <View style={{flex: 0.4}}>
-          {groupDetails && <Text style={styles.members}>{groupDetails.numberOfMembers}</Text>}
-          {groupDetails && <Text style={styles.description}>{groupDetails.description}</Text>}
-          <ActivityIndicator animating={loader} size="large" color={colors.secondary}/>
-        </View>
-        <View style={styles.button}>
-          {isJoin ?
-            (groupDetails && <JoinGroupButton groupId={groupId} loggedUserId={loggedUserId} navigation={navigation}/>)
-            : (
-              <InviteButton groupId={groupId}/>
-            )}
-        </View>
-      </View>) : null
+      <ScrollView>
+        <ImageBackground source={require("../../assets/join_screen_design_header.png")} style={styles.background}>
+          <Image uri={avatar} style={styles.image} preview={{ uri: avatar }} />
+          <Text style={styles.name}>{groupDetails.name}</Text>
+          <Text style={styles.members}>{groupDetails.numberOfMembers}</Text>
+          <Text style={styles.description}>{groupDetails.description}</Text>
+          <JoinGroupButton groupId={groupId} loggedUserId={loggedUserId} navigation={navigation} />
+        </ImageBackground>
+      </ScrollView>
+    ) : (<ActivityIndicator animating={loader} size="large" color={colors.secondary} />)
+  );
+}
+
+function JoinGroupButton({ groupId, loggedUserId, navigation }) {
+  const dispatch = useDispatch();
+
+  return (
+    <TouchableOpacity
+      style={styles.joinButton}
+      onPress={() => {
+        addUserToGroup(groupId, loggedUserId)
+          .then(() => navigation.navigate("Home"))
+          .then(() => getAndUpdateGroups(loggedUserId, dispatch));
+      }}
+    >
+      <Text style={styles.joinButtonText}>Join</Text>
+    </TouchableOpacity>
   );
 }
 

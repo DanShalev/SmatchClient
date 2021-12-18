@@ -20,6 +20,7 @@ import JoinGroupScreen from "../screens/JoinGroupScreen";
 import { useDispatch } from "react-redux";
 import { logOut } from "../redux/slices/authSlice";
 import useNotifications from "../Notification/UseNotification";
+import GroupDescriptionScreen from "../screens/GroupDescriptionScreen";
 
 const Drawer = createDrawerNavigator();
 
@@ -27,26 +28,26 @@ export default function DrawerNavigator() {
   useNotifications()
 
   return (
-      <Drawer.Navigator {...setDrawerNavBarProperties()} drawerContent={props => <CustomDrawerContent {...props} />}>
+      <Drawer.Navigator {...setDrawerNavBarProperties()} drawerContent={(props) => <CustomDrawerContent {...props} />}>
         <Drawer.Screen name="Home" component={HomeScreenStackNavigator} {...disableDrawerNavBar()} />
         <Drawer.Screen name="Account" component={PersonalAccountScreen} {...setAccountScreenHeaders()} />
         <Drawer.Screen name="Create Group" component={CreateGroupScreen} {...setCreateGroupScreenHeaders()} />
         <Drawer.Screen name="About" component={AboutScreen} {...setAboutScreenHeaders()} />
-        <Drawer.Screen name="GroupDetails" component={JoinGroupScreen} {...setAboutScreenHeaders()} />
+        <Drawer.Screen name="JoinGroup" component={JoinGroupScreen} {...setAboutScreenHeaders()} />
+        <Drawer.Screen name="GroupDescription" component={GroupDescriptionScreen} {...setAboutScreenHeaders()} />
       </Drawer.Navigator>
   );
 }
 
 function CustomDrawerContent(props) {
-  const screenName = "GroupDetails"
+  const filteredScreens = props.state.routeNames.filter((route) => route !== "JoinGroup").filter((route) => route !== "GroupDescription");
+  const filteredRoutes = props.state.routes.filter((route) => route.name !== "JoinGroup").filter((route) => route.name !== "GroupDescription");
   const filteredProps = {
     ...props,
     state: {
       ...props.state,
-      routeNames: props.state.routeNames.filter(routeName => {
-        routeName !== screenName;
-      }),
-      routes: props.state.routes.filter(route => route.name !== screenName),
+      routeNames: filteredScreens,
+      routes: filteredRoutes,
     },
   };
 

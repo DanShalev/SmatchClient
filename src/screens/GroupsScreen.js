@@ -100,7 +100,7 @@ export default function GroupsScreen({navigation}) {
               >
                 <Avatar source={convertedAvatars[groupKey] ?
                   {uri: convertedAvatars[groupKey]} : require("../../assets/emptyGroup.png")}
-                        size="large" rounded onPress={() => {navigation.navigate("GroupDetails", {groupId: groupKey})}}
+                        size="large" rounded onPress={() => {navigation.navigate("GroupDescription", {groupId: groupKey})}}
                 />
                 <ListItem.Content>
                   <ListItem.Title>{group.name}</ListItem.Title>

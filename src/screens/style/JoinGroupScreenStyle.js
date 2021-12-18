@@ -2,39 +2,43 @@ import { StyleSheet } from "react-native";
 import colors from "../../config/colors";
 
 export default StyleSheet.create({
-  container: {
+  background: {
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    backgroundColor: colors.tertiary
+    flexDirection: "column",
+    backgroundColor: "white",
+    width: "100%",
+    height: "50%",
+    alignItems: "center",
   },
   image: {
-    flex: 0.4,
-    width: "100%"
+    width: 230,
+    height: 230,
+    borderRadius: 230 / 2,
+    marginTop: 80
   },
   name: {
-    fontWeight: "bold",
-    marginLeft: 10,
-    marginBottom: 5,
-    color: colors.accountTitle,
-    fontSize: 25,
-    bottom: 40,
+    fontFamily: "Assistant_400Regular",
+    color: "#0B6CF4",
+    fontSize: 36,
+    marginTop: 20
   },
   members: {
-    marginTop: 5,
-    fontWeight: "bold",
-    marginLeft: 10,
-    color: colors.secondary,
+    fontFamily: "Assistant_400Regular",
+    fontSize: 18,
+    marginTop: 5
   },
   description: {
-    fontWeight: "bold",
-    marginLeft: 10, marginTop: 15,
-    color: colors.primary,
+    marginLeft: 30,
+    textAlign:"center",
+    flexShrink: 1,
+    fontFamily: "Assistant_300Light",
+    fontSize: 18,
+    marginTop: 20
   },
   button: {
     flex: 0.2,
     justifyContent: "center",
-    alignSelf: "center",
+    alignSelf: "center"
   },
   gradient: {
     opacity: 0.2,
@@ -42,7 +46,21 @@ export default StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 355,
-    height: "40%",
+    height: "40%"
   },
+  joinButton: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 22,
+    width: 251,
+    height: 45,
+    backgroundColor: "#F55600",
+    marginTop: 50,
+    marginBottom: 60
+  },
+  joinButtonText: {
+    fontFamily: "Assistant_600SemiBold",
+    fontSize: 24,
+  }
 });
 

@@ -14,12 +14,4 @@ export default StyleSheet.create({
     fontSize: 20,
     color: colors.tertiary,
   },
-  joinContainer: {
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 23,
-    width: 200,
-    height: 50,
-    backgroundColor: colors.secondary,
-  },
 });
